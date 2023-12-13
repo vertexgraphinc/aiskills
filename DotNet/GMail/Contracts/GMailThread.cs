@@ -7,14 +7,11 @@ using System.Threading.Tasks;
 
 namespace GMail.Contracts
 {
-    public class GMailThread
+    public class GMailThread: GMailMessage
     {
-        [JsonProperty("id")]
-        [JsonPropertyName("id")]
-        public string Id { get; set; }
-
-        [JsonProperty("subject")]
-        [JsonPropertyName("subject")]
-        public string Subject { get; set; }
+        //internal purpose. Not listed in yaml
+        [JsonProperty("threadId")]
+        [JsonPropertyName("threadId")]
+        public string ThreadId { get; set; }
     }
 }
