@@ -13,28 +13,39 @@ namespace GMail.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class ThreadsController : OAuthSession
+    public class ThreadsController : MessagesHelpers
     {
         [HttpPost("query")]
-        public async Task<QueryEmailThreadsResponse> QueryEmailThreads(QueryEmailThreadsRequest Para)
+        public async Task<QueryEmailThreadsResponse> QueryEmailThreads(SearchFilters Para)
         {
-            QueryEmailThreadsResponse resp = new QueryEmailThreadsResponse
+            var resp = new QueryEmailThreadsResponse
             {
                 EmailThreads = null
             };
 
             string Token = GetSessionToken();
-            if (string.IsNullOrEmpty(Token))
+            if (!Has(Token))
             {
                 Response.StatusCode = 401;
-                return null;
+                resp.MessageFromServer = "Unauthorized.";
             }
-
-            resp.EmailThreads = await ListThreads(Para);
-
+            try
+            {
+                resp.EmailThreads = await ListThreads(Para);
+                if (resp.EmailThreads.Count == 0)
+                {
+                    resp.MessageFromServer = "No emails were found.";
+                }
+                else
+                {
+                    resp.MessageFromServer = $"Top {resp.EmailThreads.Count} threads returned.";
+                }
+            }
+            catch (Exception ex)
+            {
+                resp.MessageFromServer = ex.Message;
+            }
             return resp;
         }
-
-        
     }
 }
