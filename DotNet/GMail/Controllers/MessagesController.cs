@@ -1,42 +1,403 @@
 ﻿using GMail.Contracts;
-using GMail.GMailClient;
 using GMail.Helpers;
+using GMail.GMailClient;
 using Google.Apis.Gmail.v1;
+using Google.Apis.Gmail.v1.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
+using System.Net.Mail;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace GMail.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class MessagesController : OAuthSession
+    public class MessagesController : MessagesHelpers
     {
-        [HttpPost("query")]
-        public async Task<QueryEmailsResponse> QueryEmails(QueryEmailsRequest Para)
+        [HttpGet("test")]
+        public string Test()
         {
-            QueryEmailsResponse resp = new QueryEmailsResponse
+            return "hello world";
+        }
+
+        #region Getting Emails
+        [HttpPost("query")]
+        public async Task<QueryEmailsResponse> QueryEmails(SearchFilters Para)
+        {
+            System.Diagnostics.Debug.WriteLine("[vertex][QueryEmails]");
+            var resp = new QueryEmailsResponse
             {
-                EmailMessages = null
+                Messages = null
             };
 
             string Token = GetSessionToken();
-            if (string.IsNullOrEmpty(Token))
+            if (!Has(Token))
             {
                 Response.StatusCode = 401;
-                return null;
+                resp.Message = "Unauthorized.";
             }
+            try
+            {
+                resp.Messages = await ListMessages(Para);
+                if (resp.Messages.Count == 0)
+                {
+                    resp.Message = "No emails were found.";
+                }
+                else
+                {
+                    resp.Message = $"Found {resp.Messages.Count} email(s).";
+                }
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = 500;
+                resp.Message = Sanitize(StripHtmlTags( ex.ToString()));
+            }
+            return resp;
+        }
 
-            resp.EmailMessages = await ListMessage(Para);
+        [HttpPost("get")]
+        public async Task<GetEmailsResponse> GetEmail(GetEmailRequest Para)
+        {
+            System.Diagnostics.Debug.WriteLine("[vertex][GetEmail]");
+            var response = new GetEmailsResponse();
+            Response.StatusCode = 200;
+
+            var RetMsgs = new List<GMailMessage>();
+            string Token = GetSessionToken();
+            if (!Has(Token))
+            {
+                Response.StatusCode = 401;
+                response.Message = "Unauthorized.";
+            }
+            try
+            {
+                if (IsJsonObject(Para.Id))
+                {
+                    var msgs = GetIdsFromMessageObj(Para.Id);
+                    string errors = "";
+                    foreach (var msg in msgs)
+                    {
+                        Para.Id = msg.Id;
+                        var resp = await GetMessage(Para);
+                        if (resp == null)
+                        {
+                            errors = AppendString(errors, $"Id {msg.Id} was not found");
+                        }
+                        else
+                        {
+                            RetMsgs.Add(resp);
+                        }
+                    }
+                    if (errors == "")
+                    {
+                        response.Message = "Success";
+                    }
+                    else
+                    {
+                        response.Message = errors;
+                    }
+                }
+                else
+                {
+                    var resp = await GetMessage(Para);
+                    if (resp == null)
+                    {
+                    }
+                    else
+                    {
+                        RetMsgs.Add(resp);
+                        response.Message = "Success";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = 500;
+                response.Message = ex.Message;
+            }
+            response.Messages = RetMsgs;
+            return response;
+        }
+        #endregion
+
+        #region Sending Emails
+        [HttpPost("send")]
+        public async Task<ServerResponse> SendEmail(SendEmailRequest Para)
+        {
+            //EXAMPLE PROMPT: send an email to user@example.com with subject "hello" and body "hello world"
+            System.Diagnostics.Debug.WriteLine("[vertex][SendEmail]");
+            var resp = new ServerResponse();
+            Response.StatusCode = 200;
+
+            string Token = GetSessionToken();
+            if (!Has(Token))
+            {
+                Response.StatusCode = 401;
+                resp.Message = "Unauthorized.";
+            }
+            try
+            {
+                var smResp = await SendMessage(Para);
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = 500;
+                resp.Message = Sanitize(StripHtmlTags(ex.ToString()));
+            }
+            if(!Has(resp.Message))
+                resp.Message = "Success.";
 
             return resp;
         }
 
-        
+        [HttpPost("forward")]
+        public async Task<ServerResponse> ForwardEmail(ForwardEmailRequest Para)
+        {
+            //according to the rfc822 standard:
+            /* https://datatracker.ietf.org/doc/html/rfc2822#appendix-A.2
+               ""Forwarding" has two meanings: One sense of forwarding is that a mail
+               reading program can be told by a user to forward a copy of a message
+               to another person, making the forwarded message the body of the new
+               message.  A forwarded message in this sense does not appear to have
+               come from the original sender, but is an entirely new message from
+               the forwarder of the message.  On the other hand, forwarding is also
+               used to mean when a mail transport program gets a message and
+               forwards it on to a different destination for final delivery.  Resent
+               header fields are not intended for use with either type of
+               forwarding." 
+             */
+            //EXAMPLE PROMPT: search for an email containing XYZ in the subject and forward it to user@example.com
+            System.Diagnostics.Debug.WriteLine("[vertex][ForwardEmail]");
+            var response = new ServerResponse();
+            Response.StatusCode = 200;
+
+            string Token = GetSessionToken();
+            if (!Has(Token))
+            {
+                Response.StatusCode = 401;
+                response.Message = "Unauthorized.";
+            }
+            try
+            {
+                if (IsJsonObject(Para.Id))
+                {
+                    var msgs = GetIdsFromMessageObj(Para.Id);
+                    string errors = "";
+                    foreach (var msg in msgs)
+                    {
+                        Para.Id = msg.Id;
+                        var resp = await ForwardMessage(Para);
+                        if (resp != null && resp.Message != "Success.")
+                        {
+                            errors += resp.Message;
+                        }
+                    }
+                    if(errors == "")
+                    {
+                        response.Message = "Success.";
+                    }
+                }
+                else
+                {
+                    var resp = await ForwardMessage(Para);
+                    if (resp != null && resp.Message != "Success.")
+                    {
+                        response.Message = "Success";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = 500;
+                response.Message = ex.Message;
+            }
+
+            if (!Has(response.Message))
+                response.Message = "Success.";
+
+            return response;
+        }
+
+        [HttpPost("reply")]
+        public async Task<ServerResponse> ReplyEmail(ReplyEmailRequest Para)
+        {
+            //according to the rfc822 standard:
+            /* https://datatracker.ietf.org/doc/html/rfc2822#section-3.6.4
+               3.6.4. Identification fields
+               "...reply messages SHOULD have "In-Reply-To:" and
+               "References:" fields as appropriate, as described below...
+               The "References:" and "In-Reply-To:" field each contain one or more
+               unique message identifiers, optionally separated by CFWS."
+             */
+            //EXAMPLE PROMPT: search for an email containing XYZ in the subject and send a reply to it with new body of "new body test"
+            System.Diagnostics.Debug.WriteLine("[vertex][ReplyEmail]");
+            var response = new ServerResponse();
+            Response.StatusCode = 200;
+
+            string Token = GetSessionToken();
+            if (!Has(Token))
+            {
+                Response.StatusCode = 401;
+                response.Message = "Unauthorized.";
+            }
+            try
+            {
+                if (IsJsonObject(Para.Id))
+                {
+                    var msgs = GetIdsFromMessageObj(Para.Id);
+                    string errors = "";
+                    foreach (var msg in msgs)
+                    {
+                        Para.Id = msg.Id;
+                        var resp = await ReplyMessage(Para);
+                        if (resp != null && resp.Message != "Success.")
+                        {
+                            errors += resp.Message;
+                        }
+                    }
+                    if (errors == "")
+                    {
+                        response.Message = "Success.";
+                    }
+                }
+                else
+                {
+                    var resp = await ReplyMessage(Para);
+                    if (resp != null && resp.Message != "Success.")
+                    {
+                        response.Message = resp.Message;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = 500;
+                response.Message = ex.Message;
+            }
+
+            if (!Has(response.Message))
+                response.Message = "Success.";
+
+            return response;
+        }
+        #endregion
+
+        #region Label Management
+        [HttpPost("add_label")]
+        public async Task<ServerResponse> AddLabel(AddLabelRequest Para)
+        {
+            System.Diagnostics.Debug.WriteLine("[vertex][AddLabel]");
+            var response = new ServerResponse();
+            Response.StatusCode = 200;
+
+            string Token = GetSessionToken();
+            if (!Has(Token))
+            {
+                Response.StatusCode = 401;
+                response.Message = "Unauthorized.";
+            }
+            try
+            {
+                if (IsJsonObject(Para.Id))
+                {
+                    var msgs = GetIdsFromMessageObj(Para.Id);
+                    string errors = "";
+                    foreach (var msg in msgs)
+                    {
+                        Para.Id = msg.Id;
+                        var resp = await AddLabelToMessage(Para);
+                        if (resp != null && resp.Message != "")
+                        {
+                            errors += resp.Message;
+                        }
+                    }
+                    if (errors == "")
+                    {
+                        response.Message = "Success.";
+                    }
+                }
+                else
+                {
+                    var resp = await AddLabelToMessage(Para);
+                    if (resp != null && resp.Message == "")
+                    {
+                        response.Message = "Success.";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = 500;
+                response.Message = ex.Message;
+            }
+
+            if (!Has(response.Message))
+                response.Message = "Success.";
+
+            return response;
+        }
+
+        [HttpPost("remove_label")]
+        public async Task<ServerResponse> RemoveLabel(RemoveLabelRequest Para)
+        {
+            System.Diagnostics.Debug.WriteLine("[vertex][RemoveLabel]");
+            var response = new ServerResponse();
+            Response.StatusCode = 200;
+
+            string Token = GetSessionToken();
+            if (!Has(Token))
+            {
+                Response.StatusCode = 401;
+                response.Message = "Unauthorized.";
+            }
+            try
+            {
+                if (IsJsonObject(Para.Id))
+                {
+                    var msgs = GetIdsFromMessageObj(Para.Id);
+                    string errors = "";
+                    foreach (var msg in msgs)
+                    {
+                        Para.Id = msg.Id;
+                        var resp = await RemoveLabelFromMessage(Para);
+                        if (resp != null && resp.Message != "")
+                        {
+                            errors += resp.Message;
+                        }
+                    }
+                    if (errors == "")
+                    {
+                        response.Message = "Success.";
+                    }
+                }
+                else
+                {
+                    var resp = await RemoveLabelFromMessage(Para);
+                    if (resp != null && resp.Message == "")
+                    {
+                        response.Message = "Success.";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = 500;
+                response.Message = ex.Message;
+            }
+
+            if (!Has(response.Message))
+                response.Message = "Success.";
+
+            return response;
+        }
+        #endregion
     }
 }

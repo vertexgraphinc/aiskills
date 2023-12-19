@@ -13,15 +13,17 @@ namespace GMail.Controllers
     [Route("[controller]")]
     public class SkillController : ControllerBase
     {
-        
+        //TODO REMOVE [HttpGet("/")] and [HttpGet("/apidefs")] on production
 
         [HttpGet]
+        [HttpGet("/")]
         public string  GetSkillConfig()
         {
             return GetEmbbededResoure("ai-plugin.json");
         }
 
         [HttpGet("apidefs")]
+        [HttpGet("/apidefs")] 
         public string GetSkillApiDefinitions()
         {
             return GetEmbbededResoure("openapi.yaml");

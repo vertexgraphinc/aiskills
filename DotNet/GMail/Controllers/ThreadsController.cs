@@ -1,40 +1,154 @@
 ﻿using GMail.Contracts;
 using GMail.Helpers;
+using GMail.GMailClient;
+using Google.Apis.Gmail.v1;
+using Google.Apis.Gmail.v1.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
+using System.Net.Mail;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace GMail.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class ThreadsController : OAuthSession
+    public class ThreadsController : MessagesHelpers
     {
         [HttpPost("query")]
-        public async Task<QueryEmailThreadsResponse> QueryEmailThreads(QueryEmailThreadsRequest Para)
+        public async Task<QueryThreadsResponse> QueryThreads(SearchFilters Para)
         {
-            QueryEmailThreadsResponse resp = new QueryEmailThreadsResponse
-            {
-                EmailThreads = null
-            };
+            System.Diagnostics.Debug.WriteLine("[vertex][QueryThreads]");
+            var resp = new QueryThreadsResponse();
 
             string Token = GetSessionToken();
-            if (string.IsNullOrEmpty(Token))
+            if (!Has(Token))
             {
                 Response.StatusCode = 401;
-                return null;
+                resp.Message = "Unauthorized.";
             }
-
-            resp.EmailThreads = await ListThreads(Para);
-
+            try
+            {
+                resp.Messages = await ListThreads(Para);
+                if (resp.Messages.Count == 0)
+                {
+                    resp.Message = "No threaded messages were found.";
+                }
+                else
+                {
+                    resp.Message = $"Found {resp.Messages.Count} threaded messages(s).";
+                }
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = 500;
+                resp.Message = Sanitize(StripHtmlTags( ex.ToString()));
+            }
             return resp;
         }
 
-        
+        [HttpPost("add_label_to_thread")]
+        public async Task<ServerResponse> AddLabelToThread(AddLabelThreadRequest Para)
+        {
+            System.Diagnostics.Debug.WriteLine("[vertex][AddLabelToThread]");
+            var response = new ServerResponse();
+            Response.StatusCode = 200;
+
+            string Token = GetSessionToken();
+            if (!Has(Token))
+            {
+                Response.StatusCode = 401;
+                response.Message = "Unauthorized.";
+            }
+            try
+            {
+                if (IsJsonObject(Para.Id))
+                {
+                    var msgs = GetIdsFromMessageObj(Para.Id);
+                    string errors = "";
+                    foreach (var msg in msgs)
+                    {
+                        Para.Id = msg.Id;
+                        var resp = await AddLabelToThreadMessages(Para);
+                        if (resp != null && resp.Message == "")
+                        {
+                            errors += resp.Message;
+                        }
+                    }
+                    if (errors == "")
+                    {
+                        response.Message = "Success";
+                    }
+                }
+                else
+                {
+                    var resp = await AddLabelToThreadMessages(Para);
+                    if (resp != null && resp.Message == "")
+                    {
+                        response.Message = "Success";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = 500;
+                response.Message = ex.Message;
+            }
+            return response;
+        }
+        [HttpPost("remove_label_from_thread")]
+        public async Task<ServerResponse> RemoveLabelFromThread(RemoveLabelThreadRequest Para)
+        {
+            var response = new ServerResponse();
+            Response.StatusCode = 200;
+
+            string Token = GetSessionToken();
+            if (!Has(Token))
+            {
+                Response.StatusCode = 401;
+                response.Message = "Unauthorized.";
+            }
+            try
+            {
+                if (IsJsonObject(Para.Id))
+                {
+                    var msgs = GetIdsFromMessageObj(Para.Id);
+                    string errors = "";
+                    foreach (var msg in msgs)
+                    {
+                        Para.Id = msg.Id;
+                        var resp = await RemoveLabelFromThreadMessages(Para);
+                        if (resp != null && resp.Message == "")
+                        {
+                            errors += resp.Message;
+                        }
+                    }
+                    if (errors == "")
+                    {
+                        response.Message = "Success";
+                    }
+                }
+                else
+                {
+                    var resp = await RemoveLabelFromThreadMessages(Para);
+                    if (resp != null && resp.Message == "")
+                    {
+                        response.Message = "Success";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = 500;
+                response.Message = ex.Message;
+            }
+            return response;
+        }
     }
 }

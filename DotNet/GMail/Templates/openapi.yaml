@@ -1,18 +1,32 @@
-﻿openapi: 3.0.1
+﻿openapi: 3.1.0
 info:
-  title: GMail Skill
-  description: A VertexGraph skill to access user's GMail account
+  title: Gmail Skill
+  description: A VertexGraph skill to access user's Gmail account.
   version: 1.0.0
 servers:
   - url: $skillhost
-paths:
+paths:                
+### --------------------------------------------------------------------------- 
   $skillapproot/messages/query:
     post:
-      operationId: QueryEmails
-      summary: Query the email messages in the user's mailbox
+      title: Query Emails
+      operationId: Query_Emails
+      summary: Search for email messages in the user's Gmail account.
       responses:
         "200":
-          description: OK
+          description: OK  
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryEmailsResponse'    
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryEmailsResponse'  
+        "401":
+          description: Unauthorized
           content:
             application/json:
               schema:
@@ -21,105 +35,578 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/QueryEmailsRequest"
-        required: true
-  $skillapproot/threads/query:
+              $ref: "#/components/schemas/SearchFilters"
+        required: true 
+### --------------------------------------------------------------------------- 
+  $skillapproot/messages/get:
     post:
-      operationId: QueryEmailThreads
-      summary: Query the threads in the user's mailbox
+      title: Get Email
+      operationId: Get_Email
+      summary: Get an email message in the user's account by its Gmail message Id.
       responses:
         "200":
-          description: OK
+          description: OK  
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetEmailResponse'    
+        "500":
+          description: Server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/QueryEmailThreadsResponse'
+                $ref: '#/components/schemas/GetEmailResponse'  
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetEmailResponse'
       requestBody:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/QueryEmailThreadsRequest"
-        required: true
+              $ref: "#/components/schemas/GetEmailRequest"
+        required: true 
+### --------------------------------------------------------------------------- 
+  $skillapproot/threads/query:
+    post:
+      title: Query Threads
+      operationId: Query_Threads
+      summary: Search for email messages in the user's Gmail account that are part of a conversation (aka. thread).
+      responses:
+        "200":
+          description: OK  
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryThreadsResponse'    
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryThreadsResponse'  
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryThreadsResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SearchFilters"
+        required: true 
+### --------------------------------------------------------------------------- 
+  $skillapproot/messages/send:
+    post:
+      title: Send Email
+      operationId: Send_Email
+      summary: Send an email message.
+      responses:
+        "200":
+          description: OK  
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'    
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'  
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SendEmailRequest"
+        required: true 
+### --------------------------------------------------------------------------- 
+  $skillapproot/messages/forward:
+    post:
+      title: Forward Email
+      operationId: Forward_Email
+      summary: Reply to an email message.
+      responses:
+        "200":
+          description: OK  
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'    
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'  
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ForwardEmailRequest"
+        required: true 
+### --------------------------------------------------------------------------- 
+  $skillapproot/messages/reply:
+    post:
+      title: Reply Email
+      operationId: Reply_Email
+      summary: Reply to an email message.
+      responses:
+        "200":
+          description: OK  
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'    
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'  
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReplyEmailRequest"
+        required: true 
+### --------------------------------------------------------------------------- 
+  $skillapproot/messages/add_label:
+    post:
+      title: Add a Label to an Email
+      operationId: Add_Label_to_Email
+      summary: Adds a label to an email message.
+      responses:
+        "200":
+          description: OK  
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'    
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'  
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddLabelRequest"
+        required: true 
+### --------------------------------------------------------------------------- 
+  $skillapproot/messages/add_label_to_thread:
+    post:
+      title: Add a Label to a Thread
+      operationId: Add_Label_to_Thread
+      summary: Adds a label to a conversation (aka. thread).
+      responses:
+        "200":
+          description: OK  
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'    
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'  
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddLabelThreadRequest"
+        required: true 
+### --------------------------------------------------------------------------- 
+  $skillapproot/messages/remove_label:
+    post:
+      title: Remove a Label from an Email
+      operationId: Remove_Label_from_Email
+      summary: Removes a label from an email message.
+      responses:
+        "200":
+          description: OK  
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'    
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'  
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RemoveLabelRequest"
+        required: true 
+### --------------------------------------------------------------------------- 
+  $skillapproot/threads/remove_label_from_thread:
+    post:
+      title: Remove a Label from a Thread
+      operationId: Remove_Label_from_Thread
+      summary: Removes a label from a conversation (aka. thread).
+      responses:
+        "200":
+          description: OK  
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'    
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'  
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RemoveLabelThreadRequest"
+        required: true 
+### ===========================================================================
+### COMPONENTS=================================================================
+### ===========================================================================    
 components:
-  schemas:
-    GMailMessage:
-      title: GMailMessage
-      required:
-        - id
-        - subject
+  schemas:   
+### ----------------------------------------------------   
+### REQUEST COMPONENTS----------------------------------   
+### ---------------------------------------------------- 
+    SearchFilters:
+      title: Parameters to search for emails.
       type: object
       properties:
-        id:
-          title: Id
-          type: string
-        subject:
-          title: Subject
-          type: string
-        body:
+        from:   
+          title: From
+          type: string    
+          description: Only return emails containing this string in the "From".
+        to:      
+          title: To
+          type: string    
+          description: Only return emails containing this string in the "To". 
+        subject:       
+          title: Subject 
+          type: string    
+          description: Only return emails containing this string in the "Subject".
+        body:           
           title: Body
-          type: string
-    GMailThread:
-      title: GMailThread
+          type: string    
+          description: Only return emails containing this string in the "Body".
+        begin_time:    
+          title: Begin Time 
+          type: string    
+          description: Only return emails older than this date.
+        end_time:       
+          title: End Time 
+          type: string    
+          description: Only return emails newer than this date.
+        label:          
+          title: Label
+          type: string    
+          description: Only return emails with this label.  
+        status:          
+          title: Status
+          type: string    
+          description: Only return emails with status of "starred", "snoozed", "read", or "unread".
+          pattern: ^(starred|snoozed|read|unread)$ 
+    GetEmailRequest:
+      title: Parameter to get an email by its Gmail message Id.
+      type: object
       required:
         - id
-        - subject
-      type: object
-      properties:
-        id:
+      properties:                         
+        id:      
           title: Id
-          type: string
-        subject:
-          title: Subject
-          type: string
-    QueryEmailsResponse:
+          type: string    
+          description: The Id of an existing email that you can obtain from a call to Query Emails.
+### ====================================================
+    SendEmailRequest:
+      title: Parameters to send an email.   
+      required:
+        - to
+        - body
       type: object
-      properties:
-        emailMessages:
+      properties:                         
+        to:      
+          title: To
+          type: string    
+          description: The email address of the recipient.
+        cc:      
+          title: CC
+          type: string    
+          description: One or more email addresses for the CC field of the message.
+        bcc:      
+          title: BCC
+          type: string    
+          description: One or more email addresses for the BCC field of the message.
+        subject:       
+          title: Subject 
+          type: string    
+          description: The subject of the email.
+        body:           
+          title: Body
+          type: string    
+          description: The body of the email.
+### ====================================================
+    ForwardEmailRequest:
+      title: Parameters to forward an email.   
+      required:
+        - id
+        - new_to
+      type: object
+      properties:     
+        id:      
+          title: Id
+          type: string    
+          description: The Id of an existing email that you can obtain from a call to Query Emails.                   
+        new_to:      
+          title: New To
+          type: string    
+          description: The email address of the recipient.
+        new_cc:      
+          title: New CC
+          type: string    
+          description: One or more email addresses for the CC field of the forward message.
+        new_bcc:      
+          title: New BCC
+          type: string    
+          description: One or more email addresses for the BCC field of the forward message.
+### ====================================================
+    ReplyEmailRequest:
+      title: Parameters to reply to an email.   
+      required:
+        - id
+        - new_body
+      type: object
+      properties:                         
+        id:      
+          title: Id
+          type: string    
+          description: The Id of an existing email that you can obtain from a call to Query Emails.
+        new_cc:      
+          title: New CC
+          type: string    
+          description: One or more email addresses for the CC field of the reply message.
+        new_bcc:      
+          title: New BCC
+          type: string    
+          description: One or more email addresses for the BCC field of the reply message.
+        new_subject:       
+          title: New Subject 
+          type: string    
+          description: The subject of the reply email.
+        new_body:           
+          title: New Body
+          type: string    
+          description: The body of the reply email.
+### ====================================================
+    AddLabelRequest:
+      title: Parameters to add a label to an email.   
+      required:
+        - id
+        - label
+      type: object
+      properties:                         
+        id:      
+          title: Id
+          type: string    
+          description: The Id of an existing email that you can obtain from a call to Query Emails.
+        label:      
+          title: Label
+          type: string    
+          description: The name of the label to add.
+### ====================================================
+    RemoveLabelRequest:
+      title: Parameters to remove a label from an email.   
+      required:
+        - id
+        - label
+      type: object
+      properties:                         
+        id:      
+          title: Id
+          type: string    
+          description: The Id of an existing email that you can obtain from a call to Query Emails.
+        label:      
+          title: Label
+          type: string    
+          description: The name of the label to remove.
+### ====================================================
+    AddLabelThreadRequest:
+      title: Parameters to add a label to an email.   
+      required:
+        - id
+        - label
+      type: object
+      properties:                         
+        id:      
+          title: Id
+          type: string    
+          description: The Id of an existing email that you can obtain from a call to Query Emails.
+        label:      
+          title: Label
+          type: string    
+          description: The name of the label to add.
+### ====================================================
+    RemoveLabelThreadRequest:
+      title: Parameters to remove a label from an email.   
+      required:
+        - id
+        - label
+      type: object
+      properties:                         
+        id:      
+          title: Id
+          type: string    
+          description: The Id of an existing email that you can obtain from a call to Query Emails.
+        label:      
+          title: Label
+          type: string    
+          description: The name of the label to remove.
+### ++++++++++++++++++++++++++++++++++++++++++++++++++++   
+### RESPONSE COMPONENTS+++++++++++++++++++++++++++++++++   
+### ++++++++++++++++++++++++++++++++++++++++++++++++++++      
+    ServerResponse:  
+      type: object
+      properties: 
+        message:   
+          title: Message from Server
+          type: string    
+          description: A success or error message.   
+### ++++++++++++++++++++++++++++++++++++++++++++++++++++  
+    QueryEmailsResponse:
+      title: Contains a list of Gmail Message objects  
+      type: object
+      properties:   
+        message:   
+          title: Message from Server
+          type: string    
+          description: A success or error message.   
+        messages:
           type: array
           items:
             $ref: "#/components/schemas/GMailMessage"
-          description: The list of GMail messages.
-    QueryEmailThreadsResponse:
+          description: The list of email messages, each with an id, subject, body, and received date   
+### ++++++++++++++++++++++++++++++++++++++++++++++++++++  
+    GetEmailResponse:
+      title: Contains a list of Gmail Message objects  
       type: object
-      properties:
-        emailThreads:
+      properties:   
+        message:   
+          title: Message from Server
+          type: string    
+          description: A success or error message.   
+        messages:
           type: array
           items:
-            $ref: "#/components/schemas/GMailThread"
-          description: The list of GMail email threads.
-    QueryEmailsRequest:
-      title: QueryEmailsRequest
-      required:
-        - query
+            $ref: "#/components/schemas/GMailMessage"
+          description: The list of email messages, each with an id, subject, body, and received date   
+### ++++++++++++++++++++++++++++++++++++++++++++++++++++  
+    QueryThreadsResponse:
+      title: Contains a list of Gmail Message objects   
       type: object
       properties:
-        query:
-          title: Query
-          type: string
-          description: filter to query the emails
-        begin_time:
-          title: Begin Time
-          type: string         
-          description: Messages sent after this time will be returned.
-        end_time:
-          title: End Time
-          type: string         
-          description: Messages sent before this time will be returned.
-    QueryEmailThreadsRequest:
-      title: QueryEmailThreadsRequest
-      required:
-        - query
+        messages:
+          type: array
+          items:
+            $ref: "#/components/schemas/GMailMessage"
+          description: The list of email messages, each with an id, subject, body, and received date  
+### ++++++++++++++++++++++++++++++++++++++++++++++++++++
+    GMailMessage:
+      title: Gmail Message
       type: object
-      properties:
-        query:
-          title: Query
+      properties:   
+        id:
+          title: Id
+          type: string  
+          description: The Id of the message. This Id can be used to call Reply Email, Forward Email, Add Label, and Remove Label operations
+        threadId:
+          title: Thread Id
+          type: string 
+        to:
+          title: To
           type: string
-          description: filter to query the email threads
-        begin_time:
-          title: Begin Time
-          type: string         
-          description: Email threads sent after this time will be returned.
-        end_time:
-          title: End Time
-          type: string         
-          description: Email threads sent before this time will be returned.
+        from:
+          title: From
+          type: string
+        subject:
+          title: Subject
+          type: string
+        snippet:
+          title: Snippet
+          type: string
+        body:
+          title: Body
+          type: string  
+        received:
+          title: Received
+          type: string
+### ++++++++++++++++++++++++++++++++++++++++++++++++++++  
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

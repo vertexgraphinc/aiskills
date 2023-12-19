@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace GMail.Contracts
 {
-    public class QueryEmailsResponse : ServerResponse
+    public class GetEmailsResponse : ServerResponse
     {
         [JsonProperty("messages")]
         [JsonPropertyName("messages")]
