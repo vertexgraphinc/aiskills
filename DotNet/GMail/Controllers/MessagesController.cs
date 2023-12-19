@@ -21,14 +21,14 @@ namespace GMail.Controllers
     [Route("[controller]")]
     public class MessagesController : MessagesHelpers
     {
-        [HttpGet("test")]
+        [HttpGet("~/test")]
         public string Test()
         {
             return "hello world";
         }
 
         #region Getting Emails
-        [HttpPost("query")]
+        [HttpPost("~/query")]
         public async Task<QueryEmailsResponse> QueryEmails(SearchFilters Para)
         {
             System.Diagnostics.Debug.WriteLine("[vertex][QueryEmails]");
@@ -63,7 +63,7 @@ namespace GMail.Controllers
             return resp;
         }
 
-        [HttpPost("get")]
+        [HttpPost("~/get")]
         public async Task<GetEmailsResponse> GetEmail(GetEmailRequest Para)
         {
             System.Diagnostics.Debug.WriteLine("[vertex][GetEmail]");
@@ -129,7 +129,7 @@ namespace GMail.Controllers
         #endregion
 
         #region Sending Emails
-        [HttpPost("send")]
+        [HttpPost("~/send")]
         public async Task<ServerResponse> SendEmail(SendEmailRequest Para)
         {
             //EXAMPLE PROMPT: send an email to user@example.com with subject "hello" and body "hello world"
@@ -158,7 +158,7 @@ namespace GMail.Controllers
             return resp;
         }
 
-        [HttpPost("forward")]
+        [HttpPost("~/forward")]
         public async Task<ServerResponse> ForwardEmail(ForwardEmailRequest Para)
         {
             //according to the rfc822 standard:
@@ -226,7 +226,7 @@ namespace GMail.Controllers
             return response;
         }
 
-        [HttpPost("reply")]
+        [HttpPost("~/reply")]
         public async Task<ServerResponse> ReplyEmail(ReplyEmailRequest Para)
         {
             //according to the rfc822 standard:
@@ -291,7 +291,7 @@ namespace GMail.Controllers
         #endregion
 
         #region Label Management
-        [HttpPost("add_label")]
+        [HttpPost("~/add_label")]
         public async Task<ServerResponse> AddLabel(AddLabelRequest Para)
         {
             System.Diagnostics.Debug.WriteLine("[vertex][AddLabel]");
@@ -345,7 +345,7 @@ namespace GMail.Controllers
             return response;
         }
 
-        [HttpPost("remove_label")]
+        [HttpPost("~/remove_label")]
         public async Task<ServerResponse> RemoveLabel(RemoveLabelRequest Para)
         {
             System.Diagnostics.Debug.WriteLine("[vertex][RemoveLabel]");

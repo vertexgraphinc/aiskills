@@ -21,7 +21,7 @@ namespace GMail.Controllers
     [Route("[controller]")]
     public class ThreadsController : MessagesHelpers
     {
-        [HttpPost("query")]
+        [HttpPost("~/query")]
         public async Task<QueryThreadsResponse> QueryThreads(SearchFilters Para)
         {
             System.Diagnostics.Debug.WriteLine("[vertex][QueryThreads]");
@@ -53,7 +53,7 @@ namespace GMail.Controllers
             return resp;
         }
 
-        [HttpPost("add_label_to_thread")]
+        [HttpPost("~/add_label_to_thread")]
         public async Task<ServerResponse> AddLabelToThread(AddLabelThreadRequest Para)
         {
             System.Diagnostics.Debug.WriteLine("[vertex][AddLabelToThread]");
@@ -102,7 +102,7 @@ namespace GMail.Controllers
             }
             return response;
         }
-        [HttpPost("remove_label_from_thread")]
+        [HttpPost("~/remove_label_from_thread")]
         public async Task<ServerResponse> RemoveLabelFromThread(RemoveLabelThreadRequest Para)
         {
             var response = new ServerResponse();
