@@ -14,6 +14,8 @@ using System.Net.Mail;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using static Google.Apis.Requests.BatchRequest;
 
 namespace GMail.Controllers
 {
@@ -60,6 +62,8 @@ namespace GMail.Controllers
                 Response.StatusCode = 500;
                 resp.Message = Sanitize(StripHtmlTags( ex.ToString()));
             }
+
+            System.Diagnostics.Debug.WriteLine("[vertex][QueryEmails]response:" + JsonConvert.SerializeObject(resp));
             return resp;
         }
 
@@ -123,7 +127,10 @@ namespace GMail.Controllers
                 Response.StatusCode = 500;
                 response.Message = ex.Message;
             }
-            response.Messages = RetMsgs;
+            response.Messages = RetMsgs; 
+
+            System.Diagnostics.Debug.WriteLine("[vertex][GetEmail]response:" + JsonConvert.SerializeObject(response));
+
             return response;
         }
         #endregion
@@ -154,6 +161,8 @@ namespace GMail.Controllers
             }
             if(!Has(resp.Message))
                 resp.Message = "Success.";
+
+            System.Diagnostics.Debug.WriteLine("[vertex][SendEmail]response:" + JsonConvert.SerializeObject(resp));
 
             return resp;
         }
@@ -223,6 +232,8 @@ namespace GMail.Controllers
             if (!Has(response.Message))
                 response.Message = "Success.";
 
+            System.Diagnostics.Debug.WriteLine("[vertex][ForwardEmail]response:" + JsonConvert.SerializeObject(response));
+
             return response;
         }
 
@@ -286,11 +297,130 @@ namespace GMail.Controllers
             if (!Has(response.Message))
                 response.Message = "Success.";
 
+            System.Diagnostics.Debug.WriteLine("[vertex][ReplyEmail]response:" + JsonConvert.SerializeObject(response));
+
             return response;
         }
         #endregion
 
         #region Label Management
+        
+        [HttpPost("query_and_add_label")]
+        public async Task<ServerResponse> QueryEmailAndAddLabel(QueryEmailAndAddLabelRequest Para)
+        {
+            System.Diagnostics.Debug.WriteLine("[vertex][QueryEmailAndAddLabel]");
+            var response = new ServerResponse();
+            Response.StatusCode = 200;
+
+            string Token = GetSessionToken();
+            if (!Has(Token))
+            {
+                Response.StatusCode = 401;
+                response.Message = "Unauthorized.";
+            }
+            try
+            {
+                var sp = Para.GetSearchFilters();
+                var qresp = await QueryEmails(sp);
+                if(qresp != null && qresp.Messages != null)
+                {
+                    string err = "";
+                    foreach(var msg in qresp.Messages)
+                    {
+                        var para2 = new AddLabelRequest();
+                        para2.Id = msg.Id;
+                        para2.Label = Para.AddLabel;
+                        var resp = await AddLabelToMessage(para2);
+                        if (resp != null)
+                        {
+                            if (Has(resp.Message))
+                            {
+                                err = AppendString(err, resp.Message);
+                            }
+                        }
+                    }
+                    if(!Has(err))
+                    {
+                        response.Message = "Success.";
+                    }
+                    else
+                    {
+                        response.Message = err;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = 500;
+                response.Message = ex.Message;
+            }
+
+            if (!Has(response.Message))
+                response.Message = "Success.";
+
+            System.Diagnostics.Debug.WriteLine("[vertex][QueryEmailAndAddLabel]response:" + JsonConvert.SerializeObject(response));
+
+            return response;
+        }
+
+        [HttpPost("query_and_remove_label")]
+        public async Task<ServerResponse> QueryEmailAndRemoveLabel(QueryEmailAndRemoveLabelRequest Para)
+        {
+            System.Diagnostics.Debug.WriteLine("[vertex][QueryEmailAndRemoveLabel]");
+            var response = new ServerResponse();
+            Response.StatusCode = 200;
+
+            string Token = GetSessionToken();
+            if (!Has(Token))
+            {
+                Response.StatusCode = 401;
+                response.Message = "Unauthorized.";
+            }
+            try
+            {
+                var sp = Para.GetSearchFilters();
+                var qresp = await QueryEmails(sp);
+                if(qresp != null && qresp.Messages != null)
+                {
+                    string err = "";
+                    foreach(var msg in qresp.Messages)
+                    {
+                        var para2 = new RemoveLabelRequest();
+                        para2.Id = msg.Id;
+                        para2.Label = Para.RemoveLabel;
+                        var resp = await RemoveLabelFromMessage(para2);
+                        if (resp != null)
+                        {
+                            if (Has(resp.Message))
+                            {
+                                err = AppendString(err, resp.Message);
+                            }
+                        }
+                    }
+                    if(!Has(err))
+                    {
+                        response.Message = "Success.";
+                    }
+                    else
+                    {
+                        response.Message = err;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = 500;
+                response.Message = ex.Message;
+            }
+
+            if (!Has(response.Message))
+                response.Message = "Success.";
+
+            System.Diagnostics.Debug.WriteLine("[vertex][QueryEmailAndRemoveLabel]response:" + JsonConvert.SerializeObject(response));
+
+            return response;
+        }
+
         [HttpPost("add_label")]
         public async Task<ServerResponse> AddLabel(AddLabelRequest Para)
         {
@@ -341,6 +471,8 @@ namespace GMail.Controllers
 
             if (!Has(response.Message))
                 response.Message = "Success.";
+
+            System.Diagnostics.Debug.WriteLine("[vertex][AddLabel]response:" + JsonConvert.SerializeObject(response));
 
             return response;
         }
@@ -395,6 +527,8 @@ namespace GMail.Controllers
 
             if (!Has(response.Message))
                 response.Message = "Success.";
+
+            System.Diagnostics.Debug.WriteLine("[vertex][RemoveLabel]response:" + JsonConvert.SerializeObject(response));
 
             return response;
         }

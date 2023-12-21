@@ -14,6 +14,8 @@ using System.Net.Mail;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using static Google.Apis.Requests.BatchRequest;
 
 namespace GMail.Controllers
 {
@@ -50,6 +52,9 @@ namespace GMail.Controllers
                 Response.StatusCode = 500;
                 resp.Message = Sanitize(StripHtmlTags( ex.ToString()));
             }
+
+            System.Diagnostics.Debug.WriteLine("[vertex][QueryThreads]response:" + JsonConvert.SerializeObject(resp));
+
             return resp;
         }
 
@@ -100,6 +105,9 @@ namespace GMail.Controllers
                 Response.StatusCode = 500;
                 response.Message = ex.Message;
             }
+
+            System.Diagnostics.Debug.WriteLine("[vertex][AddLabelToThread]response:" + JsonConvert.SerializeObject(response));
+
             return response;
         }
         [HttpPost("remove_label_from_thread")]
@@ -148,6 +156,9 @@ namespace GMail.Controllers
                 Response.StatusCode = 500;
                 response.Message = ex.Message;
             }
+
+            System.Diagnostics.Debug.WriteLine("[vertex][RemoveLabelFromThread]response:" + JsonConvert.SerializeObject(response));
+
             return response;
         }
     }
