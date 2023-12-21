@@ -1,0 +1,100 @@
+﻿using IdentityModel.Client;
+using Outlook.Constants;
+using Outlook.Contracts;
+using Outlook.Interfaces;
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
+
+namespace Outlook.Services
+{
+    public class AuthService : IAuthService
+    {
+        private readonly HttpClient _httpClient;
+
+        public AuthService(IHttpClientFactory httpClientFactory)
+        {
+            _httpClient = httpClientFactory.CreateClient();
+        }
+
+        #region Token
+        public async Task<OAuthToken> RedeemToken(OAuthTokenPara Para)
+        {
+            TokenResponse resp = null;
+            string tenant = "organizations";
+
+            if (Para.GrantType == "authorization_code")
+            {
+                resp = await _httpClient.RequestAuthorizationCodeTokenAsync(new AuthorizationCodeTokenRequest
+                {
+                    Address = APIConstants.GraphApiAuthURL + $"{tenant}/oauth2/v2.0/token",
+                    GrantType = Para.GrantType,
+
+                    ClientId = Para.ClientId,
+                    ClientSecret = Para.ClientSecret,
+                    Code = Para.Code,
+                    RedirectUri = Para.RedirectUri,
+                    Parameters =
+                        {
+                            { "scope", APIConstants.GraphApiScope }
+                        }
+                });
+            }
+            else
+            {
+                resp = await _httpClient.RequestRefreshTokenAsync(new RefreshTokenRequest
+                {
+                    Address = APIConstants.GraphApiAuthURL + $"{tenant}/oauth2/v2.0/token",
+                    GrantType = Para.GrantType,
+
+                    ClientId = Para.ClientId,
+                    ClientSecret = Para.ClientSecret,
+                    RefreshToken = Para.Code,       // Para.Code - should be refresh_token? instead of code                    
+                    Parameters =
+                        {
+                            { "scope", APIConstants.GraphApiScope }
+                        }
+                });
+
+            }
+
+            return GetToken(resp);
+        }
+
+        OAuthToken GetToken(TokenResponse resp)
+        {
+            try
+            {
+                if (resp == null)
+                {
+                    return null;
+                }
+
+                if (resp.IsError)
+                {
+                    return new OAuthToken
+                    {
+                        Error = resp.Error,
+                        ErrorDescription = resp.HttpErrorReason
+                    };
+                }
+
+                return new OAuthToken
+                {
+                    AccessToken = resp.AccessToken,
+                    RefreshToken = resp.RefreshToken,
+                    ExpiresIn = resp.ExpiresIn.ToString(),
+                    Scope = resp.Scope
+                };
+            }
+            catch (Exception ex)
+            {
+                string exc = ex.Message;
+                return null;
+            }
+        }
+
+        #endregion
+
+    }
+}

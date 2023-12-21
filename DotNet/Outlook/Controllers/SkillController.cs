@@ -1,42 +1,34 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 
-namespace GMail.Controllers
+namespace Outlook.Controllers
 {
     [ApiController]
     [Route("[controller]")]
     public class SkillController : ControllerBase
     {
-        [HttpGet("")]
-        [HttpGet("~/")]
+        [HttpGet]
+        [HttpGet("/")]
         public string  GetSkillConfig()
         {
             return GetEmbbededResoure("ai-plugin.json");
         }
 
         [HttpGet("apidefs")]
-        [HttpGet("~/apidefs")]
+        [HttpGet("/apidefs")]
         public string GetSkillApiDefinitions()
         {
             return GetEmbbededResoure("openapi.yaml");
         }
-
-    
 
         string GetEmbbededResoure(string name)
         {
             try
             {
                 Assembly assem = typeof(SkillController).Assembly;
-
-
-                var stream = assem.GetManifestResourceStream($"GMail.Templates.{name}");
+                var stream = assem.GetManifestResourceStream($"Outlook.Templates.{name}");
                 if (stream == null)
                     return null;
 
@@ -45,7 +37,6 @@ namespace GMail.Controllers
                 {
                     return sr.ReadToEnd();
                 }
-
             }
             catch (Exception)
             {
