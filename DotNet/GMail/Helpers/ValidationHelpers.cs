@@ -144,6 +144,10 @@ namespace GMail.Helpers
         }
         protected string Sanitize(string str)
         {
+            if (!Has(str))
+            {
+                return "";
+            }
             //remove things that can break json
             return str.Replace("\r", " ").Replace("\n", " ").Replace("\"", "''").Replace("<", " ").Replace(">", " ");
         }
