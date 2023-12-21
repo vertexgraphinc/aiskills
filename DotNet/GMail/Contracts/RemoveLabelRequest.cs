@@ -13,12 +13,10 @@ namespace GMail.Contracts
     {
         [JsonProperty("id")]
         [JsonPropertyName("id")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public string Id { get; set; }
 
         [JsonProperty("label")]
         [JsonPropertyName("label")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public string Label { get; set; }
     }
 }
