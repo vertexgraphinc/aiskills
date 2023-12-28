@@ -1,0 +1,21 @@
+﻿{
+  "schema_version": "v1",
+  "name_for_human": "Microsoft",
+  "name_for_model": "Microsoft",
+  "description_for_human": "Search, Read, Reply and Forward emails from Microsoft Outlook Email",
+  "description_for_model": "Search, Read, Reply and Forward emails from Microsoft Outlook Email",
+  "auth": {
+    "type": "oauth",
+    "client_url": "oauth/auth",
+    "scope": "offline_access User.Read Mail.ReadWrite Mail.Send",
+    "authorization_url": "oauth/token",
+    "authorization_content_type": "application/json"
+  },
+  "api": {
+    "type": "openapi",
+    "url": "skill/apidefs"
+  },
+  "logo_url": "https://avatars.slack-edge.com/2021-02-09/1730367132018_43f8f38b9659ddef2131_512.png",
+  "contact_email": "xxx@email",
+  "legal_info_url": "N/A"
+}
