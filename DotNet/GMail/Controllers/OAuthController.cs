@@ -17,14 +17,12 @@ namespace GMail.Controllers
     public class OAuthController : ControllerBase
     {
         [HttpGet("auth")]
-        [HttpGet("~/auth")]
         public void Auth()
         {
             Response.Redirect($"https://accounts.google.com/o/oauth2/auth{Request.QueryString}");
         }
 
         [HttpPost("token")]
-        [HttpPost("~/token")]
         public async Task<OAuthToken> RedeemToken(OAuthTokenPara Para)
         {
             var client = new HttpClient();
