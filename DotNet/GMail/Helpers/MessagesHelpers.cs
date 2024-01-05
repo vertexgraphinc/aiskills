@@ -102,19 +102,29 @@ namespace GMail.Helpers
                     //for multi-part messages, extract the body from all the parts
                     foreach (var part in fullMsg.Payload.Parts)
                     {
-                        if (Has(part.Body))
+                        if (Has(part.Parts))
                         {
+                            foreach (var subPart in part.Parts)
+                            {
+                                if (Has(subPart.Body) && Has(subPart.Body.Data))
+                                {
+                                    msgBody.Append("\n-----------------------------------\n");
+                                    msgBody.Append(DecodeBase64String(subPart.Body.Data));
+                                }
+                            }
+                        }
+                        if (Has(part.Body) && Has(part.Body.Data))
+                        {
+                            msgBody.Append("\n-----------------------------------\n");
                             msgBody.Append(DecodeBase64String(part.Body.Data));
                         }
                     }
                 }
-                else
+                //if there is a body on the root
+                if (Has(fullMsg.Payload.Body) && Has(fullMsg.Payload.Body.Data))
                 {
-                    //if there are no parts, but there is a body on the root
-                    if (Has(fullMsg.Payload.Body))
-                    {
-                        msgBody.Append(DecodeBase64String(fullMsg.Payload.Body.Data));
-                    }
+                    msgBody.Append("\n-----------------------------------\n");
+                    msgBody.Append(DecodeBase64String(fullMsg.Payload.Body.Data));
                 }
 
                 msgSubject = Sanitize(StripHtmlTags(msgSubject));
@@ -225,19 +235,29 @@ namespace GMail.Helpers
                         //for multi-part messages, extract the body from all the parts
                         foreach (var part in fullMsg.Payload.Parts)
                         {
-                            if (Has(part.Body))
+                            if (Has(part.Parts))
                             {
+                                foreach (var subPart in part.Parts)
+                                {
+                                    if (Has(subPart.Body) && Has(subPart.Body.Data))
+                                    {
+                                        msgBody.Append("\n-----------------------------------\n");
+                                        msgBody.Append(DecodeBase64String(subPart.Body.Data));
+                                    }
+                                }
+                            }
+                            if (Has(part.Body) && Has(part.Body.Data))
+                            {
+                                msgBody.Append("\n-----------------------------------\n");
                                 msgBody.Append(DecodeBase64String(part.Body.Data));
                             }
                         }
                     }
-                    else
+                    //if there is a body on the root
+                    if (Has(fullMsg.Payload.Body) && Has(fullMsg.Payload.Body.Data))
                     {
-                        //if there are no parts, but there is a body on the root
-                        if (Has(fullMsg.Payload.Body))
-                        {
-                            msgBody.Append(DecodeBase64String(fullMsg.Payload.Body.Data));
-                        }
+                        msgBody.Append("\n-----------------------------------\n");
+                        msgBody.Append(DecodeBase64String(fullMsg.Payload.Body.Data));
                     }
 
                     msgSubject = Sanitize(StripHtmlTags(msgSubject));
@@ -341,21 +361,31 @@ namespace GMail.Helpers
                         //for multi-part messages, extract the body from all the parts
                         foreach (var part in fullMsg.Payload.Parts)
                         {
-                            if (Has(part.Body))
+                            if (Has(part.Parts))
                             {
+                                foreach (var subPart in part.Parts)
+                                {
+                                    if (Has(subPart.Body) && Has(subPart.Body.Data))
+                                    {
+                                        msgBody.Append("\n-----------------------------------\n");
+                                        msgBody.Append(DecodeBase64String(subPart.Body.Data));
+                                    }
+                                }
+                            }
+                            if (Has(part.Body) && Has(part.Body.Data))
+                            {
+                                msgBody.Append("\n-----------------------------------\n");
                                 msgBody.Append(DecodeBase64String(part.Body.Data));
                             }
                         }
                     }
-                    else
+                    //if there is a body on the root
+                    if (Has(fullMsg.Payload.Body) && Has(fullMsg.Payload.Body.Data))
                     {
-                        //if there are no parts, but there is a body on the root
-                        if (Has(fullMsg.Payload.Body))
-                        {
-                            msgBody.Append(DecodeBase64String(fullMsg.Payload.Body.Data));
-                        }
+                        msgBody.Append("\n-----------------------------------\n");
+                        msgBody.Append(DecodeBase64String(fullMsg.Payload.Body.Data));
                     }
-                    origBody = msgBody.ToString();
+                    origBody = Sanitize(StripHtmlTags(msgBody.ToString()));
                 }
                 origMessage.ThreadId = fullMsg.ThreadId;
                 origMessage.From = origFrom;
@@ -519,21 +549,31 @@ namespace GMail.Helpers
                         //for multi-part messages, extract the body from all the parts
                         foreach (var part in fullMsg.Payload.Parts)
                         {
-                            if (Has(part.Body))
+                            if (Has(part.Parts))
                             {
+                                foreach (var subPart in part.Parts)
+                                {
+                                    if (Has(subPart.Body) && Has(subPart.Body.Data))
+                                    {
+                                        msgBody.Append("\n-----------------------------------\n");
+                                        msgBody.Append(DecodeBase64String(subPart.Body.Data));
+                                    }
+                                }
+                            }
+                            if (Has(part.Body) && Has(part.Body.Data))
+                            {
+                                msgBody.Append("\n-----------------------------------\n");
                                 msgBody.Append(DecodeBase64String(part.Body.Data));
                             }
                         }
                     }
-                    else
+                    //if there is a body on the root
+                    if (Has(fullMsg.Payload.Body) && Has(fullMsg.Payload.Body.Data))
                     {
-                        //if there are no parts, but there is a body on the root
-                        if (Has(fullMsg.Payload.Body))
-                        {
-                            msgBody.Append(DecodeBase64String(fullMsg.Payload.Body.Data));
-                        }
+                        msgBody.Append("\n-----------------------------------\n");
+                        msgBody.Append(DecodeBase64String(fullMsg.Payload.Body.Data));
                     }
-                    origBody = msgBody.ToString();
+                    origBody = Sanitize(StripHtmlTags(msgBody.ToString()));
                 }
 
                 System.Diagnostics.Debug.WriteLine("[vertex][ForwardMessage]origSubject:" + origSubject);
@@ -624,21 +664,31 @@ namespace GMail.Helpers
                         //for multi-part messages, extract the body from all the parts
                         foreach (var part in fullMsg.Payload.Parts)
                         {
-                            if (Has(part.Body))
+                            if (Has(part.Parts))
                             {
+                                foreach (var subPart in part.Parts)
+                                {
+                                    if (Has(subPart.Body) && Has(subPart.Body.Data))
+                                    {
+                                        msgBody.Append("\n-----------------------------------\n");
+                                        msgBody.Append(DecodeBase64String(subPart.Body.Data));
+                                    }
+                                }
+                            }
+                            if (Has(part.Body) && Has(part.Body.Data))
+                            {
+                                msgBody.Append("\n-----------------------------------\n");
                                 msgBody.Append(DecodeBase64String(part.Body.Data));
                             }
                         }
                     }
-                    else
+                    //if there is a body on the root
+                    if (Has(fullMsg.Payload.Body) && Has(fullMsg.Payload.Body.Data))
                     {
-                        //if there are no parts, but there is a body on the root
-                        if (Has(fullMsg.Payload.Body))
-                        {
-                            msgBody.Append(DecodeBase64String(fullMsg.Payload.Body.Data));
-                        }
+                        msgBody.Append("\n-----------------------------------\n");
+                        msgBody.Append(DecodeBase64String(fullMsg.Payload.Body.Data));
                     }
-                    origBody = msgBody.ToString();
+                    origBody = Sanitize(StripHtmlTags(msgBody.ToString()));
                 }
                 string newCC = origCC;
                 if (Has(Para.NewCC))
