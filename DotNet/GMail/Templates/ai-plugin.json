@@ -13,9 +13,9 @@
   },
   "api": {
     "type": "openapi",
-    "url": "skill/apidefs"
+    "url": "gmail/apidefs"
   },
   "logo_url": "https://avatars.slack-edge.com/2021-02-09/1730367132018_43f8f38b9659ddef2131_512.png",
-  "contact_email": "xxx@email",
-  "legal_info_url": "N/A"
+  "contact_email": "support@vertexgraph.com",
+  "legal_info_url": "https://vertexgraph.sharepoint.com/sites/vertexgraph-public/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2Fvertexgraph%2Dpublic%2FShared%20Documents%2FVertexGraph%20Privacy%20Policy%20%2D%20August%2022%2Epdf&parent=%2Fsites%2Fvertexgraph%2Dpublic%2FShared%20Documents&p=true&ga=1"
 }
