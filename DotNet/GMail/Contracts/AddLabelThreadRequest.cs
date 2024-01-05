@@ -12,13 +12,11 @@ namespace GMail.Contracts
     public class AddLabelThreadRequest
     {
         [JsonProperty("id")]
-        [JsonPropertyName("id")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        [JsonPropertyName("id")]        
         public string Id { get; set; }
 
         [JsonProperty("label")]
-        [JsonPropertyName("label")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        [JsonPropertyName("label")]        
         public string Label { get; set; }
     }
 }

@@ -22,33 +22,33 @@ namespace GMail.GMailClient
         [JsonProperty("type")]
         public string Type { get; set; }
 
-        [JsonProperty("messageListVisibility", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty("messageListVisibility")]
         [JsonPropertyName("messageListVisibility")]
         public string MessageListVisibility { get; set; } //show, hide
         
-        [JsonProperty("labelListVisibility", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty("labelListVisibility")]
         [JsonPropertyName("labelListVisibility")]
         public string LabelListVisibility { get; set; } //labelShow, labelShowIfUnread, labelHide
 
         //label create properties----------------------------------------------
 
-        [JsonProperty("messagesTotal", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty("messagesTotal")]
         [JsonPropertyName("messagesTotal")]
         public int MessagesTotal { get; set; }
 
-        [JsonProperty("messagesUnread", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty("messagesUnread")]
         [JsonPropertyName("messagesUnread")]
         public int MessagesUnread { get; set; }
 
-        [JsonProperty("threadsTotal", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty("threadsTotal")]
         [JsonPropertyName("threadsTotal")]
         public int ThreadsTotal { get; set; }
 
-        [JsonProperty("threadsUnread", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty("threadsUnread")]
         [JsonPropertyName("threadsUnread")]
         public int ThreadsUnread { get; set; }
 
-        [JsonProperty("color", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty("color")]
         [JsonPropertyName("color")]
         public GMailClientColor Color { get; set; }
 

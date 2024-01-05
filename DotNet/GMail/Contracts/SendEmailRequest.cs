@@ -15,34 +15,28 @@ namespace GMail.Contracts
         [JsonPropertyName("to")]
         public string To { get; set; }
 
-        [JsonProperty("cc", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty("cc")]
         [JsonPropertyName("cc")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public string CC { get; set; }
 
-        [JsonProperty("bcc", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty("bcc")]
         [JsonPropertyName("bcc")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public string BCC { get; set; }   
 
-        [JsonProperty("thread_id", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty("thread_id")]
         [JsonPropertyName("thread_id")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public string ThreadId { get; set; }
 
-        [JsonProperty("in_reply_to_id", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty("in_reply_to_id")]
         [JsonPropertyName("in_reply_to_id")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public string InReplyToId { get; set; }
 
-        [JsonProperty("references_id", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty("references_id")]
         [JsonPropertyName("references_id")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public string ReferencesId { get; set; }
 
-        [JsonProperty("subject", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty("subject")]
         [JsonPropertyName("subject")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public string Subject { get; set; }
 
         [JsonProperty("body")]

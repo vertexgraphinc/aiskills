@@ -11,9 +11,8 @@ namespace GMail.Contracts
 {
     public class GetEmailRequest
     {
-        [JsonProperty("id", DefaultValueHandling = DefaultValueHandling.Ignore)]
-        [JsonPropertyName("id")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        [JsonProperty("id")]
+        [JsonPropertyName("id")]        
         public string Id { get; set; }
     }
 }

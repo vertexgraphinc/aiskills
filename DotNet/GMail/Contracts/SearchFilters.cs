@@ -11,44 +11,44 @@ namespace GMail.Contracts
 {
     public class SearchFilters
     {
-        [JsonProperty("from", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty("from")]
         [JsonPropertyName("from")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        
         public string From { get; set; }
 
-        [JsonProperty("to", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty("to")]
         [JsonPropertyName("to")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        
         public string To { get; set; }
 
-        [JsonProperty("subject", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty("subject")]
         [JsonPropertyName("subject")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        
         public string Subject { get; set; }
 
-        [JsonProperty("body", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty("body")]
         [JsonPropertyName("body")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        
         public string Body { get; set; }
 
-        [JsonProperty("begin_time", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty("begin_time")]
         [JsonPropertyName("begin_time")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        
         public string BeginTime { get; set; }
 
-        [JsonProperty("end_time", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty("end_time")]
         [JsonPropertyName("end_time")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        
         public string EndTime { get; set; }
 
-        [JsonProperty("label", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty("label")]
         [JsonPropertyName("label")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        
         public string Label { get; set; }
 
-        [JsonProperty("status", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        [JsonProperty("status")]
         [JsonPropertyName("status")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        
         [RegularExpression("^(starred|snoozed|read|unread)$", ErrorMessage = "The 'status' property must be 'read' or 'unread'.")]
         public string Status { get; set; }  
     }
