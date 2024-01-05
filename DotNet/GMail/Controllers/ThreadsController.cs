@@ -24,9 +24,10 @@ namespace GMail.Controllers
     public class ThreadsController : MessagesHelpers
     {
         [HttpPost("query")]
+        [HttpPost("~/skill/{controller}/query")]
         public async Task<QueryThreadsResponse> QueryThreads(SearchFilters Para)
         {
-            System.Diagnostics.Debug.WriteLine("[vertex][QueryThreads]");
+            System.Diagnostics.Debug.WriteLine("[vertex][Threads][QueryThreads]");
             var resp = new QueryThreadsResponse();
 
             string Token = GetSessionToken();
@@ -53,15 +54,16 @@ namespace GMail.Controllers
                 resp.Message = Sanitize(StripHtmlTags( ex.ToString()));
             }
 
-            System.Diagnostics.Debug.WriteLine("[vertex][QueryThreads]response:" + JsonConvert.SerializeObject(resp));
+            System.Diagnostics.Debug.WriteLine("[vertex][Threads][QueryThreads]response:" + JsonConvert.SerializeObject(resp));
 
             return resp;
         }
 
         [HttpPost("add_label_to_thread")]
+        [HttpPost("~/skill/{controller}/add_label_to_thread")]
         public async Task<ServerResponse> AddLabelToThread(AddLabelThreadRequest Para)
         {
-            System.Diagnostics.Debug.WriteLine("[vertex][AddLabelToThread]");
+            System.Diagnostics.Debug.WriteLine("[vertex][Threads][AddLabelToThread]");
             var response = new ServerResponse();
             Response.StatusCode = 200;
 
@@ -106,13 +108,15 @@ namespace GMail.Controllers
                 response.Message = ex.Message;
             }
 
-            System.Diagnostics.Debug.WriteLine("[vertex][AddLabelToThread]response:" + JsonConvert.SerializeObject(response));
+            System.Diagnostics.Debug.WriteLine("[vertex][Threads][AddLabelToThread]response:" + JsonConvert.SerializeObject(response));
 
             return response;
         }
         [HttpPost("remove_label_from_thread")]
+        [HttpPost("~/skill/{controller}/remove_label_from_thread")]
         public async Task<ServerResponse> RemoveLabelFromThread(RemoveLabelThreadRequest Para)
         {
+            System.Diagnostics.Debug.WriteLine("[vertex][Threads][RemoveLabelFromThread]");
             var response = new ServerResponse();
             Response.StatusCode = 200;
 
@@ -157,7 +161,7 @@ namespace GMail.Controllers
                 response.Message = ex.Message;
             }
 
-            System.Diagnostics.Debug.WriteLine("[vertex][RemoveLabelFromThread]response:" + JsonConvert.SerializeObject(response));
+            System.Diagnostics.Debug.WriteLine("[vertex][Threads][RemoveLabelFromThread]response:" + JsonConvert.SerializeObject(response));
 
             return response;
         }

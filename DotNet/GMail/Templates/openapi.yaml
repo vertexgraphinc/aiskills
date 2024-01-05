@@ -13,7 +13,7 @@ paths:
   $skillapproot/messages/query:
     post:
       title: Search for Emails
-      operationId: Search Emails
+      operationId: SearchEmails
       summary: Searches for email messages.
       responses:
         "200":
@@ -44,7 +44,7 @@ paths:
   $skillapproot/messages/get:
     post:
       title: Get an Email
-      operationId: Get Email
+      operationId: GetEmail
       summary: Reads the details of an email message.
       responses:
         "200":
@@ -75,7 +75,7 @@ paths:
   $skillapproot/messages/send:
     post:
       title: Send an Email
-      operationId: Send Email
+      operationId: SendEmail
       summary: Sends a new email message.
       responses:
         "200":
@@ -106,7 +106,7 @@ paths:
   $skillapproot/messages/forward:
     post:
       title: Forward an Email
-      operationId: Forward Email
+      operationId: ForwardEmail
       summary: Forwards an email message to new recipient.
       responses:
         "200":
@@ -137,7 +137,7 @@ paths:
   $skillapproot/messages/reply:
     post:
       title: Reply to an Email
-      operationId: Reply to Email
+      operationId: ReplyToEmail
       summary: Replies to an email message.
       responses:
         "200":
@@ -168,7 +168,7 @@ paths:
   $skillapproot/messages/add_label:
     post:
       title: Add a Label to an Email
-      operationId: Add Label to Email
+      operationId: AddLabelToEmail
       summary: Adds a label to an email message.
       responses:
         "200":
@@ -199,7 +199,7 @@ paths:
   $skillapproot/messages/query_add_label:
     post:
       title: Search and Add a Label to Emails
-      operationId: Search and Add Label
+      operationId: SearchAndAddLabel
       summary: Searches for email messages and adds a label to them in one step.
       responses:
         "200":
@@ -230,7 +230,7 @@ paths:
   $skillapproot/messages/query_remove_label:
     post:
       title: Search and Remove a Label from Emails
-      operationId: Search and Remove Label
+      operationId: SearchAndRemoveLabel
       summary: Searches for email messages and removes a label from them in one step.
       responses:
         "200":
@@ -261,7 +261,7 @@ paths:
   $skillapproot/messages/add_label_to_thread:
     post:
       title: Add a Label to a Thread
-      operationId: Add Label to Thread
+      operationId: AddLabelToThread
       summary: Adds a label to all the email messages in a conversation (aka. thread).
       responses:
         "200":
@@ -292,7 +292,7 @@ paths:
   $skillapproot/messages/remove_label:
     post:
       title: Remove a Label from an Email
-      operationId: Remove Label from Email
+      operationId: RemoveLabelFromEmail
       summary: Removes a label from an email message.
       responses:
         "200":
@@ -323,7 +323,7 @@ paths:
   $skillapproot/threads/remove_label_from_thread:
     post:
       title: Remove a Label from a Thread
-      operationId: Remove Label from Thread
+      operationId: RemoveLabelFromThread
       summary: Removes a label from a conversation (aka. thread).
       responses:
         "200":

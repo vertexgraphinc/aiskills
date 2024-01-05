@@ -16,15 +16,30 @@ namespace GMail.Controllers
     [Route("[controller]")]
     public class OAuthController : ControllerBase
     {
+        [HttpGet("test")]
+        [HttpGet("~/skill/{controller}/test")]
+        public string Test()
+        {
+            //if the skill is installed as a web application called "gmail" in IIS, then both URLs will work:
+            //https://example.com/gmail/oauth/test
+            //https://example.com/gmail/skill/oauth/test
+            System.Diagnostics.Debug.WriteLine("[vertex][OAuth]Test");
+            return "hello world from oauth.";
+        }
+
         [HttpGet("auth")]
+        [HttpGet("~/skill/{controller}/auth")]
         public void Auth()
         {
+            System.Diagnostics.Debug.WriteLine("[vertex][OAuth]Auth");
             Response.Redirect($"https://accounts.google.com/o/oauth2/auth{Request.QueryString}");
         }
 
         [HttpPost("token")]
+        [HttpPost("~/skill/{controller}/token")]
         public async Task<OAuthToken> RedeemToken(OAuthTokenPara Para)
         {
+            System.Diagnostics.Debug.WriteLine("[vertex][OAuth]RedeemToken");
             var client = new HttpClient();
             TokenResponse resp = null;
 

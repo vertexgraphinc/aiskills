@@ -6,14 +6,14 @@
   "description_for_model": "Read, search emails from Gmail",
   "auth": {
     "type": "oauth",
-    "client_url": "oauth/auth",
+    "client_url": "skill/oauth/auth",
     "scope": "https://mail.google.com/",
-    "authorization_url": "oauth/token",
+    "authorization_url": "skill/oauth/token",
     "authorization_content_type": "application/json"
   },
   "api": {
     "type": "openapi",
-    "url": "gmail/apidefs"
+    "url": "skill/apidefs"
   },
   "logo_url": "https://avatars.slack-edge.com/2021-02-09/1730367132018_43f8f38b9659ddef2131_512.png",
   "contact_email": "support@vertexgraph.com",
