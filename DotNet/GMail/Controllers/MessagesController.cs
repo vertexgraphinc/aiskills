@@ -24,16 +24,28 @@ namespace GMail.Controllers
     public class MessagesController : MessagesHelpers
     {
         [HttpGet("test")]
+        [HttpGet("~/skill/{controller}/test")]
         public string Test()
         {
-            return "hello world";
+            //if the skill is installed as a web application called "gmail" in IIS, then both URLs will work:
+            //https://example.com/gmail/messages/test
+            //https://example.com/gmail/skill/messages/test
+            System.Diagnostics.Debug.WriteLine("[vertex][Messages]Test");
+            return "hello world from messages.";
         }
 
         #region Getting Emails
         [HttpPost("query")]
+        [HttpPost("~/skill/{controller}/query")]
         public async Task<QueryEmailsResponse> QueryEmails(SearchFilters Para)
         {
-            System.Diagnostics.Debug.WriteLine("[vertex][QueryEmails]");
+            //for testing the route, try a rest api post with:
+            //url: https://example.com/gmail/messages/query
+            //header
+            //     Content-Type: application/json
+            //request body payload
+            //     {"from":"test"} 
+            System.Diagnostics.Debug.WriteLine("[vertex][Messages][QueryEmails]");
             var resp = new QueryEmailsResponse
             {
                 Messages = null
@@ -68,9 +80,10 @@ namespace GMail.Controllers
         }
 
         [HttpPost("get")]
+        [HttpPost("~/skill/{controller}/get")]
         public async Task<GetEmailsResponse> GetEmail(GetEmailRequest Para)
         {
-            System.Diagnostics.Debug.WriteLine("[vertex][GetEmail]");
+            System.Diagnostics.Debug.WriteLine("[vertex][Messages][GetEmail]");
             var response = new GetEmailsResponse();
             Response.StatusCode = 200;
 
@@ -137,10 +150,11 @@ namespace GMail.Controllers
 
         #region Sending Emails
         [HttpPost("send")]
+        [HttpPost("~/skill/{controller}/send")]
         public async Task<ServerResponse> SendEmail(SendEmailRequest Para)
         {
             //EXAMPLE PROMPT: send an email to user@example.com with subject "hello" and body "hello world"
-            System.Diagnostics.Debug.WriteLine("[vertex][SendEmail]");
+            System.Diagnostics.Debug.WriteLine("[vertex][Messages][SendEmail]");
             var resp = new ServerResponse();
             Response.StatusCode = 200;
 
@@ -162,12 +176,13 @@ namespace GMail.Controllers
             if(!Has(resp.Message))
                 resp.Message = "Success.";
 
-            System.Diagnostics.Debug.WriteLine("[vertex][SendEmail]response:" + JsonConvert.SerializeObject(resp));
+            System.Diagnostics.Debug.WriteLine("[vertex][Messages][SendEmail]response:" + JsonConvert.SerializeObject(resp));
 
             return resp;
         }
 
         [HttpPost("forward")]
+        [HttpPost("~/skill/{controller}/forward")]
         public async Task<ServerResponse> ForwardEmail(ForwardEmailRequest Para)
         {
             //according to the rfc822 standard:
@@ -184,7 +199,7 @@ namespace GMail.Controllers
                forwarding." 
              */
             //EXAMPLE PROMPT: search for an email containing XYZ in the subject and forward it to user@example.com
-            System.Diagnostics.Debug.WriteLine("[vertex][ForwardEmail]");
+            System.Diagnostics.Debug.WriteLine("[vertex][Messages][ForwardEmail]");
             var response = new ServerResponse();
             Response.StatusCode = 200;
 
@@ -232,12 +247,13 @@ namespace GMail.Controllers
             if (!Has(response.Message))
                 response.Message = "Success.";
 
-            System.Diagnostics.Debug.WriteLine("[vertex][ForwardEmail]response:" + JsonConvert.SerializeObject(response));
+            System.Diagnostics.Debug.WriteLine("[vertex][Messages][ForwardEmail]response:" + JsonConvert.SerializeObject(response));
 
             return response;
         }
 
         [HttpPost("reply")]
+        [HttpPost("~/skill/{controller}/reply")]
         public async Task<ServerResponse> ReplyEmail(ReplyEmailRequest Para)
         {
             //according to the rfc822 standard:
@@ -249,7 +265,7 @@ namespace GMail.Controllers
                unique message identifiers, optionally separated by CFWS."
              */
             //EXAMPLE PROMPT: search for an email containing XYZ in the subject and send a reply to it with new body of "new body test"
-            System.Diagnostics.Debug.WriteLine("[vertex][ReplyEmail]");
+            System.Diagnostics.Debug.WriteLine("[vertex][Messages][ReplyEmail]");
             var response = new ServerResponse();
             Response.StatusCode = 200;
 
@@ -297,7 +313,7 @@ namespace GMail.Controllers
             if (!Has(response.Message))
                 response.Message = "Success.";
 
-            System.Diagnostics.Debug.WriteLine("[vertex][ReplyEmail]response:" + JsonConvert.SerializeObject(response));
+            System.Diagnostics.Debug.WriteLine("[vertex][Messages][ReplyEmail]response:" + JsonConvert.SerializeObject(response));
 
             return response;
         }
@@ -306,9 +322,10 @@ namespace GMail.Controllers
         #region Label Management
         
         [HttpPost("query_and_add_label")]
+        [HttpPost("~/skill/{controller}/query_and_add_label")]
         public async Task<ServerResponse> QueryEmailAndAddLabel(QueryEmailAndAddLabelRequest Para)
         {
-            System.Diagnostics.Debug.WriteLine("[vertex][QueryEmailAndAddLabel]");
+            System.Diagnostics.Debug.WriteLine("[vertex][Messages][QueryEmailAndAddLabel]");
             var response = new ServerResponse();
             Response.StatusCode = 200;
 
@@ -358,15 +375,16 @@ namespace GMail.Controllers
             if (!Has(response.Message))
                 response.Message = "Success.";
 
-            System.Diagnostics.Debug.WriteLine("[vertex][QueryEmailAndAddLabel]response:" + JsonConvert.SerializeObject(response));
+            System.Diagnostics.Debug.WriteLine("[vertex][Messages][QueryEmailAndAddLabel]response:" + JsonConvert.SerializeObject(response));
 
             return response;
         }
 
         [HttpPost("query_and_remove_label")]
+        [HttpPost("~/skill/{controller}/query_and_remove_label")]
         public async Task<ServerResponse> QueryEmailAndRemoveLabel(QueryEmailAndRemoveLabelRequest Para)
         {
-            System.Diagnostics.Debug.WriteLine("[vertex][QueryEmailAndRemoveLabel]");
+            System.Diagnostics.Debug.WriteLine("[vertex][Messages][QueryEmailAndRemoveLabel]");
             var response = new ServerResponse();
             Response.StatusCode = 200;
 
@@ -416,15 +434,16 @@ namespace GMail.Controllers
             if (!Has(response.Message))
                 response.Message = "Success.";
 
-            System.Diagnostics.Debug.WriteLine("[vertex][QueryEmailAndRemoveLabel]response:" + JsonConvert.SerializeObject(response));
+            System.Diagnostics.Debug.WriteLine("[vertex][Messages][QueryEmailAndRemoveLabel]response:" + JsonConvert.SerializeObject(response));
 
             return response;
         }
 
         [HttpPost("add_label")]
+        [HttpPost("~/skill/{controller}/add_label")]
         public async Task<ServerResponse> AddLabel(AddLabelRequest Para)
         {
-            System.Diagnostics.Debug.WriteLine("[vertex][AddLabel]");
+            System.Diagnostics.Debug.WriteLine("[vertex][Messages][AddLabel]");
             var response = new ServerResponse();
             Response.StatusCode = 200;
 
@@ -472,15 +491,16 @@ namespace GMail.Controllers
             if (!Has(response.Message))
                 response.Message = "Success.";
 
-            System.Diagnostics.Debug.WriteLine("[vertex][AddLabel]response:" + JsonConvert.SerializeObject(response));
+            System.Diagnostics.Debug.WriteLine("[vertex][Messages][AddLabel]response:" + JsonConvert.SerializeObject(response));
 
             return response;
         }
 
         [HttpPost("remove_label")]
+        [HttpPost("~/skill/{controller}/remove_label")]
         public async Task<ServerResponse> RemoveLabel(RemoveLabelRequest Para)
         {
-            System.Diagnostics.Debug.WriteLine("[vertex][RemoveLabel]");
+            System.Diagnostics.Debug.WriteLine("[vertex][Messages][RemoveLabel]");
             var response = new ServerResponse();
             Response.StatusCode = 200;
 
@@ -528,7 +548,7 @@ namespace GMail.Controllers
             if (!Has(response.Message))
                 response.Message = "Success.";
 
-            System.Diagnostics.Debug.WriteLine("[vertex][RemoveLabel]response:" + JsonConvert.SerializeObject(response));
+            System.Diagnostics.Debug.WriteLine("[vertex][Messages][RemoveLabel]response:" + JsonConvert.SerializeObject(response));
 
             return response;
         }
