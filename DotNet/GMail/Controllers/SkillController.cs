@@ -1,11 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace GMail.Controllers
 {
@@ -13,29 +9,23 @@ namespace GMail.Controllers
     [Route("[controller]")]
     public class SkillController : ControllerBase
     {
-        [HttpGet("")]
-        [HttpGet("~/")]
+        [HttpGet(""),HttpGet("~/")]
         public string  GetSkillConfig()
         {
-            return GetEmbbededResoure("ai-plugin.json");
+            return GetEmbeddedResource("ai-plugin.json");
         }
 
-        [HttpGet("apidefs")]
-        [HttpGet("~/apidefs")]
+        [HttpGet("apidefs"),HttpGet("~/apidefs")]
         public string GetSkillApiDefinitions()
         {
-            return GetEmbbededResoure("openapi.yaml");
+            return GetEmbeddedResource("openapi.yaml");
         }
 
-    
-
-        string GetEmbbededResoure(string name)
+        string GetEmbeddedResource(string name)
         {
             try
             {
                 Assembly assem = typeof(SkillController).Assembly;
-
-
                 var stream = assem.GetManifestResourceStream($"GMail.Templates.{name}");
                 if (stream == null)
                     return null;

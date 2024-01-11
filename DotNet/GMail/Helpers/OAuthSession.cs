@@ -1,28 +1,11 @@
-﻿using GMail.Contracts;
-using GMail.GMailClient;
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Gmail.v1.Data;
-using Google.Apis.Util;
-using Microsoft.AspNetCore.Mvc;
+﻿using GMail.GMailClient;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
-using System.Buffers.Text;
-using System.Collections;
-using System.Collections.Generic;
-using System.Dynamic;
-using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Mail;
-using System.Reflection;
-using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
-using System.Xml.Linq;
-using static Google.Apis.Requests.BatchRequest;
 
 namespace GMail.Helpers
 {

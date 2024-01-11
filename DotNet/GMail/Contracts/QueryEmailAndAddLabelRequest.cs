@@ -1,17 +1,11 @@
-﻿using GMail.GMailClient;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Newtonsoft.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace GMail.Contracts
 {
     public class QueryEmailAndAddLabelRequest : SearchFilters
     {
-        [JsonProperty("add_label")]
-        [JsonPropertyName("add_label")]
+        [JsonProperty("add_label"),JsonPropertyName("add_label")]
         public string AddLabel { get; set; }
 
         public SearchFilters GetSearchFilters()
