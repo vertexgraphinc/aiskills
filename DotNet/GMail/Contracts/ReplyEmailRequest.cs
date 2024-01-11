@@ -1,34 +1,23 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using JsonIgnoreAttribute = System.Text.Json.Serialization.JsonIgnoreAttribute;
 
 namespace GMail.Contracts
 {
     public class ReplyEmailRequest
     {
-        [JsonProperty("id")]
-        [JsonPropertyName("id")]
+        [JsonProperty("id"),JsonPropertyName("id")]
         public string Id { get; set; }
 
-        [JsonProperty("new_cc")]
-        [JsonPropertyName("new_cc")]
+        [JsonProperty("new_cc"),JsonPropertyName("new_cc")]
         public string NewCC { get; set; }
 
-        [JsonProperty("new_bcc")]
-        [JsonPropertyName("new_bcc")]
+        [JsonProperty("new_bcc"),JsonPropertyName("new_bcc")]
         public string NewBCC { get; set; }
 
-        [JsonProperty("new_subject")]
-        [JsonPropertyName("new_subject")]
+        [JsonProperty("new_subject"),JsonPropertyName("new_subject")]
         public string NewSubject { get; set; }
 
-        [JsonProperty("new_body")]
-        [JsonPropertyName("new_body")]
+        [JsonProperty("new_body"),JsonPropertyName("new_body")]
         public string NewBody { get; set; }
 
     }

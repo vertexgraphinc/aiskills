@@ -1,30 +1,17 @@
 ﻿using GMail.Contracts;
 using GMail.Helpers;
-using GMail.GMailClient;
-using Google.Apis.Gmail.v1;
-using Google.Apis.Gmail.v1.Data;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Dynamic;
-using System.IO;
-using System.Linq;
-using System.Net.Mail;
-using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using static Google.Apis.Requests.BatchRequest;
 
 namespace GMail.Controllers
 {
-    [ApiController]
-    [Route("[controller]")]
+    [ApiController,Route("[controller]")]
     public class MessagesController : MessagesHelpers
     {
-        [HttpGet("test")]
-        [HttpGet("~/skill/{controller}/test")]
+        [HttpGet("test"),HttpGet("~/skill/{controller}/test")]
         public string Test()
         {
             //if the skill is installed as a web application called "gmail" in IIS, then both URLs will work:
@@ -35,8 +22,7 @@ namespace GMail.Controllers
         }
 
         #region Getting Emails
-        [HttpPost("query")]
-        [HttpPost("~/skill/{controller}/query")]
+        [HttpPost("query"),HttpPost("~/skill/{controller}/query")]
         public async Task<QueryEmailsResponse> QueryEmails(SearchFilters Para)
         {
             //for testing the route, try a rest api post with:
@@ -56,6 +42,7 @@ namespace GMail.Controllers
             {
                 Response.StatusCode = 401;
                 resp.Message = "Unauthorized.";
+                return resp;
             }
             try
             {
@@ -73,14 +60,14 @@ namespace GMail.Controllers
             {
                 Response.StatusCode = 500;
                 resp.Message = Sanitize(StripHtmlTags( ex.ToString()));
+                return resp;
             }
 
             System.Diagnostics.Debug.WriteLine("[vertex][QueryEmails]response:" + JsonConvert.SerializeObject(resp));
             return resp;
         }
 
-        [HttpPost("get")]
-        [HttpPost("~/skill/{controller}/get")]
+        [HttpPost("get"),HttpPost("~/skill/{controller}/get")]
         public async Task<GetEmailsResponse> GetEmail(GetEmailRequest Para)
         {
             System.Diagnostics.Debug.WriteLine("[vertex][Messages][GetEmail]");
@@ -93,6 +80,7 @@ namespace GMail.Controllers
             {
                 Response.StatusCode = 401;
                 response.Message = "Unauthorized.";
+                return response;
             }
             try
             {
@@ -139,6 +127,7 @@ namespace GMail.Controllers
             {
                 Response.StatusCode = 500;
                 response.Message = ex.Message;
+                return response;
             }
             response.Messages = RetMsgs; 
 
@@ -149,8 +138,7 @@ namespace GMail.Controllers
         #endregion
 
         #region Sending Emails
-        [HttpPost("send")]
-        [HttpPost("~/skill/{controller}/send")]
+        [HttpPost("send"),HttpPost("~/skill/{controller}/send")]
         public async Task<ServerResponse> SendEmail(SendEmailRequest Para)
         {
             //EXAMPLE PROMPT: send an email to user@example.com with subject "hello" and body "hello world"
@@ -163,6 +151,7 @@ namespace GMail.Controllers
             {
                 Response.StatusCode = 401;
                 resp.Message = "Unauthorized.";
+                return resp;
             }
             try
             {
@@ -172,17 +161,19 @@ namespace GMail.Controllers
             {
                 Response.StatusCode = 500;
                 resp.Message = Sanitize(StripHtmlTags(ex.ToString()));
+                return resp;
             }
-            if(!Has(resp.Message))
+            if (!Has(resp.Message))
+            {
                 resp.Message = "Success.";
+            }
 
             System.Diagnostics.Debug.WriteLine("[vertex][Messages][SendEmail]response:" + JsonConvert.SerializeObject(resp));
 
             return resp;
         }
 
-        [HttpPost("forward")]
-        [HttpPost("~/skill/{controller}/forward")]
+        [HttpPost("forward"),HttpPost("~/skill/{controller}/forward")]
         public async Task<ServerResponse> ForwardEmail(ForwardEmailRequest Para)
         {
             //according to the rfc822 standard:
@@ -208,6 +199,7 @@ namespace GMail.Controllers
             {
                 Response.StatusCode = 401;
                 response.Message = "Unauthorized.";
+                return response;
             }
             try
             {
@@ -242,18 +234,20 @@ namespace GMail.Controllers
             {
                 Response.StatusCode = 500;
                 response.Message = ex.Message;
+                return response;
             }
 
             if (!Has(response.Message))
+            {
                 response.Message = "Success.";
+            }
 
             System.Diagnostics.Debug.WriteLine("[vertex][Messages][ForwardEmail]response:" + JsonConvert.SerializeObject(response));
 
             return response;
         }
 
-        [HttpPost("reply")]
-        [HttpPost("~/skill/{controller}/reply")]
+        [HttpPost("reply"), HttpPost("~/skill/{controller}/reply")]
         public async Task<ServerResponse> ReplyEmail(ReplyEmailRequest Para)
         {
             //according to the rfc822 standard:
@@ -274,6 +268,7 @@ namespace GMail.Controllers
             {
                 Response.StatusCode = 401;
                 response.Message = "Unauthorized.";
+                return response;
             }
             try
             {
@@ -308,10 +303,12 @@ namespace GMail.Controllers
             {
                 Response.StatusCode = 500;
                 response.Message = ex.Message;
+                return response;
             }
 
-            if (!Has(response.Message))
-                response.Message = "Success.";
+            if (!Has(response.Message)) {
+                response.Message = "Success."; 
+            }
 
             System.Diagnostics.Debug.WriteLine("[vertex][Messages][ReplyEmail]response:" + JsonConvert.SerializeObject(response));
 
@@ -321,8 +318,7 @@ namespace GMail.Controllers
 
         #region Label Management
         
-        [HttpPost("query_and_add_label")]
-        [HttpPost("~/skill/{controller}/query_and_add_label")]
+        [HttpPost("query_and_add_label"),HttpPost("~/skill/{controller}/query_and_add_label")]
         public async Task<ServerResponse> QueryEmailAndAddLabel(QueryEmailAndAddLabelRequest Para)
         {
             System.Diagnostics.Debug.WriteLine("[vertex][Messages][QueryEmailAndAddLabel]");
@@ -334,6 +330,7 @@ namespace GMail.Controllers
             {
                 Response.StatusCode = 401;
                 response.Message = "Unauthorized.";
+                return response;
             }
             try
             {
@@ -370,18 +367,20 @@ namespace GMail.Controllers
             {
                 Response.StatusCode = 500;
                 response.Message = ex.Message;
+                return response;
             }
 
             if (!Has(response.Message))
+            {
                 response.Message = "Success.";
+            }
 
             System.Diagnostics.Debug.WriteLine("[vertex][Messages][QueryEmailAndAddLabel]response:" + JsonConvert.SerializeObject(response));
 
             return response;
         }
 
-        [HttpPost("query_and_remove_label")]
-        [HttpPost("~/skill/{controller}/query_and_remove_label")]
+        [HttpPost("query_and_remove_label"),HttpPost("~/skill/{controller}/query_and_remove_label")]
         public async Task<ServerResponse> QueryEmailAndRemoveLabel(QueryEmailAndRemoveLabelRequest Para)
         {
             System.Diagnostics.Debug.WriteLine("[vertex][Messages][QueryEmailAndRemoveLabel]");
@@ -393,6 +392,7 @@ namespace GMail.Controllers
             {
                 Response.StatusCode = 401;
                 response.Message = "Unauthorized.";
+                return response;
             }
             try
             {
@@ -429,18 +429,20 @@ namespace GMail.Controllers
             {
                 Response.StatusCode = 500;
                 response.Message = ex.Message;
+                return response;
             }
 
             if (!Has(response.Message))
+            {
                 response.Message = "Success.";
+            }
 
             System.Diagnostics.Debug.WriteLine("[vertex][Messages][QueryEmailAndRemoveLabel]response:" + JsonConvert.SerializeObject(response));
 
             return response;
         }
 
-        [HttpPost("add_label")]
-        [HttpPost("~/skill/{controller}/add_label")]
+        [HttpPost("add_label"),HttpPost("~/skill/{controller}/add_label")]
         public async Task<ServerResponse> AddLabel(AddLabelRequest Para)
         {
             System.Diagnostics.Debug.WriteLine("[vertex][Messages][AddLabel]");
@@ -452,6 +454,7 @@ namespace GMail.Controllers
             {
                 Response.StatusCode = 401;
                 response.Message = "Unauthorized.";
+                return response;
             }
             try
             {
@@ -486,18 +489,20 @@ namespace GMail.Controllers
             {
                 Response.StatusCode = 500;
                 response.Message = ex.Message;
+                return response;
             }
 
             if (!Has(response.Message))
+            {
                 response.Message = "Success.";
+            }
 
             System.Diagnostics.Debug.WriteLine("[vertex][Messages][AddLabel]response:" + JsonConvert.SerializeObject(response));
 
             return response;
         }
 
-        [HttpPost("remove_label")]
-        [HttpPost("~/skill/{controller}/remove_label")]
+        [HttpPost("remove_label"),HttpPost("~/skill/{controller}/remove_label")]
         public async Task<ServerResponse> RemoveLabel(RemoveLabelRequest Para)
         {
             System.Diagnostics.Debug.WriteLine("[vertex][Messages][RemoveLabel]");
@@ -508,7 +513,8 @@ namespace GMail.Controllers
             if (!Has(Token))
             {
                 Response.StatusCode = 401;
-                response.Message = "Unauthorized.";
+                response.Message = "Unauthorized."; 
+                return response;
             }
             try
             {
@@ -543,10 +549,13 @@ namespace GMail.Controllers
             {
                 Response.StatusCode = 500;
                 response.Message = ex.Message;
+                return response;
             }
 
             if (!Has(response.Message))
+            {
                 response.Message = "Success.";
+            }
 
             System.Diagnostics.Debug.WriteLine("[vertex][Messages][RemoveLabel]response:" + JsonConvert.SerializeObject(response));
 

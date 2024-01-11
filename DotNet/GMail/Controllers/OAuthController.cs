@@ -1,23 +1,15 @@
 ﻿using GMail.Contracts;
 using IdentityModel.Client;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Net.Http;
-using System.Reflection;
 using System.Threading.Tasks;
 
 namespace GMail.Controllers
 {
-    [ApiController]
-    [Route("[controller]")]
+    [ApiController,Route("[controller]")]
     public class OAuthController : ControllerBase
     {
-        [HttpGet("test")]
-        [HttpGet("~/skill/{controller}/test")]
+        [HttpGet("test"),HttpGet("~/skill/{controller}/test")]
         public string Test()
         {
             //if the skill is installed as a web application called "gmail" in IIS, then both URLs will work:
@@ -27,16 +19,14 @@ namespace GMail.Controllers
             return "hello world from oauth.";
         }
 
-        [HttpGet("auth")]
-        [HttpGet("~/skill/{controller}/auth")]
+        [HttpGet("auth"),HttpGet("~/skill/{controller}/auth")]
         public void Auth()
         {
             System.Diagnostics.Debug.WriteLine("[vertex][OAuth]Auth");
             Response.Redirect($"https://accounts.google.com/o/oauth2/auth{Request.QueryString}");
         }
 
-        [HttpPost("token")]
-        [HttpPost("~/skill/{controller}/token")]
+        [HttpPost("token"),HttpPost("~/skill/{controller}/token")]
         public async Task<OAuthToken> RedeemToken(OAuthTokenPara Para)
         {
             System.Diagnostics.Debug.WriteLine("[vertex][OAuth]RedeemToken");

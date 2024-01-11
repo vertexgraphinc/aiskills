@@ -1,21 +1,9 @@
 ﻿using GMail.Contracts;
 using GMail.Helpers;
-using GMail.GMailClient;
-using Google.Apis.Gmail.v1;
-using Google.Apis.Gmail.v1.Data;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Dynamic;
-using System.IO;
-using System.Linq;
-using System.Net.Mail;
-using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using static Google.Apis.Requests.BatchRequest;
 
 namespace GMail.Controllers
 {
@@ -35,6 +23,7 @@ namespace GMail.Controllers
             {
                 Response.StatusCode = 401;
                 resp.Message = "Unauthorized.";
+                return resp;
             }
             try
             {
@@ -52,6 +41,7 @@ namespace GMail.Controllers
             {
                 Response.StatusCode = 500;
                 resp.Message = Sanitize(StripHtmlTags( ex.ToString()));
+                return resp;
             }
 
             System.Diagnostics.Debug.WriteLine("[vertex][Threads][QueryThreads]response:" + JsonConvert.SerializeObject(resp));
@@ -72,6 +62,7 @@ namespace GMail.Controllers
             {
                 Response.StatusCode = 401;
                 response.Message = "Unauthorized.";
+                return response;
             }
             try
             {
@@ -106,6 +97,7 @@ namespace GMail.Controllers
             {
                 Response.StatusCode = 500;
                 response.Message = ex.Message;
+                return response;
             }
 
             System.Diagnostics.Debug.WriteLine("[vertex][Threads][AddLabelToThread]response:" + JsonConvert.SerializeObject(response));
@@ -125,6 +117,7 @@ namespace GMail.Controllers
             {
                 Response.StatusCode = 401;
                 response.Message = "Unauthorized.";
+                return response;
             }
             try
             {
@@ -159,6 +152,7 @@ namespace GMail.Controllers
             {
                 Response.StatusCode = 500;
                 response.Message = ex.Message;
+                return response;
             }
 
             System.Diagnostics.Debug.WriteLine("[vertex][Threads][RemoveLabelFromThread]response:" + JsonConvert.SerializeObject(response));

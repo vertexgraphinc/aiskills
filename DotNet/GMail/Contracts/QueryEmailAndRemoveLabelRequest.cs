@@ -1,17 +1,11 @@
-﻿using GMail.GMailClient;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Newtonsoft.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace GMail.Contracts
 {
     public class QueryEmailAndRemoveLabelRequest : SearchFilters
     {
-        [JsonProperty("remove_label")]
-        [JsonPropertyName("remove_label")]
+        [JsonProperty("remove_label"),JsonPropertyName("remove_label")]
         public string RemoveLabel { get; set; }
 
         public SearchFilters GetSearchFilters()

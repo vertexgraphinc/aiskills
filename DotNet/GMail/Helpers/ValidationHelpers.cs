@@ -1,26 +1,7 @@
-﻿using GMail.Contracts;
-using Google.Apis.Gmail.v1.Data;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Net.Http.Headers;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Buffers.Text;
-using System.Collections;
-using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
-using System.Net.Http;
-using System.Reflection;
-using System.Reflection.Emit;
-using System.Security.Policy;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 using HtmlAgilityPack;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace GMail.Helpers
 {
