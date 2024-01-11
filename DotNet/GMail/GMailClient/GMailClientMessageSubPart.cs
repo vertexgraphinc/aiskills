@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace GMail.GMailClient
 {
-    public class GMailClientMessagePart
+    public class GMailClientMessageSubPart
     {
         [JsonProperty("partId")]
         [JsonPropertyName("partId")]
@@ -26,9 +26,5 @@ namespace GMail.GMailClient
         [JsonProperty("body")]
         [JsonPropertyName("body")]
         public GMailClientMessageBody Body { get; set; }
-
-        [JsonPropertyName("parts")]
-        [JsonProperty("parts")]
-        public List<GMailClientMessageSubPart> Parts { get; set; }
     }
 }
