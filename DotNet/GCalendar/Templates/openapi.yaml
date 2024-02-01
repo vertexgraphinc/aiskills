@@ -1,0 +1,1496 @@
+﻿openapi: 3.1.0
+info:
+  title: Google Calendar Skill
+  description: A VertexGraph Skill to access and perform tasks on the user's Google Calendar account.
+  version: 1.0.0
+servers:
+  - url: $skillhost 
+### ===========================================================================
+### ENDPOINTS==================================================================
+### ===========================================================================   
+paths:                
+### /calendars/create_event---------------------------------------------------- 
+  $skillapproot/calendars/create_event:
+    post:
+      title: Create a new event
+      operationId: CreateEvent
+      summary: Create a new event in a specific calendar
+      responses:
+        "200":
+          description: OK  
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'    
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'  
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+      requestBody:
+        description: Request body to create a new event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateEventRequest'
+### /calendars/get_events------------------------------------------------------ 
+  $skillapproot/calendars/get_events:          
+    post:
+      title: Get events
+      operationId: GetEvents
+      summary: Get events from a specific calendar
+      responses:
+        "200":
+          description: OK  
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetEventsResponse'    
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetEventsResponse'  
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetEventsResponse'
+      requestBody:
+        description: Request body to get events
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetEventsRequest'
+### /calendars/remove_events---------------------------------------------------- 
+  $skillapproot/calendars/remove_events:
+    post:
+      title: Remove events
+      operationId: RemoveEvents
+      summary: Remove events by ID from a specific calendar
+      responses:
+        "200":
+          description: OK  
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'    
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'  
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+      requestBody:
+        description: Request body to remove an event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RemoveEventsRequest'
+### /calendars/get_recurring_event--------------------------------------------- 
+  $skillapproot/calendars/get_recurring_event:
+    post:
+      title: Get a recurring event
+      operationId: GetRecurringEvent
+      summary: Get instances of a recurring event
+      responses:
+        "200":
+          description: OK  
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetRecurringEventResponse'    
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetRecurringEventResponse'  
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetRecurringEventResponse'
+      requestBody:
+        description: Request body to get a recurring event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetRecurringEventRequest'
+### /calendars/clear----------------------------------------------------------- 
+  $skillapproot/calendars/clear:
+    post:
+      title: Clear all events
+      operationId: ClearCalendar
+      summary: Remove all events from a specific calendar
+      responses:
+        "200":
+          description: OK  
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'    
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'  
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+      requestBody:
+        description: Request body to remove an event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClearCalendarRequest'
+### /calendars/remove----------------------------------------------------------- 
+  $skillapproot/calendars/remove:
+    post:
+      title: Remove a calendar
+      operationId: RemoveCalendar
+      summary: Remove a specific calendar
+      responses:
+        "200":
+          description: OK  
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'    
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'  
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+      requestBody:
+        description: Request body to remove an event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RemoveCalendarRequest'      
+### /calendars/update_event--------------------------------------------- 
+  $skillapproot/calendars/update_event:
+    post:
+      title: Update an event
+      operationId: UpdateEvent
+      summary: Update an event
+      responses:
+        "200":
+          description: OK  
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'    
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'  
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+      requestBody:
+        description: Request body to get update event params
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateEventRequest'     
+              
+### /calendars/move_event--------------------------------------------- 
+  $skillapproot/calendars/move_event:
+    post:
+      title: Move an event to a different calendar
+      operationId: MoveEvent
+      summary: Move an event to a different calendar
+      responses:
+        "200":
+          description: OK  
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'    
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'  
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+      requestBody:
+        description: Request body to move event to a different calendar
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MoveEventRequest'                
+              
+### /calendars/create_calendar---------------------------------------------------- 
+  $skillapproot/calendars/create_calendar:
+    post:
+      title: Create a new calendar
+      operationId: CreateCalendar
+      summary: Create a new calendar
+      responses:
+        "200":
+          description: OK  
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'    
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'  
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+      requestBody:
+        description: Request body to create a new event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCalendarRequest'
+              
+### /calendars/get_calendar------------------------------------------------------ 
+  $skillapproot/calendars/get_calendar:          
+    post:
+      title: Get Calendar Metadata
+      operationId: GetCalendar
+      summary: Get Calendar Metadata
+      responses:
+        "200":
+          description: OK  
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCalendarResponse'    
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCalendarResponse'  
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCalendarResponse'
+      requestBody:
+        description: Request body to get calendar
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetCalendarRequest'              
+
+### /calendars/update_calendar--------------------------------------------- 
+  $skillapproot/calendars/update_calendar:
+    post:
+      title: Update a calendar
+      operationId: Updatecalendar
+      summary: Update a calendar
+      responses:
+        "200":
+          description: OK  
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'    
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'  
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+      requestBody:
+        description: Request body to get update calendar params
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCalendarRequest'                 
+              
+### ===========================================================================
+### COMPONENTS=================================================================
+### ===========================================================================    
+components:
+  schemas:   
+### ====================================================   
+### REQUEST COMPONENTS==================================  
+### CreateEventRequest==================================
+    CreateEventRequest:
+      title: Parameters for Create Event operations.
+      type: object
+      properties:
+        calendarId:
+          title: Calendar Id
+          type: string
+          description: ID of the calendar in which to create the event
+          default: primary
+        optionalParams:
+          title: Optional Parameters
+          type: object
+          description: Optional parameters
+          properties:
+            conferenceDataVersion:
+              type: integer
+              title: Conference Data Version
+              description: |
+                The version of the conference data supported by this API. Optional.
+            maxAttendees:
+              type: integer
+              title: Max Attendees
+              description: |
+                The maximum number of attendees that the event can have. Optional.
+            sendUpdates:
+              type: string
+              enum:
+                - "all"
+                - "externalOnly"
+                - "none"
+              title: Send Updates
+              description: |
+                Guests who should receive notifications about the event update (for example, title changes).
+                Optional. The default is `"all"`.
+            supportsAttachments:
+              type: boolean
+              title: Supports Attachments
+              description: |
+                Whether this calendar list entry supports attachments. Optional. The default is `false`.
+        event:
+          title: Event
+          type: object
+          description: Event info
+          allOf:
+            - $ref: '#/components/schemas/Event'
+          required:
+            - start
+            - end
+      required:
+        - calendarId
+        - event
+### GetEventsRequest====================================
+    GetEventsRequest:
+      title: Parameters for Get Events operations.
+      type: object
+      properties:
+        calendarId:
+          title: Calendar Id
+          type: string
+          description: ID of the calendar from which to retrieve events
+          default: primary
+        eventId:
+          title: Event Id
+          type: string
+          description: ID of the event to retrieve. Only used for getting singular event.The default is an empty string.
+        optionalParams:
+          title: Optional Parameters
+          type: object
+          description: Optional parameters
+          properties:
+            eventTypes:
+              type: string
+              title: Event Types
+              description: |
+                The type of events to return. Optional. Possible values are "default", "outOfOffice", or "focusTime".
+            iCalUID:
+              type: string
+              title: iCalUID
+              description: |
+                Single iCalendar UID to filter by. Optional.
+            maxAttendees:
+              type: integer
+              title: Max Attendees
+              description: |
+                The maximum number of attendees to include in the response. Optional. The default is `10`.
+            maxResults:
+              type: integer
+              title: Max Results
+              description: |
+                Maximum number of events returned on one result page. Optional. The default is `250`.
+            orderBy:
+              type: string
+              enum:
+                - "startTime"
+                - "updated"
+              title: Order By
+              description: |
+                The order of the events returned in the result. Optional. The default is `"datetime"`.
+            pageToken:
+              type: string
+              title: Page Token
+              description: |
+                Token specifying which result page to return. Optional.
+            privateExtendedProperty:
+              type: string
+              title: Private Extended Property
+              description: |
+                Extended properties constraint specified as propertyName=value. Optional.
+            q:
+              type: string
+              title: Free Text Search
+              description: |
+                Free text search terms to find events that match these terms. Optional.
+            sharedExtendedProperty:
+              type: string
+              title: Shared Extended Property
+              description: |
+                Extended properties constraint specified as propertyName=value. Optional.
+            showDeleted:
+              type: boolean
+              title: Show Deleted
+              description: |
+                Whether to include deleted events (with `status` equals `"cancelled"`) in the result. Optional.
+                The default is `false`.
+            showHiddenInvitations:
+              type: boolean
+              title: Show Hidden Invitations
+              description: |
+                Whether to include hidden invitations in the result. Optional. The default is `false`.
+            singleEvents:
+              type: boolean
+              title: Single Events
+              description: |
+                Whether to expand recurring events into instances and only return single occurrences. Optional.
+                The default is `false`.
+            syncToken:
+              type: string
+              title: Sync Token
+              description: |
+                Token obtained from a previous `events.list` call. Optional. The result will only contain entries
+                that have changed since the `syncToken` was created.
+            timeMin:
+              title: Time Min
+              type: string
+              format: date-time
+              description: Minimum start time of events to retrieve
+            timeMax:
+              title: Time Max
+              type: string
+              format: date-time
+              description: Maximum end time of events to retrieve
+            timeZone:
+              type: string
+              title: Time Zone
+              description: |
+                Time zone used in the response. Optional. The default is the time zone of the calendar.
+            updatedMin:
+              type: string
+              format: date-time
+              title: Updated Min
+              description: |
+                Lower bound for an event's last modification time to filter by. Optional.
+                The default is no filtering.
+      required:
+        - calendarId
+        - eventId
+### RemoveEventsRequest==================================
+    RemoveEventsRequest:
+      title: Parameters for Remove Event operations.
+      type: object
+      properties:
+        calendarId:
+          title: Calendar Id
+          type: string
+          description: ID of the calendar containing the event
+          default: primary
+        eventId:
+          title: Event Id
+          type: string
+          description: ID of the event to delete. Only used for singular event delete. The default is an empty string
+        optionalParams:
+          title: Optional Parameters
+          type: object
+          description: Optional parameters
+          properties:
+            sendUpdates:
+              type: string
+              enum:
+                - "all"
+                - "externalOnly"
+                - "none"
+              title: Send Updates
+              description: |
+                Guests who should receive notifications about the event deletion (for example, title changes).
+                Optional. The default is `"all"`.
+            timeMin:
+              title: Time Min
+              type: string
+              format: date-time
+              description: Minimum start time of events to remove
+            timeMax:
+              title: Time Max
+              type: string
+              format: date-time
+              description: Maximum end time of events to remove
+            attendees:
+              type: array
+              items:
+                type: object
+                title: Attendee
+                description: Information about attendees of the event.
+                properties:
+                  id:
+                    type: string
+                    title: ID
+                    description: The attendee's profile ID, if available.
+                  email:
+                    type: string
+                    title: Email
+                    description: The attendee's email address, if available.
+                  displayName:
+                    type: string
+                    title: Display Name
+                    description: The attendee's name, if available.
+                  organizer:
+                    type: boolean
+                    title: Organizer
+                    description: Whether the attendee is the organizer of the event.
+                  self:
+                    type: boolean
+                    title: Self
+                    description: Whether the attendee is the authenticated user.
+                  resource:
+                    type: boolean
+                    title: Resource
+                    description: Whether this is a resource attendee.
+                  optional:
+                    type: boolean
+                    title: Optional
+                    description: Whether this attendee is optional.
+                  responseStatus:
+                    type: string
+                    title: Response Status
+                    description: The attendee's response status. Possible values are "needsAction", "declined", "tentative", or "accepted".
+                  comment:
+                    type: string
+                    title: Comment
+                    description: The attendee's response comment, if available.
+                  additionalGuests:
+                    type: integer
+                    title: Additional Guests
+                    description: Number of additional guests this attendee is bringing.
+      required:
+        - calendarId
+        - eventId
+### GetRecurringEventRequest============================
+    GetRecurringEventRequest:
+      title: Parameters for Get Recurring Event operations.
+      type: object
+      properties:
+        calendarId:
+          title: Calendar Id
+          type: string
+          description: ID of the calendar containing the event
+          default: primary
+        eventId:
+          title: Event Id
+          type: string
+          description: ID of the recurring event
+        optionalParams:
+          title: Optional Parameters
+          type: object
+          description: Optional parameters
+          properties:
+            maxAttendees:
+              type: integer
+              title: Max Attendees
+              description: |
+                The maximum number of attendees to include in the response. Optional. The default is `10`.
+            maxResults:
+              type: integer
+              title: Max Results
+              description: |
+                Maximum number of events returned on one result page. Optional. The default is `250`.
+            originalStart:
+              type: string
+              format: date-time
+              title: Original Start
+              description: |
+                The original start time of the instance in the result. Optional.
+            pageToken:
+              type: string
+              title: Page Token
+              description: |
+                Token specifying which result page to return. Optional.
+            showDeleted:
+              type: boolean
+              title: Show Deleted
+              description: |
+                Whether to include deleted events (with `status` equals `"cancelled"`) in the result. Optional.
+                The default is `false`.
+            timeMax:
+              type: string
+              format: date-time
+              title: Time Max
+              description: |
+                Upper bound (exclusive) for an event's start time to filter by. Optional.
+                The default is the current time.
+            timeMin:
+              type: string
+              format: date-time
+              title: Time Min
+              description: |
+                Lower bound (inclusive) for an event's end time to filter by. Optional.
+                The default is the current time.
+            timeZone:
+              type: string
+              title: Time Zone
+              description: |
+                Time zone used in the response. Optional. The default is the time zone of the calendar.
+      required:
+        - calendarId
+        - eventId
+### ClearCalendarRequest================================
+    ClearCalendarRequest:
+      title: Parameters for Clear Calendar operations.
+      type: object
+      properties:
+        calendarId:
+          title: Calendar Id
+          type: string
+          description: ID of the calendar needed to be cleared
+          default: primary
+      required:
+        - calendarId
+### RemoveCalendarRequest===============================
+    RemoveCalendarRequest:
+      title: Parameters for Remove Calendar operations.
+      type: object
+      properties:
+        calendarId:
+          title: Calendar Id
+          type: string
+          description: ID of the calendar needed to be removed
+          default: primary
+      required:
+        - calendarId
+        
+        
+### UpdateEventRequest==================================
+    UpdateEventRequest:
+      title: Parameters for Update Event operations.
+      type: object
+      properties:
+        calendarId:
+          title: Calendar ID
+          description: Calendar identifier. 
+          type: string
+        eventId:
+          title: Event ID
+          description: Event identifier.
+          type: string
+          
+        optionalParams:
+          title: Optional Parameters
+          type: object
+          description: Optional parameters
+          properties:
+            conferenceDataVersion:
+              type: integer
+              description: Version number of conference data supported by the API client. 
+              minimum: 0
+              maximum: 1
+            maxAttendees:
+              type: integer
+              description: The maximum number of attendees to include in the response. 
+            sendUpdates:
+              type: string
+              description: Guests who should receive notifications about the event update.
+              enum:
+                - all
+                - externalOnly
+                - none
+            supportsAttachments:
+              type: string
+              description: Placeholder for the description of supportsAttachments.
+        event:
+          title: Event
+          type: object
+          description: Event info
+          allOf:
+            - $ref: '#/components/schemas/Event'
+          required:
+            - start
+            - end
+      required:
+        - calendarId
+        - eventid
+        - event
+        
+### MoveEventRequest==================================
+    MoveEventRequest:
+      title: Parameters for Update Event operations.
+      type: object
+      properties:
+        calendarId:
+          title: Calendar ID
+          description: Calendar identifier. 
+          type: string
+        eventId:
+          title: Event ID
+          description: Event identifier.
+          type: string
+          
+        destination:
+          title: destination
+          description: Calendar identifier of the target calendar where the event is to be moved to.
+          type: string
+        optionalParams:
+          title: Optional Parameters
+          type: object
+          description: Optional parameters
+          properties:
+            sendUpdates:
+              type: string
+              description: Guests who should receive notifications about the event update.
+              enum:
+                - all
+                - externalOnly
+                - none
+      required:
+        - calendarId
+        - eventId
+        - destination
+        
+### CreateCalendarRequest==================================
+    CreateCalendarRequest:
+      title: Parameters for Create Calendar operations.
+      type: object
+      properties:
+        summary:
+          type: string    
+          description: Title of the calendar. 
+          
+### GetCalendarRequest==================================
+    GetCalendarRequest:
+      title: Parameters for Get Calendar operations.
+      type: object
+      properties:
+        calendarId:
+          type: string    
+          description: Calendar identifier. 
+### UpdateCalendarRequest==================================
+    UpdateCalendarRequest:
+      title: Parameters for Update Calendar operations.
+      type: object
+      properties:
+        calendarId:
+          title: Calendar ID
+          description: Calendar identifier. 
+          type: string
+        calendar:
+          title: Calendar
+          type: object
+          description: Calendar info
+          allOf:
+            - $ref: '#/components/schemas/Calendar'
+      required:
+        - calendarId
+        - calendar        
+### ++++++++++++++++++++++++++++++++++++++++++++++++++++   
+### RESPONSE COMPONENTS+++++++++++++++++++++++++++++++++   
+### ServerResponse++++++++++++++++++++++++++++++++++++++      
+    ServerResponse:  
+      title: Server Response
+      type: object
+      properties: 
+        message:   
+          title: Message from Server. Used by various operations.
+          type: string    
+          description: A success or error message.  
+### GetEventsResponse+++++++++++++++++++++++++++++++++++  
+    GetEventsResponse:
+      title: Get Events Response
+      type: object
+      properties:   
+        message:   
+          title: Message from Server
+          type: string    
+          description: A success or error message.   
+        events:
+          type: array
+          items:
+            $ref: "#/components/schemas/Event"
+          description: A list of events  
+### QueryThreadsResponse++++++++++++++++++++++++++++++++  
+    GetRecurringEventResponse:
+      title: Get Recurring Event Response
+      type: object
+      properties:   
+        message:   
+          title: Message from Server
+          type: string    
+          description: A success or error message.   
+        events:
+          type: array
+          items:
+            $ref: "#/components/schemas/Event"
+          description: A list of event instances 
+### GetCalendarResponse+++++++++++++++++++++++++++++++++++  
+    GetCalendarResponse:
+      title: Get Calendar Response
+      type: object
+      properties:   
+        message:   
+          title: Message from Server
+          type: string    
+          description: A success or error message.   
+        calendar:
+          $ref: "#/components/schemas/Calendar"
+          
+### Calendar=============================================== 
+    Calendar:
+      type: object
+      properties:
+        kind:
+          type: string
+          description: The type of resource. This is always "calendar#calendar".
+        etag:
+          type: string
+          description: An ETag used to cache responses.
+        id:
+          type: string
+          description: The identifier for the calendar.
+        summary:
+          type: string
+          description: A short summary of the calendar.
+        description:
+          type: string
+          description: A description of the calendar.
+        location:
+          type: string
+          description: The location of the calendar.
+        timeZone:
+          type: string
+          description: The time zone of the calendar.
+        conferenceProperties:
+          type: object
+          properties:
+            allowedConferenceSolutionTypes:
+              type: array
+              items:
+                type: string
+              description: Types of conferencing solutions allowed for events on the calendar.      
+
+### Event=============================================== 
+    Event:
+      type: object
+      properties:
+        kind:
+          type: string
+          title: Kind
+          description: Type of the resource. This is always "calendar#event".
+        etag:
+          type: string
+          title: ETag
+          description: ETag of the resource.
+        id:
+          type: string
+          title: ID
+          description: Unique identifier for the event.
+        status:
+          type: string
+          title: Status
+          description: Status of the event. Possible values are "confirmed", "tentative", or "cancelled".
+        htmlLink:
+          type: string
+          title: HTML Link
+          description: Link to the event in the Google Calendar web UI.
+        created:
+          type: string
+          format: date-time
+          title: Created
+          description: Date and time the event was created.
+        updated:
+          type: string
+          format: date-time
+          title: Updated
+          description: Date and time the event was last modified.
+        summary:
+          type: string
+          title: Summary
+          description: Title or summary of the event.
+        description:
+          type: string
+          title: Description
+          description: Description of the event.
+        location:
+          type: string
+          title: Location
+          description: Location of the event.
+        colorId:
+          type: string
+          title: Color ID
+          description: Color of the event.
+        creator:
+          type: object
+          title: Creator
+          description: Information about the creator of the event.
+          properties:
+            id:
+              type: string
+              title: ID
+              description: ID of the creator.
+            email:
+              type: string
+              title: Email
+              description: Email address of the creator.
+            displayName:
+              type: string
+              title: Display Name
+              description: Display name of the creator.
+            self:
+              type: boolean
+              title: Self
+              description: Whether the creator is the authenticated user.
+        organizer:
+          type: object
+          title: Organizer
+          description: Information about the organizer of the event.
+          properties:
+            id:
+              type: string
+              title: ID
+              description: ID of the organizer.
+            email:
+              type: string
+              title: Email
+              description: Email address of the organizer.
+            displayName:
+              type: string
+              title: Display Name
+              description: Display name of the organizer.
+            self:
+              type: boolean
+              title: Self
+              description: Whether the organizer is the authenticated user.
+        start:
+          type: object
+          title: Start
+          description: The start time of the event.
+          properties:
+            date:
+              type: string
+              format: date
+              title: Date
+              description: Date when the event starts.
+            dateTime:
+              type: string
+              format: date-time
+              title: Date Time
+              description: Date and time when the event starts.
+            timeZone:
+              type: string
+              title: Time Zone
+              description: The time zone in which the event starts.
+        end:
+          type: object
+          title: End
+          description: The end time of the event.
+          properties:
+            date:
+              type: string
+              format: date
+              title: Date
+              description: Date when the event ends.
+            dateTime:
+              type: string
+              format: date-time
+              title: Date Time
+              description: Date and time when the event ends.
+            timeZone:
+              type: string
+              title: Time Zone
+              description: The time zone in which the event ends.
+        endTimeUnspecified:
+          type: boolean
+          title: End Time Unspecified
+          description: Whether the end time is unspecified.
+        recurrence:
+          type: array
+          items:
+            type: string
+          title: Recurrence
+          description: List of RRULE, RDATE, and EXDATE lines for a recurring event.
+        recurringEventId:
+          type: string
+          title: Recurring Event ID
+          description: ID of the recurring event.
+        originalStartTime:
+          type: object
+          title: Original Start Time
+          description: For an instance of a recurring event, this is the original start time of the instance.
+          properties:
+            date:
+              type: string
+              format: date
+              title: Date
+              description: The original start date of the instance.
+            dateTime:
+              type: string
+              format: date-time
+              title: Date Time
+              description: The original start date and time of the instance.
+            timeZone:
+              type: string
+              title: Time Zone
+              description: The time zone of the original start time of the instance.
+        transparency:
+          type: string
+          title: Transparency
+          description: Whether the event blocks time on the calendar as "opaque" or allows changes as "transparent".
+        visibility:
+          type: string
+          title: Visibility
+          description: Visibility of the event. Possible values are "default", "public", "private", or "confidential".
+        iCalUID:
+          type: string
+          title: iCal UID
+          description: The unique identifier for the event in the iCalendar format.
+        sequence:
+          type: integer
+          title: Sequence
+          description: Sequence number as per iCalendar specification.
+        attendees:
+          type: array
+          items:
+            type: object
+            title: Attendee
+            description: Information about attendees of the event.
+            properties:
+              id:
+                type: string
+                title: ID
+                description: The attendee's profile ID, if available.
+              email:
+                type: string
+                title: Email
+                description: The attendee's email address, if available.
+              displayName:
+                type: string
+                title: Display Name
+                description: The attendee's name, if available.
+              organizer:
+                type: boolean
+                title: Organizer
+                description: Whether the attendee is the organizer of the event.
+              self:
+                type: boolean
+                title: Self
+                description: Whether the attendee is the authenticated user.
+              resource:
+                type: boolean
+                title: Resource
+                description: Whether this is a resource attendee.
+              optional:
+                type: boolean
+                title: Optional
+                description: Whether this attendee is optional.
+              responseStatus:
+                type: string
+                title: Response Status
+                description: The attendee's response status. Possible values are "needsAction", "declined", "tentative", or "accepted".
+              comment:
+                type: string
+                title: Comment
+                description: The attendee's response comment, if available.
+              additionalGuests:
+                type: integer
+                title: Additional Guests
+                description: Number of additional guests this attendee is bringing.
+        attendeesOmitted:
+          type: boolean
+          title: Attendees Omitted
+          description: Whether information about attendees is omitted in the event's representation.
+        extendedProperties:
+          type: object
+          title: Extended Properties
+          description: Extended properties of the event.
+          properties:
+            private:
+              type: object
+              title: Private
+              description: Private extended properties for the event.
+              additionalProperties:
+                type: string
+            shared:
+              type: object
+              title: Shared
+              description: Shared extended properties for the event.
+              additionalProperties:
+                type: string
+        hangoutLink:
+          type: string
+          title: Hangout Link
+          description: Link to the event's Hangout.
+        conferenceData:
+          type: object
+          title: Conference Data
+          description: Information about conferencing for this event.
+          properties:
+            createRequest:
+              type: object
+              title: Create Request
+              description: Request to create a conference for this event.
+              properties:
+                requestId:
+                  type: string
+                  title: Request ID
+                  description: The unique identifier for the request to create a conference.
+                conferenceSolutionKey:
+                  type: object
+                  title: Conference Solution Key
+                  description: The key for the conference solution.
+                  properties:
+                    type:
+                      type: string
+                      title: Type
+                      description: The type of the conference solution.
+                status:
+                  type: object
+                  title: Status
+                  description: The status of the conference creation request.
+                  properties:
+                    statusCode:
+                      type: string
+                      title: Status Code
+                      description: The status code for the conference creation request.
+            entryPoints:
+              type: array
+              title: Entry Points
+              description: The entry points available for this conference.
+              items:
+                type: object
+                properties:
+                  entryPointType:
+                    type: string
+                    title: Entry Point Type
+                    description: The type of the conference entry point.
+                  uri:
+                    type: string
+                    title: URI
+                    description: The URI of the conference entry point.
+                  label:
+                    type: string
+                    title: Label
+                    description: The label for the conference entry point.
+                  pin:
+                    type: string
+                    title: PIN
+                    description: The PIN for the conference entry point.
+                  accessCode:
+                    type: string
+                    title: Access Code
+                    description: The access code for the conference entry point.
+                  meetingCode:
+                    type: string
+                    title: Meeting Code
+                    description: The meeting code for the conference entry point.
+                  passcode:
+                    type: string
+                    title: Passcode
+                    description: The passcode for the conference entry point.
+                  password:
+                    type: string
+                    title: Password
+                    description: The password for the conference entry point.
+            conferenceSolution:
+              type: object
+              title: Conference Solution
+              description: Information about the conference solution.
+              properties:
+                key:
+                  type: object
+                  title: Key
+                  description: The key for the conference solution.
+                  properties:
+                    type:
+                      type: string
+                      title: Type
+                      description: The type of the conference solution.
+                name:
+                  type: string
+                  title: Name
+                  description: The name of the conference solution.
+                iconUri:
+                  type: string
+                  title: Icon URI
+                  description: The icon URI for the conference solution.
+            conferenceId:
+              type: string
+              title: Conference ID
+              description: The ID of the conference.
+            signature:
+              type: string
+              title: Signature
+              description: The signature of the conference data.
+            notes:
+              type: string
+              title: Notes
+              description: Notes added by the organizer when setting up this conference.
+        gadget:
+          type: object
+          title: Gadget
+          description: Information about an event gadget.
+          properties:
+            type:
+              type: string
+              title: Type
+              description: The type of the gadget.
+            title:
+              type: string
+              title: Title
+              description: The title of the gadget.
+            link:
+              type: string
+              title: Link
+              description: The link to the gadget.
+            iconLink:
+              type: string
+              title: Icon Link
+              description: The icon link of the gadget.
+            width:
+              type: integer
+              title: Width
+              description: The width of the gadget in pixels.
+            height:
+              type: integer
+              title: Height
+              description: The height of the gadget in pixels.
+            display:
+              type: string
+              title: Display
+              description: The display mode of the gadget. Possible values are "icon", "chip", or "highlight".
+            preferences:
+              type: object
+              title: Preferences
+              description: Preferences of the gadget.
+              additionalProperties:
+                type: string
+        anyoneCanAddSelf:
+          type: boolean
+          title: Anyone Can Add Self
+          description: Whether anyone can invite themselves to the event.
+        guestsCanInviteOthers:
+          type: boolean
+          title: Guests Can Invite Others
+          description: Whether guests can invite others to the event.
+        guestsCanModify:
+          type: boolean
+          title: Guests Can Modify
+          description: Whether guests can modify the event.
+        guestsCanSeeOtherGuests:
+          type: boolean
+          title: Guests Can See Other Guests
+          description: Whether guests can see other guests.
+        privateCopy:
+          type: boolean
+          title: Private Copy
+          description: Whether this is a private copy of an event owned by others.
+        locked:
+          type: boolean
+          title: Locked
+          description: Whether the event is locked.
+        reminders:
+          type: object
+          title: Reminders
+          description: Information about the reminders for the event.
+          properties:
+            useDefault:
+              type: boolean
+              title: Use Default
+              description: Whether the default reminders are used for this event.
+            overrides:
+              type: array
+              title: Overrides
+              description: The list of reminder overrides.
+              items:
+                type: object
+                properties:
+                  method:
+                    type: string
+                    title: Method
+                    description: The method used for the reminder. Possible values are "popup", "email", or "sms".
+                  minutes:
+                    type: integer
+                    title: Minutes
+                    description: The number of minutes before the event to trigger the reminder.
+        source:
+          type: object
+          title: Source
+          description: Source from which the event was created.
+          properties:
+            url:
+              type: string
+              title: URL
+              description: The URL of the source of the event.
+            title:
+              type: string
+              title: Title
+              description: The title of the source.
+        workingLocationProperties:
+          type: object
+          title: Working Location Properties
+          description: Information about the working location.
+          properties:
+            type:
+              type: string
+              title: Type
+              description: The type of working location.
+            homeOffice:
+              type: boolean
+              title: Home Office
+              description: Whether the working location is a home office.
+            customLocation:
+              type: object
+              title: Custom Location
+              description: Information about a custom working location.
+              properties:
+                label:
+                  type: string
+                  title: Label
+                  description: The label for the custom working location.
+            officeLocation:
+              type: object
+              title: Office Location
+              description: Information about an office location.
+              properties:
+                buildingId:
+                  type: string
+                  title: Building ID
+                  description: The ID of the building.
+                floorId:
+                  type: string
+                  title: Floor ID
+                  description: The ID of the floor.
+                floorSectionId:
+                  type: string
+                  title: Floor Section ID
+                  description: The ID of the floor section.
+                deskId:
+                  type: string
+                  title: Desk ID
+                  description: The ID of the desk.
+                label:
+                  type: string
+                  title: Label
+                  description: The label for the office location.
+        outOfOfficeProperties:
+          type: object
+          title: Out of Office Properties
+          description: Information about the out-of-office status.
+          properties:
+            autoDeclineMode:
+              type: string
+              title: Auto Decline Mode
+              description: The auto-decline mode for out-of-office status.
+            declineMessage:
+              type: string
+              title: Decline Message
+              description: The message to be sent for declined events during out-of-office status.
+        focusTimeProperties:
+          type: object
+          title: Focus Time Properties
+          description: Information about the focus time status.
+          properties:
+            autoDeclineMode:
+              type: string
+              title: Auto Decline Mode
+              description: The auto-decline mode for focus time status.
+            declineMessage:
+              type: string
+              title: Decline Message
+              description: The message to be sent for declined events during focus time status.
+            chatStatus:
+              type: string
+              title: Chat Status
+              description: The chat status during focus time.
+        attachments:
+          type: array
+          title: Attachments
+          description: List of file attachments for the event.
+          items:
+            type: object
+            properties:
+              fileUrl:
+                type: string
+                title: File URL
+                description: The URL of the attached file.
+              title:
+                type: string
+                title: Title
+                description: The title of the attachment.
+              mimeType:
+                type: string
+                title: Mime Type
+                description: The MIME type of the attached file.
+              iconLink:
+                type: string
+                title: Icon Link
+                description: The link to the icon of the attachment.
+              fileId:
+                type: string
+                title: File ID
+                description: The ID of the attached file.
+        eventType:
+          type: string
+          title: Event Type
+          description: The type of the event. Possible values are "default", "outOfOffice", or "focusTime".
+### ++++++++++++++++++++++++++++++++++++++++++++++++++++ 
