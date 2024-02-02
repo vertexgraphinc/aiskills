@@ -579,53 +579,6 @@ components:
               type: string
               format: date-time
               description: Maximum end time of events to remove
-            attendees:
-              type: array
-              items:
-                type: object
-                title: Attendee
-                description: Information about attendees of the event.
-                properties:
-                  id:
-                    type: string
-                    title: ID
-                    description: The attendee's profile ID, if available.
-                  email:
-                    type: string
-                    title: Email
-                    description: The attendee's email address, if available.
-                  displayName:
-                    type: string
-                    title: Display Name
-                    description: The attendee's name, if available.
-                  organizer:
-                    type: boolean
-                    title: Organizer
-                    description: Whether the attendee is the organizer of the event.
-                  self:
-                    type: boolean
-                    title: Self
-                    description: Whether the attendee is the authenticated user.
-                  resource:
-                    type: boolean
-                    title: Resource
-                    description: Whether this is a resource attendee.
-                  optional:
-                    type: boolean
-                    title: Optional
-                    description: Whether this attendee is optional.
-                  responseStatus:
-                    type: string
-                    title: Response Status
-                    description: The attendee's response status. Possible values are "needsAction", "declined", "tentative", or "accepted".
-                  comment:
-                    type: string
-                    title: Comment
-                    description: The attendee's response comment, if available.
-                  additionalGuests:
-                    type: integer
-                    title: Additional Guests
-                    description: Number of additional guests this attendee is bringing.
       required:
         - calendarId
         - eventId
@@ -869,7 +822,7 @@ components:
           items:
             $ref: "#/components/schemas/Event"
           description: A list of events  
-### QueryThreadsResponse++++++++++++++++++++++++++++++++  
+### GetRecurringEventResponse+++++++++++++++++++++++++++  
     GetRecurringEventResponse:
       title: Get Recurring Event Response
       type: object
