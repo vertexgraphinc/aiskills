@@ -304,7 +304,7 @@ namespace GCalendar.Contracts
         [JsonProperty("email"), JsonPropertyName("email")]
         public string Email { get; set; }
 
-        [JsonProperty("display_name"), JsonPropertyName("display_name")]
+        [JsonProperty("displayName"), JsonPropertyName("displayName")]
         public string DisplayName { get; set; }
 
         [JsonProperty("organizer"), JsonPropertyName("organizer")]
@@ -319,13 +319,13 @@ namespace GCalendar.Contracts
         [JsonProperty("optional"), JsonPropertyName("optional")]
         public bool Optional { get; set; }
 
-        [JsonProperty("response_status"), JsonPropertyName("response_status")]
+        [JsonProperty("responseStatus"), JsonPropertyName("responseStatus")]
         public string ResponseStatus { get; set; }
 
         [JsonProperty("comment"), JsonPropertyName("comment")]
         public string Comment { get; set; }
 
-        [JsonProperty("additional_guests"), JsonPropertyName("additional_guests")]
+        [JsonProperty("additionalGuests"), JsonPropertyName("additionalGuests")]
         public int AdditionalGuests { get; set; }
     }
 

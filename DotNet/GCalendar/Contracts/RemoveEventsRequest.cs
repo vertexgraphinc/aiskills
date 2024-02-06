@@ -7,25 +7,26 @@ namespace GCalendar.Contracts
 {
     public class RemoveEventsRequest
     {
-        [JsonProperty("calendar_id"), JsonPropertyName("calendar_id")]
+        [JsonProperty("calendarId"), JsonPropertyName("calendarId")]
         public string CalendarId { get; set; }
 
-        [JsonProperty("event_id"), JsonPropertyName("event_id")]
+        [JsonProperty("eventId"), JsonPropertyName("eventId")]
         public string EventId { get; set; }
 
-        [JsonProperty("optional_params"), JsonPropertyName("optional_params")]
+        [JsonProperty("optionalParams"), JsonPropertyName("optionalParams")]
         public OptionalParameters OptionalParams { get; set; }
 
         public class OptionalParameters
         {
-            [JsonProperty("send_updates"), JsonPropertyName("send_updates")]
+            [JsonProperty("sendUpdates"), JsonPropertyName("sendUpdates")]
             public string SendUpdates { get; set; }
 
-            [JsonProperty("time_min"), JsonPropertyName("time_min")]
+            [JsonProperty("timeMin"), JsonPropertyName("timeMin")]
             public DateTime? TimeMin { get; set; }
 
-            [JsonProperty("time_max"), JsonPropertyName("time_max")]
+            [JsonProperty("timeMax"), JsonPropertyName("timeMax")]
             public DateTime? TimeMax { get; set; }
         }
     }
+
 }

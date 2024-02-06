@@ -6,66 +6,66 @@ namespace GCalendar.Contracts
 {
     public class GetEventsRequest
     {
-        [JsonProperty("calendar_id"), JsonPropertyName("calendar_id")]
+        [JsonProperty("calendarId"), JsonPropertyName("calendarId")]
         public string CalendarId { get; set; }
 
-        [JsonProperty("event_id"), JsonPropertyName("event_id")]
+        [JsonProperty("eventId"), JsonPropertyName("eventId")]
         public string EventId { get; set; }
 
-        [JsonProperty("optional_params"), JsonPropertyName("optional_params")]
+        [JsonProperty("optionalParams"), JsonPropertyName("optionalParams")]
         public OptionalParameters OptionalParams { get; set; }
 
         public class OptionalParameters
         {
-            [JsonProperty("event_types"), JsonPropertyName("event_types")]
+            [JsonProperty("eventTypes"), JsonPropertyName("eventTypes")]
             public string EventTypes { get; set; }
 
-            [JsonProperty("i_cal_uid"), JsonPropertyName("i_cal_uid")]
+            [JsonProperty("iCalUid"), JsonPropertyName("iCalUid")]
             public string ICalUid { get; set; }
 
-            [JsonProperty("max_attendees"), JsonPropertyName("max_attendees")]
+            [JsonProperty("maxAttendees"), JsonPropertyName("maxAttendees")]
             public int? MaxAttendees { get; set; }
 
-            [JsonProperty("max_results"), JsonPropertyName("max_results")]
+            [JsonProperty("maxResults"), JsonPropertyName("maxResults")]
             public int? MaxResults { get; set; }
 
-            [JsonProperty("order_by"), JsonPropertyName("order_by")]
+            [JsonProperty("orderBy"), JsonPropertyName("orderBy")]
             public string OrderBy { get; set; }
 
-            [JsonProperty("page_token"), JsonPropertyName("page_token")]
+            [JsonProperty("pageToken"), JsonPropertyName("pageToken")]
             public string PageToken { get; set; }
 
-            [JsonProperty("private_extended_property"), JsonPropertyName("private_extended_property")]
+            [JsonProperty("privateExtendedProperty"), JsonPropertyName("privateExtendedProperty")]
             public string PrivateExtendedProperty { get; set; }
 
             [JsonProperty("q"), JsonPropertyName("q")]
             public string Q { get; set; }
 
-            [JsonProperty("shared_extended_property"), JsonPropertyName("shared_extended_property")]
+            [JsonProperty("sharedExtendedProperty"), JsonPropertyName("sharedExtendedProperty")]
             public string SharedExtendedProperty { get; set; }
 
-            [JsonProperty("show_deleted"), JsonPropertyName("show_deleted")]
+            [JsonProperty("showDeleted"), JsonPropertyName("showDeleted")]
             public bool? ShowDeleted { get; set; }
 
-            [JsonProperty("show_hidden_invitations"), JsonPropertyName("show_hidden_invitations")]
+            [JsonProperty("showHiddenInvitations"), JsonPropertyName("showHiddenInvitations")]
             public bool? ShowHiddenInvitations { get; set; }
 
-            [JsonProperty("single_events"), JsonPropertyName("single_events")]
+            [JsonProperty("singleEvents"), JsonPropertyName("singleEvents")]
             public bool? SingleEvents { get; set; }
 
-            [JsonProperty("sync_token"), JsonPropertyName("sync_token")]
+            [JsonProperty("syncToken"), JsonPropertyName("syncToken")]
             public string SyncToken { get; set; }
 
-            [JsonProperty("time_min"), JsonPropertyName("time_min")]
+            [JsonProperty("timeMin"), JsonPropertyName("timeMin")]
             public DateTime? TimeMin { get; set; }
 
-            [JsonProperty("time_max"), JsonPropertyName("time_max")]
+            [JsonProperty("timeMax"), JsonPropertyName("timeMax")]
             public DateTime? TimeMax { get; set; }
 
-            [JsonProperty("time_zone"), JsonPropertyName("time_zone")]
+            [JsonProperty("timeZone"), JsonPropertyName("timeZone")]
             public string TimeZone { get; set; }
 
-            [JsonProperty("updated_min"), JsonPropertyName("updated_min")]
+            [JsonProperty("updatedMin"), JsonPropertyName("updatedMin")]
             public DateTime? UpdatedMin { get; set; }
         }
     }

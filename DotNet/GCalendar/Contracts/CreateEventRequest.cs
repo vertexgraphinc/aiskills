@@ -5,10 +5,10 @@ namespace GCalendar.Contracts
 {
     public class CreateEventRequest
     {
-        [JsonProperty("calendar_id"), JsonPropertyName("calendar_id")]
+        [JsonProperty("calendarId"), JsonPropertyName("calendarId")]
         public string CalendarId { get; set; }
 
-        [JsonProperty("optional_params"), JsonPropertyName("optional_params")]
+        [JsonProperty("optionalParams"), JsonPropertyName("optionalParams")]
         public OptionalParameters OptionalParams { get; set; }
 
         [JsonProperty("event"), JsonPropertyName("event")]
@@ -16,16 +16,16 @@ namespace GCalendar.Contracts
 
         public class OptionalParameters
         {
-            [JsonProperty("conference_data_version"), JsonPropertyName("conference_data_version")]
+            [JsonProperty("conferenceDataVersion"), JsonPropertyName("conferenceDataVersion")]
             public int? ConferenceDataVersion { get; set; }
 
-            [JsonProperty("max_attendees"), JsonPropertyName("max_attendees")]
+            [JsonProperty("maxAttendees"), JsonPropertyName("maxAttendees")]
             public int? MaxAttendees { get; set; }
 
-            [JsonProperty("send_updates"), JsonPropertyName("send_updates")]
+            [JsonProperty("sendUpdates"), JsonPropertyName("sendUpdates")]
             public string SendUpdates { get; set; }
 
-            [JsonProperty("supports_attachments"), JsonPropertyName("supports_attachments")]
+            [JsonProperty("supportsAttachments"), JsonPropertyName("supportsAttachments")]
             public bool? SupportsAttachments { get; set; }
         }
     }

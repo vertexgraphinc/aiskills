@@ -5,7 +5,7 @@ namespace GCalendar.Contracts
 {
     public class RemoveCalendarRequest
     {
-        [JsonProperty("calendar_id"), JsonPropertyName("calendar_id")]
+        [JsonProperty("calendarId"), JsonPropertyName("calendarId")]
         public string CalendarId { get; set; }
     }
 }
