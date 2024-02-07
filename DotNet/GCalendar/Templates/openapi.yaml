@@ -138,69 +138,69 @@ paths:
             schema:
               $ref: '#/components/schemas/GetRecurringEventRequest'
 ### /calendars/clear----------------------------------------------------------- 
-  $skillapproot/calendars/clear:
-    post:
-      title: Clear all events
-      operationId: ClearCalendar
-      summary: Remove all events from a specific calendar
-      responses:
-        "200":
-          description: OK  
-          content:        
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerResponse'    
-        "500":
-          description: Server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerResponse'  
-        "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerResponse'
-      requestBody:
-        description: Request body to remove an event
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ClearCalendarRequest'
+  # $skillapproot/calendars/clear:
+  #   post:
+  #     title: Clear all events
+  #     operationId: ClearCalendar
+  #     summary: Remove all events from a specific calendar
+  #     responses:
+  #       "200":
+  #         description: OK  
+  #         content:        
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/ServerResponse'    
+  #       "500":
+  #         description: Server error
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/ServerResponse'  
+  #       "401":
+  #         description: Unauthorized
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/ServerResponse'
+  #     requestBody:
+  #       description: Request body to remove an event
+  #       required: true
+  #       content:
+  #         application/json:
+  #           schema:
+  #             $ref: '#/components/schemas/ClearCalendarRequest'
 ### /calendars/remove----------------------------------------------------------- 
-  $skillapproot/calendars/remove:
-    post:
-      title: Remove a calendar
-      operationId: RemoveCalendar
-      summary: Remove a specific calendar
-      responses:
-        "200":
-          description: OK  
-          content:        
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerResponse'    
-        "500":
-          description: Server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerResponse'  
-        "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerResponse'
-      requestBody:
-        description: Request body to remove an event
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/RemoveCalendarRequest'      
+  # $skillapproot/calendars/remove:
+  #   post:
+  #     title: Remove a calendar
+  #     operationId: RemoveCalendar
+  #     summary: Remove a specific calendar
+  #     responses:
+  #       "200":
+  #         description: OK  
+  #         content:        
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/ServerResponse'    
+  #       "500":
+  #         description: Server error
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/ServerResponse'  
+  #       "401":
+  #         description: Unauthorized
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/ServerResponse'
+  #     requestBody:
+  #       description: Request body to remove an event
+  #       required: true
+  #       content:
+  #         application/json:
+  #           schema:
+  #             $ref: '#/components/schemas/RemoveCalendarRequest'      
 ### /calendars/update_event--------------------------------------------- 
   $skillapproot/calendars/update_event:
     post:
@@ -378,41 +378,6 @@ components:
       title: Parameters for Create Event operations.
       type: object
       properties:
-        calendarId:
-          title: Calendar Id
-          type: string
-          description: ID of the calendar in which to create the event
-          default: primary
-        optionalParams:
-          title: Optional Parameters
-          type: object
-          description: Optional parameters
-          properties:
-            conferenceDataVersion:
-              type: integer
-              title: Conference Data Version
-              description: |
-                The version of the conference data supported by this API. Optional.
-            maxAttendees:
-              type: integer
-              title: Max Attendees
-              description: |
-                The maximum number of attendees that the event can have. Optional.
-            sendUpdates:
-              type: string
-              enum:
-                - "all"
-                - "externalOnly"
-                - "none"
-              title: Send Updates
-              description: |
-                Guests who should receive notifications about the event update (for example, title changes).
-                Optional. The default is `"all"`.
-            supportsAttachments:
-              type: boolean
-              title: Supports Attachments
-              description: |
-                Whether this calendar list entry supports attachments. Optional. The default is `false`.
         event:
           title: Event
           type: object
@@ -423,257 +388,117 @@ components:
             - start
             - end
       required:
-        - calendarId
         - event
 ### GetEventsRequest====================================
     GetEventsRequest:
       title: Parameters for Get Events operations.
       type: object
       properties:
-        calendarId:
-          title: Calendar Id
+        q:
           type: string
-          description: ID of the calendar from which to retrieve events
-          default: primary
-        eventId:
-          title: Event Id
+          title: Free Text Search
+          description: |
+            Free text search terms to find events that match these terms. Optional.
+        timeMax:
           type: string
-          description: ID of the event to retrieve. Only used for getting singular event.The default is an empty string.
-        optionalParams:
-          title: Optional Parameters
-          type: object
-          description: Optional parameters
-          properties:
-            eventTypes:
-              type: string
-              title: Event Types
-              description: |
-                The type of events to return. Optional. Possible values are "default", "outOfOffice", or "focusTime".
-            iCalUID:
-              type: string
-              title: iCalUID
-              description: |
-                Single iCalendar UID to filter by. Optional.
-            maxAttendees:
-              type: integer
-              title: Max Attendees
-              description: |
-                The maximum number of attendees to include in the response. Optional. The default is `10`.
-            maxResults:
-              type: integer
-              title: Max Results
-              description: |
-                Maximum number of events returned on one result page. Optional. The default is `250`.
-            orderBy:
-              type: string
-              enum:
-                - "startTime"
-                - "updated"
-              title: Order By
-              description: |
-                The order of the events returned in the result. Optional. The default is `"datetime"`.
-            pageToken:
-              type: string
-              title: Page Token
-              description: |
-                Token specifying which result page to return. Optional.
-            privateExtendedProperty:
-              type: string
-              title: Private Extended Property
-              description: |
-                Extended properties constraint specified as propertyName=value. Optional.
-            q:
-              type: string
-              title: Free Text Search
-              description: |
-                Free text search terms to find events that match these terms. Optional.
-            sharedExtendedProperty:
-              type: string
-              title: Shared Extended Property
-              description: |
-                Extended properties constraint specified as propertyName=value. Optional.
-            showDeleted:
-              type: boolean
-              title: Show Deleted
-              description: |
-                Whether to include deleted events (with `status` equals `"cancelled"`) in the result. Optional.
-                The default is `false`.
-            showHiddenInvitations:
-              type: boolean
-              title: Show Hidden Invitations
-              description: |
-                Whether to include hidden invitations in the result. Optional. The default is `false`.
-            singleEvents:
-              type: boolean
-              title: Single Events
-              description: |
-                Whether to expand recurring events into instances and only return single occurrences. Optional.
-                The default is `false`.
-            syncToken:
-              type: string
-              title: Sync Token
-              description: |
-                Token obtained from a previous `events.list` call. Optional. The result will only contain entries
-                that have changed since the `syncToken` was created.
-            timeMin:
-              title: Time Min
-              type: string
-              format: date-time
-              description: Minimum start time of events to retrieve
-            timeMax:
-              title: Time Max
-              type: string
-              format: date-time
-              description: Maximum end time of events to retrieve
-            timeZone:
-              type: string
-              title: Time Zone
-              description: |
-                Time zone used in the response. Optional. The default is the time zone of the calendar.
-            updatedMin:
-              type: string
-              format: date-time
-              title: Updated Min
-              description: |
-                Lower bound for an event's last modification time to filter by. Optional.
-                The default is no filtering.
+          format: date-time
+          title: Time Max
+          description: |
+            Upper bound (exclusive) for an event's start time to filter by.
+            The default is the current time.
+        timeMin:
+          type: string
+          format: date-time
+          title: Time Min
+          description: |
+            Lower bound (inclusive) for an event's end time to filter by.
+            The default is the current time.
       required:
-        - calendarId
-        - eventId
+        - timeMin
+        - timeMax
 ### RemoveEventsRequest==================================
     RemoveEventsRequest:
       title: Parameters for Remove Event operations.
       type: object
       properties:
-        calendarId:
-          title: Calendar Id
+        timeMax:
           type: string
-          description: ID of the calendar containing the event
-          default: primary
-        eventId:
-          title: Event Id
+          format: date-time
+          title: Time Max
+          description: |
+            Upper bound (exclusive) for an event's start time to filter by.
+            The default is the current time.
+        timeMin:
           type: string
-          description: ID of the event to delete. Only used for singular event delete. The default is an empty string
-        optionalParams:
-          title: Optional Parameters
-          type: object
-          description: Optional parameters
-          properties:
-            sendUpdates:
-              type: string
-              enum:
-                - "all"
-                - "externalOnly"
-                - "none"
-              title: Send Updates
-              description: |
-                Guests who should receive notifications about the event deletion (for example, title changes).
-                Optional. The default is `"all"`.
-            timeMin:
-              title: Time Min
-              type: string
-              format: date-time
-              description: Minimum start time of events to remove
-            timeMax:
-              title: Time Max
-              type: string
-              format: date-time
-              description: Maximum end time of events to remove
+          format: date-time
+          title: Time Min
+          description: |
+            Lower bound (inclusive) for an event's end time to filter by.
+            The default is the current time.
+        email:
+          type: string
+          title: Email
+          description: The attendee's email address, if available.
+        displayName:
+          type: string
+          title: Display Name
+          description: The attendee's name, if available.
       required:
-        - calendarId
-        - eventId
+        - timeMin
+        - timeMax
 ### GetRecurringEventRequest============================
     GetRecurringEventRequest:
       title: Parameters for Get Recurring Event operations.
       type: object
       properties:
-        calendarId:
-          title: Calendar Id
+        originalStart:
           type: string
-          description: ID of the calendar containing the event
-          default: primary
-        eventId:
-          title: Event Id
+          format: date-time
+          title: Original Start
+          description: |
+            The original start time of the instance in the result. Optional.
+        timeMax:
           type: string
-          description: ID of the recurring event
-        optionalParams:
-          title: Optional Parameters
-          type: object
-          description: Optional parameters
-          properties:
-            maxAttendees:
-              type: integer
-              title: Max Attendees
-              description: |
-                The maximum number of attendees to include in the response. Optional. The default is `10`.
-            maxResults:
-              type: integer
-              title: Max Results
-              description: |
-                Maximum number of events returned on one result page. Optional. The default is `250`.
-            originalStart:
-              type: string
-              format: date-time
-              title: Original Start
-              description: |
-                The original start time of the instance in the result. Optional.
-            pageToken:
-              type: string
-              title: Page Token
-              description: |
-                Token specifying which result page to return. Optional.
-            showDeleted:
-              type: boolean
-              title: Show Deleted
-              description: |
-                Whether to include deleted events (with `status` equals `"cancelled"`) in the result. Optional.
-                The default is `false`.
-            timeMax:
-              type: string
-              format: date-time
-              title: Time Max
-              description: |
-                Upper bound (exclusive) for an event's start time to filter by. Optional.
-                The default is the current time.
-            timeMin:
-              type: string
-              format: date-time
-              title: Time Min
-              description: |
-                Lower bound (inclusive) for an event's end time to filter by. Optional.
-                The default is the current time.
-            timeZone:
-              type: string
-              title: Time Zone
-              description: |
-                Time zone used in the response. Optional. The default is the time zone of the calendar.
+          format: date-time
+          title: Time Max
+          description: |
+            Upper bound (exclusive) for an event's start time to filter by.
+            The default is the current time.
+        timeMin:
+          type: string
+          format: date-time
+          title: Time Min
+          description: |
+            Lower bound (inclusive) for an event's end time to filter by.
+            The default is the current time.
       required:
-        - calendarId
-        - eventId
+        - originalStart
+        - timeMin
+        - timeMax
 ### ClearCalendarRequest================================
-    ClearCalendarRequest:
-      title: Parameters for Clear Calendar operations.
-      type: object
-      properties:
-        calendarId:
-          title: Calendar Id
-          type: string
-          description: ID of the calendar needed to be cleared
-          default: primary
-      required:
-        - calendarId
+    # ClearCalendarRequest:
+    #   title: Parameters for Clear Calendar operations.
+    #   type: object
+    #   properties:
+    #     calendarId:
+    #       title: Calendar Id
+    #       type: string
+    #       description: ID of the calendar needed to be cleared
+    #       default: primary
+    #   required:
+    #     - calendarId
 ### RemoveCalendarRequest===============================
-    RemoveCalendarRequest:
-      title: Parameters for Remove Calendar operations.
-      type: object
-      properties:
-        calendarId:
-          title: Calendar Id
-          type: string
-          description: ID of the calendar needed to be removed
-          default: primary
-      required:
-        - calendarId
+    # RemoveCalendarRequest:
+    #   title: Parameters for Remove Calendar operations.
+    #   type: object
+    #   properties:
+    #     calendarId:
+    #       title: Calendar Id
+    #       type: string
+    #       description: ID of the calendar needed to be removed
+    #       default: primary
+    #   required:
+    #     - calendarId
         
         
 ### UpdateEventRequest==================================
@@ -822,7 +647,7 @@ components:
           items:
             $ref: "#/components/schemas/Event"
           description: A list of events  
-### GetRecurringEventResponse+++++++++++++++++++++++++++  
+### QueryThreadsResponse++++++++++++++++++++++++++++++++  
     GetRecurringEventResponse:
       title: Get Recurring Event Response
       type: object
