@@ -11,7 +11,7 @@ namespace GCalendar.Controllers
     public class CalendarsController : CalendarsHelpers
     {
         #region Clear Calendar
-        [HttpPost("clear"), HttpPost("~/skill/{controller}/clear")]
+        /*[HttpPost("clear"), HttpPost("~/skill/{controller}/clear")]
         public async Task<ServerResponse> ClearCalendar(ClearCalendarRequest Para)
         {
             System.Diagnostics.Debug.WriteLine("[vertex][Calendars][ClearCalendar]");
@@ -39,11 +39,11 @@ namespace GCalendar.Controllers
             System.Diagnostics.Debug.WriteLine("[vertex][Calendars][ClearCalendar]response:" + JsonConvert.SerializeObject(response));
 
             return response;
-        }
+        }*/
         #endregion
 
         #region Remove Calendar
-        [HttpPost("remove"), HttpPost("~/skill/{controller}/remove")]
+        /*[HttpPost("remove"), HttpPost("~/skill/{controller}/remove")]
         public async Task<ServerResponse> RemoveCalendar(RemoveCalendarRequest Para)
         {
             System.Diagnostics.Debug.WriteLine("[vertex][Calendars][RemoveCalendar]");
@@ -71,7 +71,7 @@ namespace GCalendar.Controllers
             System.Diagnostics.Debug.WriteLine("[vertex][Calendars][RemoveCalendar]response:" + JsonConvert.SerializeObject(response));
 
             return response;
-        }
+        }*/
         #endregion
     }
 }

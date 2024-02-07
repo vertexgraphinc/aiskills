@@ -70,31 +70,14 @@ namespace GCalendar.Controllers
             }
             try
             {
-                if (!Has(Para.EventId))
+                response.Events = await ListEvents(Para);
+                if (response.Events.Count == 0)
                 {
-                    response.Events = await ListEvents(Para);
-                    if (response.Events.Count == 0)
-                    {
-                        response.Message = "No events were found.";
-                    }
-                    else
-                    {
-                        response.Message = $"Found {response.Events.Count} event(s).";
-                    }
+                    response.Message = "No events were found.";
                 }
                 else
                 {
-                    response.Events = new List<Event>();
-                    var item = await GetEvent(Para);
-                    if (Has(item))
-                    {
-                        response.Message = "No events were found.";
-                    }
-                    else
-                    {
-                        response.Events.Add(item);
-                        response.Message = $"Found 1 event.";
-                    }
+                    response.Message = $"Found {response.Events.Count} event(s).";
                 }
             }
             catch (Exception ex)
@@ -127,14 +110,7 @@ namespace GCalendar.Controllers
             }
             try
             {
-                if (!Has(Para.EventId))
-                {
-                    response = await DeleteMultipleEvents(Para);
-                }
-                else
-                {
-                    response = await DeleteEvent(Para);
-                }
+                response = await DeleteMultipleEvents(Para);
             }
             catch (Exception ex)
             {
