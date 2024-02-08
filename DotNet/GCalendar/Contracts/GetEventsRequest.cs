@@ -10,9 +10,9 @@ namespace GCalendar.Contracts
         public string Q { get; set; }
 
         [JsonProperty("timeMin"), JsonPropertyName("timeMin")]
-        public DateTime TimeMin { get; set; }
+        public string TimeMin { get; set; }
 
         [JsonProperty("timeMax"), JsonPropertyName("timeMax")]
-        public DateTime TimeMax { get; set; }
+        public string TimeMax { get; set; }
     }
 }

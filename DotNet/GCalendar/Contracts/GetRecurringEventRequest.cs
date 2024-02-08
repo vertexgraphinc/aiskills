@@ -7,12 +7,12 @@ namespace GCalendar.Contracts
     public class GetRecurringEventRequest
     {
         [JsonProperty("originalStart"), JsonPropertyName("originalStart")]
-        public DateTime? OriginalStart { get; set; }
+        public string OriginalStart { get; set; }
 
         [JsonProperty("timeMax"), JsonPropertyName("timeMax")]
-        public DateTime? TimeMax { get; set; }
+        public string TimeMax { get; set; }
 
         [JsonProperty("timeMin"), JsonPropertyName("timeMin")]
-        public DateTime? TimeMin { get; set; }
+        public string TimeMin { get; set; }
     }
 }
