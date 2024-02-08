@@ -9,8 +9,8 @@ servers:
 ### ENDPOINTS==================================================================
 ### ===========================================================================   
 paths:                
-### /calendars/create_event---------------------------------------------------- 
-  $skillapproot/calendars/create_event:
+### /events/create---------------------------------------------------- 
+  $skillapproot/events/create:
     post:
       title: Create a new event
       operationId: CreateEvent
@@ -41,8 +41,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CreateEventRequest'
-### /calendars/get_events------------------------------------------------------ 
-  $skillapproot/calendars/get_events:          
+### /events/get------------------------------------------------------ 
+  $skillapproot/events/get:          
     post:
       title: Get events
       operationId: GetEvents
@@ -73,8 +73,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/GetEventsRequest'
-### /calendars/remove_events---------------------------------------------------- 
-  $skillapproot/calendars/remove_events:
+### /events/remove---------------------------------------------------- 
+  $skillapproot/events/remove:
     post:
       title: Remove events
       operationId: RemoveEvents
@@ -105,12 +105,12 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/RemoveEventsRequest'
-### /calendars/get_recurring_event--------------------------------------------- 
-  $skillapproot/calendars/get_recurring_event:
+### /events/get_recurring--------------------------------------------- 
+  $skillapproot/events/get_recurring:
     post:
-      title: Get a recurring event
+      title: Get recurring event
       operationId: GetRecurringEvent
-      summary: Get instances of a recurring event
+      summary: Get instances of recurring events
       responses:
         "200":
           description: OK  
@@ -131,7 +131,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/GetRecurringEventResponse'
       requestBody:
-        description: Request body to get a recurring event
+        description: Request body to get recurring event
         required: true
         content:
           application/json:
@@ -201,8 +201,8 @@ paths:
   #         application/json:
   #           schema:
   #             $ref: '#/components/schemas/RemoveCalendarRequest'      
-### /calendars/update_event--------------------------------------------- 
-  $skillapproot/calendars/update_event:
+### /calendars/update--------------------------------------------- 
+  $skillapproot/events/update:
     post:
       title: Update an event
       operationId: UpdateEvent
@@ -234,8 +234,8 @@ paths:
             schema:
               $ref: '#/components/schemas/UpdateEventRequest'     
               
-### /calendars/move_event--------------------------------------------- 
-  $skillapproot/calendars/move_event:
+### /calendars/move--------------------------------------------- 
+  $skillapproot/events/move:
     post:
       title: Move an event to a different calendar
       operationId: MoveEvent
@@ -267,8 +267,8 @@ paths:
             schema:
               $ref: '#/components/schemas/MoveEventRequest'                
               
-### /calendars/create_calendar---------------------------------------------------- 
-  $skillapproot/calendars/create_calendar:
+### /calendars/create---------------------------------------------------- 
+  $skillapproot/calendars/create:
     post:
       title: Create a new calendar
       operationId: CreateCalendar
@@ -300,8 +300,8 @@ paths:
             schema:
               $ref: '#/components/schemas/CreateCalendarRequest'
               
-### /calendars/get_calendar------------------------------------------------------ 
-  $skillapproot/calendars/get_calendar:          
+### /calendars/get------------------------------------------------------ 
+  $skillapproot/calendars/get:          
     post:
       title: Get Calendar Metadata
       operationId: GetCalendar
@@ -333,8 +333,8 @@ paths:
             schema:
               $ref: '#/components/schemas/GetCalendarRequest'              
 
-### /calendars/update_calendar--------------------------------------------- 
-  $skillapproot/calendars/update_calendar:
+### /calendars/update--------------------------------------------- 
+  $skillapproot/calendars/update:
     post:
       title: Update a calendar
       operationId: Updatecalendar
@@ -472,7 +472,6 @@ components:
             Lower bound (inclusive) for an event's end time to filter by.
             The default is the current time.
       required:
-        - originalStart
         - timeMin
         - timeMax
 ### ClearCalendarRequest================================
