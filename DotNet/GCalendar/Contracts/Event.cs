@@ -347,10 +347,10 @@ namespace GCalendar.Contracts
         public string HtmlLink { get; set; }
 
         [JsonProperty("created"), JsonPropertyName("created")]
-        public DateTime Created { get; set; }
+        public DateTime? Created { get; set; }
 
         [JsonProperty("updated"), JsonPropertyName("updated")]
-        public DateTime Updated { get; set; }
+        public DateTime? Updated { get; set; }
 
         [JsonProperty("summary"), JsonPropertyName("summary")]
         public string Summary { get; set; }
