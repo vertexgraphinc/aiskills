@@ -3,8 +3,11 @@ using System.Text.Json.Serialization;
 
 namespace GMail.Contracts
 {
-    public class ReplyEmailRequest : SearchFilters
+    public class ReplyMessageRequest
     {
+        [JsonProperty("id"), JsonPropertyName("id")]
+        public string Id { get; set; }
+
         [JsonProperty("new_cc"),JsonPropertyName("new_cc")]
         public string NewCC { get; set; }
 

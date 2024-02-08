@@ -56,7 +56,7 @@ namespace GMail.Controllers
                 resp = await client.RequestRefreshTokenAsync(new RefreshTokenRequest
                 {
                     Address = "https://oauth2.googleapis.com/token",
-                    GrantType = Para.GrantType,
+                    GrantType = "refresh_token",
 
                     ClientId = Para.ClientId,
                     ClientSecret = Para.ClientSecret,
@@ -86,11 +86,15 @@ namespace GMail.Controllers
                     ErrorDescription = resp.HttpErrorReason
                 };
             }
-
+            string refreshToken = resp.RefreshToken;
+            if(resp.RefreshToken == null)
+            {
+                refreshToken = resp.AccessToken;
+            }
             return new OAuthToken
             {
                 AccessToken = resp.AccessToken,
-                RefreshToken = resp.RefreshToken,
+                RefreshToken = refreshToken,
                 ExpiresIn = resp.ExpiresIn.ToString(),
                 Scope = resp.Scope
             };

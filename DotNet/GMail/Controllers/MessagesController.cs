@@ -68,13 +68,10 @@ namespace GMail.Controllers
         }
 
         [HttpPost("get"),HttpPost("~/skill/{controller}/get")]
-        public async Task<GetEmailsResponse> GetEmail(GetEmailRequest Para)
+        public async Task<GetEmailsResponse> GetEmail(SearchFilters Para)
         {
             System.Diagnostics.Debug.WriteLine("[vertex][Messages][GetEmail]");
             var response = new GetEmailsResponse();
-            Response.StatusCode = 200;
-
-            var RetMsgs = new List<GMailMessage>();
             string Token = GetSessionToken();
             if (!Has(Token))
             {
@@ -82,55 +79,37 @@ namespace GMail.Controllers
                 response.Message = "Unauthorized.";
                 return response;
             }
-            try
+            var RetMsgs = new List<GMailMessage>();
+            Response.StatusCode = 200;
+
+            QueryEmailsResponse emails = await QueryEmails(Para);
+            if (emails != null && emails.Messages != null && emails.Messages.Count  > 0)
             {
-                if (IsJsonObject(Para.Id))
+                try
                 {
-                    var msgs = GetIdsFromMessageObj(Para.Id);
-                    string errors = "";
-                    foreach (var msg in msgs)
+                    foreach(var eml in emails.Messages)
                     {
-                        Para.Id = msg.Id;
-                        var resp = await GetMessage(Para);
+                        GetEmailRequest msgPara = new GetEmailRequest();
+                        msgPara.Id = eml.Id;
+                        var resp = await GetMessage(msgPara);
                         if (resp == null)
                         {
-                            errors = AppendString(errors, $"Id {msg.Id} was not found");
                         }
                         else
                         {
                             RetMsgs.Add(resp);
+                            response.Message = "Success";
                         }
                     }
-                    if (errors == "")
-                    {
-                        response.Message = "Success";
-                    }
-                    else
-                    {
-                        response.Message = errors;
-                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    var resp = await GetMessage(Para);
-                    if (resp == null)
-                    {
-                    }
-                    else
-                    {
-                        RetMsgs.Add(resp);
-                        response.Message = "Success";
-                    }
+                    Response.StatusCode = 500;
+                    response.Message = ex.Message;
+                    return response;
                 }
+                response.Messages = RetMsgs;
             }
-            catch (Exception ex)
-            {
-                Response.StatusCode = 500;
-                response.Message = ex.Message;
-                return response;
-            }
-            response.Messages = RetMsgs; 
-
             System.Diagnostics.Debug.WriteLine("[vertex][GetEmail]response:" + JsonConvert.SerializeObject(response));
 
             return response;
@@ -191,9 +170,7 @@ namespace GMail.Controllers
              */
             //EXAMPLE PROMPT: search for an email containing XYZ in the subject and forward it to user@example.com
             System.Diagnostics.Debug.WriteLine("[vertex][Messages][ForwardEmail]");
-            var response = new ServerResponse();
-            Response.StatusCode = 200;
-
+            var response = new GetEmailsResponse();
             string Token = GetSessionToken();
             if (!Has(Token))
             {
@@ -201,42 +178,38 @@ namespace GMail.Controllers
                 response.Message = "Unauthorized.";
                 return response;
             }
-            try
+            Response.StatusCode = 200;
+            QueryEmailsResponse emails = await QueryEmails(Para);
+            if (emails != null && emails.Messages != null && emails.Messages.Count > 0)
             {
-                if (IsJsonObject(Para.Id))
+                try
                 {
-                    var msgs = GetIdsFromMessageObj(Para.Id);
                     string errors = "";
-                    foreach (var msg in msgs)
+                    foreach (var eml in emails.Messages)
                     {
-                        Para.Id = msg.Id;
-                        var resp = await ForwardMessage(Para);
+                        var msgPara = new ForwardMessageRequest();
+                        msgPara.Id = eml.Id;
+                        msgPara.NewBCC = Para.NewBCC;
+                        msgPara.NewCC = Para.NewCC;
+                        msgPara.NewTo = Para.NewTo;
+                        var resp = await ForwardMessage(msgPara);
                         if (resp != null && resp.Message != "Success.")
                         {
                             errors += resp.Message;
                         }
                     }
-                    if(errors == "")
+                    if (errors == "")
                     {
                         response.Message = "Success.";
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    var resp = await ForwardMessage(Para);
-                    if (resp != null && resp.Message != "Success.")
-                    {
-                        response.Message = "Success";
-                    }
+                    Response.StatusCode = 500;
+                    response.Message = ex.Message;
+                    return response;
                 }
             }
-            catch (Exception ex)
-            {
-                Response.StatusCode = 500;
-                response.Message = ex.Message;
-                return response;
-            }
-
             if (!Has(response.Message))
             {
                 response.Message = "Success.";
@@ -260,9 +233,7 @@ namespace GMail.Controllers
              */
             //EXAMPLE PROMPT: search for an email containing XYZ in the subject and send a reply to it with new body of "new body test"
             System.Diagnostics.Debug.WriteLine("[vertex][Messages][ReplyEmail]");
-            var response = new ServerResponse();
-            Response.StatusCode = 200;
-
+            var response = new GetEmailsResponse();
             string Token = GetSessionToken();
             if (!Has(Token))
             {
@@ -270,16 +241,22 @@ namespace GMail.Controllers
                 response.Message = "Unauthorized.";
                 return response;
             }
-            try
+            Response.StatusCode = 200;
+            QueryEmailsResponse emails = await QueryEmails(Para);
+            if (emails != null && emails.Messages != null && emails.Messages.Count > 0)
             {
-                if (IsJsonObject(Para.Id))
+                try
                 {
-                    var msgs = GetIdsFromMessageObj(Para.Id);
                     string errors = "";
-                    foreach (var msg in msgs)
+                    foreach (var eml in emails.Messages)
                     {
-                        Para.Id = msg.Id;
-                        var resp = await ReplyMessage(Para);
+                        var msgPara = new ReplyMessageRequest();
+                        msgPara.Id = eml.Id;
+                        msgPara.NewCC = Para.NewCC;
+                        msgPara.NewBCC = Para.NewBCC;
+                        msgPara.NewSubject = Para.NewSubject;
+                        msgPara.NewBody = Para.NewBody;
+                        var resp = await ReplyMessage(msgPara);
                         if (resp != null && resp.Message != "Success.")
                         {
                             errors += resp.Message;
@@ -290,24 +267,16 @@ namespace GMail.Controllers
                         response.Message = "Success.";
                     }
                 }
-                else
+                catch (Exception ex)
                 {
-                    var resp = await ReplyMessage(Para);
-                    if (resp != null && resp.Message != "Success.")
-                    {
-                        response.Message = resp.Message;
-                    }
+                    Response.StatusCode = 500;
+                    response.Message = ex.Message;
+                    return response;
                 }
             }
-            catch (Exception ex)
+            if (!Has(response.Message))
             {
-                Response.StatusCode = 500;
-                response.Message = ex.Message;
-                return response;
-            }
-
-            if (!Has(response.Message)) {
-                response.Message = "Success."; 
+                response.Message = "Success.";
             }
 
             System.Diagnostics.Debug.WriteLine("[vertex][Messages][ReplyEmail]response:" + JsonConvert.SerializeObject(response));

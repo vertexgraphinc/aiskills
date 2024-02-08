@@ -74,9 +74,9 @@ paths:
 ### /messages/get-------------------------------------------------------------- 
   $skillapproot/messages/get:
     post:
-      title: Get an Email
+      title: Get Email
       operationId: GetEmail
-      summary: Reads the details of an email message.
+      summary: Reads the details and full body of one or more email messages.
       responses:
         "200":
           description: OK  
@@ -100,7 +100,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/GetEmailRequest"
+              $ref: "#/components/schemas/SearchFilters"
         required: true 
 ### /threads/query------------------------------------------------------------- 
   $skillapproot/messages/send:
@@ -136,9 +136,9 @@ paths:
 ### /messages/forward---------------------------------------------------------- 
   $skillapproot/messages/forward:
     post:
-      title: Forward an Email
+      title: Forward Email
       operationId: ForwardEmail
-      summary: Forwards an email message to new recipient.
+      summary: Searches and forwards one or more email messages to new recipients.
       responses:
         "200":
           description: OK  
@@ -167,9 +167,9 @@ paths:
 ### /messages/reply------------------------------------------------------------ 
   $skillapproot/messages/reply:
     post:
-      title: Reply to an Email
+      title: Reply to Email
       operationId: ReplyToEmail
-      summary: Replies to an email message.
+      summary: Searches and replies to one or more email messages.
       responses:
         "200":
           description: OK  
@@ -194,37 +194,6 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/ReplyEmailRequest"
-        required: true 
-### /messages/add_label-------------------------------------------------------- 
-  $skillapproot/messages/add_label:
-    post:
-      title: Add a Label to an Email
-      operationId: AddLabelToEmail
-      summary: Adds a label to an email message.
-      responses:
-        "200":
-          description: OK  
-          content:        
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerResponse'    
-        "500":
-          description: Server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerResponse'  
-        "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerResponse'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/AddLabelRequest"
         required: true 
 ### /messages/query_add_label-------------------------------------------------- 
   $skillapproot/messages/query_add_label:
@@ -443,17 +412,6 @@ components:
             - label
         - required:
             - status
-### GetEmailRequest=====================================
-    GetEmailRequest:
-      title: Parameters for the Get Email operation.
-      type: object
-      properties:                         
-        id:      
-          title: Id
-          type: string    
-          description: The Message Id of an email from the Search Emails results.
-      required:
-        - id
 ### SendEmailRequest====================================
     SendEmailRequest:
       title: Parameters for the Send Email operation.   
@@ -486,11 +444,40 @@ components:
     ForwardEmailRequest:
       title: Parameters for the Forward Email operation.   
       type: object
-      properties:     
-        id:      
-          title: Id
+      properties:
+        from:   
+          title: From
           type: string    
-          description: The Message Id of an email from the Search Emails results.                  
+          description: Only return emails containing this string in the "From".
+        to:      
+          title: To
+          type: string    
+          description: Only return emails containing this string in the "To". 
+        subject:       
+          title: Subject 
+          type: string    
+          description: Only return emails containing this string in the "Subject".
+        body:           
+          title: Body
+          type: string    
+          description: Only return emails containing this string in the "Body".
+        begin_time:    
+          title: Begin Time 
+          type: string    
+          description: Only return emails older than this date.
+        end_time:       
+          title: End Time 
+          type: string    
+          description: Only return emails newer than this date.
+        label:          
+          title: Label
+          type: string    
+          description: Only return emails with this label.  
+        status:          
+          title: Status
+          type: string    
+          description: Only return emails with status of "starred", "snoozed", "read", or "unread".
+          pattern: ^(starred|snoozed|read|unread)$                  
         new_to:      
           title: New To
           type: string    
@@ -504,17 +491,45 @@ components:
           type: string    
           description: One or more comma separated email addresses for the BCC field of the forward message.
       required:
-        - id
         - new_to
 ### ReplyEmailRequest===================================
     ReplyEmailRequest:
       title: Parameters for the Reply to Email operation. 
       type: object
-      properties:                         
-        id:      
-          title: Id
+      properties:  
+        from:   
+          title: From
           type: string    
-          description: The Message Id of an email from the Search Emails results.
+          description: Only return emails containing this string in the "From".
+        to:      
+          title: To
+          type: string    
+          description: Only return emails containing this string in the "To". 
+        subject:       
+          title: Subject 
+          type: string    
+          description: Only return emails containing this string in the "Subject".
+        body:           
+          title: Body
+          type: string    
+          description: Only return emails containing this string in the "Body".
+        begin_time:    
+          title: Begin Time 
+          type: string    
+          description: Only return emails older than this date.
+        end_time:       
+          title: End Time 
+          type: string    
+          description: Only return emails newer than this date.
+        label:          
+          title: Label
+          type: string    
+          description: Only return emails with this label.  
+        status:          
+          title: Status
+          type: string    
+          description: Only return emails with status of "starred", "snoozed", "read", or "unread".
+          pattern: ^(starred|snoozed|read|unread)$   
         new_cc:      
           title: New CC
           type: string    
@@ -532,72 +547,95 @@ components:
           type: string    
           description: The body of the reply email.
       required:
-        - id
         - new_body
-### AddLabelRequest=====================================
-    AddLabelRequest:
-      title: Parameters for the Add Label to Email operation.  
-      type: object
-      properties:                         
-        id:      
-          title: Id
-          type: string    
-          description: The Message Id of an email from the Search Emails results.
-        label:      
-          title: Label
-          type: string    
-          description: The name of the label to add.
-      required:
-        - id
-        - label
-### RemoveLabelRequest==================================
-    RemoveLabelRequest:
-      title: Parameters for the Remove Label from Email operation.   
-      type: object
-      properties:                         
-        id:      
-          title: Id
-          type: string    
-          description: The Message Id of an email from the Search Emails results.
-        label:      
-          title: Label
-          type: string    
-          description: The name of the label to remove.
-      required:
-        - id
-        - label
 ### AddLabelThreadRequest===============================
     AddLabelThreadRequest:
       title: Parameters for the Add Label to Thread operation.   
       type: object
       properties:                         
-        id:      
-          title: Id
+        from:   
+          title: From
           type: string    
-          description: The Message Id of an email from the Search Threads results.
-        label:      
+          description: Only return emails containing this string in the "From".
+        to:      
+          title: To
+          type: string    
+          description: Only return emails containing this string in the "To". 
+        subject:       
+          title: Subject 
+          type: string    
+          description: Only return emails containing this string in the "Subject".
+        body:           
+          title: Body
+          type: string    
+          description: Only return emails containing this string in the "Body".
+        begin_time:    
+          title: Begin Time 
+          type: string    
+          description: Only return emails older than this date.
+        end_time:       
+          title: End Time 
+          type: string    
+          description: Only return emails newer than this date.
+        label:          
+          title: Label
+          type: string    
+          description: Only return emails with this label.  
+        status:          
+          title: Status
+          type: string    
+          description: Only return emails with status of "starred", "snoozed", "read", or "unread".
+          pattern: ^(starred|snoozed|read|unread)$ 
+        new_label:      
           title: Label
           type: string    
           description: The name of the label to add.
       required:
-        - id
-        - label
+        - new_label
 ### RemoveLabelThreadRequest============================
     RemoveLabelThreadRequest:
       title: Parameters for the Remove Label from Thread operation.   
       type: object
       properties:                         
-        id:      
-          title: Id
+        from:   
+          title: From
           type: string    
-          description: The Message Id of an email from the Search Threads results.
-        label:      
+          description: Only return emails containing this string in the "From".
+        to:      
+          title: To
+          type: string    
+          description: Only return emails containing this string in the "To". 
+        subject:       
+          title: Subject 
+          type: string    
+          description: Only return emails containing this string in the "Subject".
+        body:           
+          title: Body
+          type: string    
+          description: Only return emails containing this string in the "Body".
+        begin_time:    
+          title: Begin Time 
+          type: string    
+          description: Only return emails older than this date.
+        end_time:       
+          title: End Time 
+          type: string    
+          description: Only return emails newer than this date.
+        label:          
           title: Label
+          type: string    
+          description: Only return emails with this label.  
+        status:          
+          title: Status
+          type: string    
+          description: Only return emails with status of "starred", "snoozed", "read", or "unread".
+          pattern: ^(starred|snoozed|read|unread)$ 
+        remove_label:      
+          title: Remove Label
           type: string    
           description: The name of the label to remove.
       required:
-        - id
-        - label
+        - remove_label
 ### QueryEmailAndAddLabelRequest========================
     QueryEmailAndAddLabelRequest:
       title: Parameters for the Search and Add Label operation.   
@@ -640,23 +678,6 @@ components:
           title: Add Label
           type: string    
           description: The name of a label to add. If the label does not exist, it will be created automatically.
-      oneOf:
-        - required:
-            - from
-        - required:
-            - to
-        - required:
-            - subject
-        - required:
-            - body
-        - required:
-            - begin_time
-        - required:
-            - end_time
-        - required:
-            - label
-        - required:
-            - status
       required:
         - add_label
 ### QueryEmailAndRemoveLabelRequest=====================
@@ -701,23 +722,6 @@ components:
           title: Remove Label
           type: string    
           description: The name of a label to remove.
-      oneOf:
-        - required:
-            - from
-        - required:
-            - to
-        - required:
-            - subject
-        - required:
-            - body
-        - required:
-            - begin_time
-        - required:
-            - end_time
-        - required:
-            - label
-        - required:
-            - status
       required:
         - remove_label
 ### ++++++++++++++++++++++++++++++++++++++++++++++++++++   
@@ -774,14 +778,6 @@ components:
       title: Gmail Message
       type: object
       properties:   
-        id:
-          title: Id
-          type: string  
-          description: The Message Id of the email.
-        threadId:
-          title: Thread Id
-          type: string 
-          description: The Thread Id that the email belongs to.
         to:
           title: To
           type: string

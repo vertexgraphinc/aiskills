@@ -12,7 +12,7 @@ namespace GMail.Helpers
 {
     public class MessagesHelpers : OAuthSession
     {
-        int _defaultMaxResults = 5;
+        int _defaultMaxResults = 10;
 
         #region Fetching Data
         public async Task<List<GMailMessage>> ListMessages(SearchFilters Para)
@@ -454,7 +454,7 @@ namespace GMail.Helpers
             }
             return response;
         }
-        public async Task<ServerResponse> ForwardMessage(ForwardEmailRequest Para)
+        public async Task<ServerResponse> ForwardMessage(ForwardMessageRequest Para)
         {
             System.Diagnostics.Debug.WriteLine("[vertex][ForwardMessage]");
             var response = new ServerResponse();
@@ -554,7 +554,7 @@ namespace GMail.Helpers
                 return false;
             }
         }
-        public async Task<ServerResponse> ReplyMessage(ReplyEmailRequest Para)
+        public async Task<ServerResponse> ReplyMessage(ReplyMessageRequest Para)
         {
             System.Diagnostics.Debug.WriteLine("[vertex][ReplyMessage]");
             var response = new ServerResponse();

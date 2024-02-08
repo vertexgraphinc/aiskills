@@ -3,8 +3,11 @@ using System.Text.Json.Serialization;
 
 namespace GMail.Contracts
 {
-    public class ForwardEmailRequest: SearchFilters
+    public class ForwardMessageRequest
     {
+        [JsonProperty("id"), JsonPropertyName("id")]
+        public string Id { get; set; }
+
         [JsonProperty("new_to"),JsonPropertyName("new_to")]        
         public string NewTo { get; set; }
 
