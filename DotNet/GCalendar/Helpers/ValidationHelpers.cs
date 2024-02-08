@@ -98,14 +98,7 @@ namespace GCalendar.Helpers
                 {
                     if (IsSimpleType(property.PropertyType))
                     {
-                        if (property.PropertyType == typeof(DateTime))
-                        {
-                            result[key] = ((DateTime) value).ToString("O");
-                        }
-                        else
-                        {
-                            result[key] = value.ToString();
-                        }                    
+                        result[key] = value.ToString();          
                     }
                     else
                     {
