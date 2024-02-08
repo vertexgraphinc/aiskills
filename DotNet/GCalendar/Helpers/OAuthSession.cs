@@ -42,7 +42,11 @@ namespace GCalendar.Helpers
                 using (var httpResponse = await client.SendAsync(request))
                 {
                     string s = await httpResponse.Content.ReadAsStringAsync();
-                    //s = s.Replace("\r", "").Replace("\n", "");
+
+                    if (!httpResponse.IsSuccessStatusCode)
+                    {
+                        throw new Exception(httpResponse.ReasonPhrase);
+                    }
 
                     System.Diagnostics.Debug.WriteLine("[vertex][Get<T>]:Url:" + Url);
                     System.Diagnostics.Debug.WriteLine("[vertex][Get<T>]:s:" + Sanitize(s));
@@ -69,6 +73,12 @@ namespace GCalendar.Helpers
                 using (var httpResponse = await client.SendAsync(request))
                 {
                     string s = await httpResponse.Content.ReadAsStringAsync();
+
+                    if (!httpResponse.IsSuccessStatusCode)
+                    {
+                        throw new Exception(httpResponse.ReasonPhrase);
+                    }
+
                     return JsonConvert.DeserializeObject<T>(s);
                 }
             }

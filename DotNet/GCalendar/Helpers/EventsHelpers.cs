@@ -4,7 +4,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using GCalendar.Contracts;
 using GCalendar.GCalendarClient;
-using static Google.Apis.Requests.BatchRequest;
+using Newtonsoft.Json;
 
 namespace GCalendar.Helpers
 {
@@ -16,7 +16,11 @@ namespace GCalendar.Helpers
 
             var response = new ServerResponse();
 
-            var result = await Post<Event>($"/primary/events", JsonSerializer.Serialize(Para.Event));
+            var result = await Post<Event>($"/primary/events", JsonConvert.SerializeObject(Para.Event, Formatting.None,
+                            new JsonSerializerSettings
+                            {
+                                NullValueHandling = NullValueHandling.Ignore
+                            }));
             
             if (Has(result))
             {
@@ -53,14 +57,14 @@ namespace GCalendar.Helpers
             System.Diagnostics.Debug.WriteLine("[vertex][ListEvents]:searchParams:" + searchParams);
 
             var result = await Get<GCalendarListEventsMessage>($"/primary/events?{searchParams}");
-            if (result == null)
+            if (!(Has(result) && Has(result.Items)))
                 return events;
 
             System.Diagnostics.Debug.WriteLine("[vertex][ListEvents]:searchParams:" + searchParams);
             foreach (var item in result.Items)
             {
                 
-                System.Diagnostics.Debug.WriteLine("[vertex][ListEvents]:event:" + JsonSerializer.Serialize(item));
+                System.Diagnostics.Debug.WriteLine("[vertex][ListEvents]:event:" + System.Text.Json.JsonSerializer.Serialize(item));
                 System.Diagnostics.Debug.WriteLine("[vertex][ListEvents]:==================================");
 
                 events.Add(item);
@@ -86,14 +90,14 @@ namespace GCalendar.Helpers
 
             object getPara = new
             {
-                timeMin = Para.TimeMin,
-                timeMax = Para.TimeMax
+                Para.TimeMin,
+                Para.TimeMax
             };
             string searchParams = AssembleOptionalParameters(getPara);
             System.Diagnostics.Debug.WriteLine("[vertex][RemoveEvent]:searchParams:" + searchParams);
 
             var results = await Get<GCalendarListEventsMessage>($"/primary/events?{searchParams}");
-            if (results == null)
+            if (!(Has(results) && Has(results.Items)))
             {
                 System.Diagnostics.Debug.WriteLine("[vertex][RemoveMultipleEvents]:Failure");
                 response.Message = "No events found to be removed.";
@@ -103,32 +107,47 @@ namespace GCalendar.Helpers
             var failedCounter = 0;
             foreach (var item in results.Items)
             {
-                foreach (var attendee in item.Attendees)
+                if (Has(Para.Email) || Has(Para.DisplayName))
                 {
-                    if (Has(Para.Email))
+                    if (Has(item.Attendees))
                     {
-                        if (attendee.Email == Para.Email)
+                        foreach (var attendee in item.Attendees)
                         {
-                            var result = await Delete($"/primary/events/{item.Id}");
-                            if (!result)
+                            if (Has(Para.Email))
                             {
-                                failedCounter++;
+                                if (attendee.Email == Para.Email)
+                                {
+                                    var result = await Delete($"/primary/events/{item.Id}");
+                                    if (!result)
+                                    {
+                                        failedCounter++;
+                                    }
+                                    break;
+                                }
                             }
-                            continue;
+                            if (Has(Para.DisplayName))
+                            {
+                                if (attendee.DisplayName == Para.DisplayName)
+                                {
+                                    var result = await Delete($"/primary/events/{item.Id}");
+                                    if (!result)
+                                    {
+                                        failedCounter++;
+                                    }
+                                    break;
+                                }
+                            }
                         }
                     }
-                    if (Has(Para.DisplayName))
+                }
+                else
+                {
+                    var result = await Delete($"/primary/events/{item.Id}");
+                    if (!result)
                     {
-                        if (attendee.DisplayName == Para.DisplayName)
-                        {
-                            var result = await Delete($"/primary/events/{item.Id}");
-                            if (!result)
-                            {
-                                failedCounter++;
-                            }
-                            continue;
-                        }
+                        failedCounter++;
                     }
+                    continue;
                 }
             }
 
@@ -152,11 +171,6 @@ namespace GCalendar.Helpers
 
             var events = new List<Event>();
 
-            if (!Has(Para.OriginalStart))
-            {
-                throw new Exception("Original start time is not provided.");
-            }
-
             if (!Has(Para.TimeMin))
             {
                 throw new Exception("Time min is not provided.");
@@ -169,14 +183,14 @@ namespace GCalendar.Helpers
 
             object getPara = new
             {
-                timeMin = Para.TimeMin,
-                timeMax = Para.TimeMax
+                Para.TimeMin,
+                Para.TimeMax
             };
             string searchGeneralParams = AssembleOptionalParameters(getPara);
             System.Diagnostics.Debug.WriteLine("[vertex][GetEventInstances]:searchGeneralParams:" + searchGeneralParams);
 
             var results = await Get<GCalendarListEventsMessage>($"/primary/events?{searchGeneralParams}");
-            if (results == null)
+            if (!(Has(results) && Has(results.Items)))
                 return events;
 
             string searchParams = AssembleOptionalParameters(Para);
@@ -184,16 +198,19 @@ namespace GCalendar.Helpers
 
             foreach (var item in results.Items)
             {
-                var result = await Get<GCalendarListEventsMessage>($"/primary/events/{item.Id}/instances?{searchParams}");
-                if (result == null)
-                    continue;
-
-                foreach (var instance in result.Items)
+                if (Has(item.Recurrence))
                 {
-                    System.Diagnostics.Debug.WriteLine("[vertex][GetEventInstances]:eventInstance:" + JsonSerializer.Serialize(instance));
-                    System.Diagnostics.Debug.WriteLine("[vertex][GetEventInstances]:==================================");
+                    var result = await Get<GCalendarListEventsMessage>($"/primary/events/{item.Id}/instances?{searchParams}");
+                    if (!(Has(result) && Has(result.Items)))
+                        continue;
 
-                    events.Add(item);
+                    foreach (var instance in result.Items)
+                    {
+                        System.Diagnostics.Debug.WriteLine("[vertex][GetEventInstances]:eventInstance:" + System.Text.Json.JsonSerializer.Serialize(instance));
+                        System.Diagnostics.Debug.WriteLine("[vertex][GetEventInstances]:==================================");
+
+                        events.Add(item);
+                    }
                 }
 
             }

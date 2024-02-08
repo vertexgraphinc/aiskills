@@ -22,7 +22,7 @@ namespace GCalendar.Controllers
         }
 
         #region Create a Calendar Event
-        [HttpPost("create_event"),HttpPost("~/skill/{controller}/create_event")]
+        [HttpPost("create"),HttpPost("~/skill/{controller}/create")]
         public async Task<ServerResponse> CreateEvent(CreateEventRequest Para)
         {
             System.Diagnostics.Debug.WriteLine("[vertex][Events][CreateEvent]");
@@ -54,7 +54,7 @@ namespace GCalendar.Controllers
         #endregion
 
         #region Get Calendar Events
-        [HttpPost("get_events"), HttpPost("~/skill/{controller}/get_events")]
+        [HttpPost("get"), HttpPost("~/skill/{controller}/get")]
         public async Task<GetEventsResponse> GetEvents(GetEventsRequest Para)
         {
             System.Diagnostics.Debug.WriteLine("[vertex][Events][GetEvents]");
@@ -94,7 +94,7 @@ namespace GCalendar.Controllers
         #endregion
 
         #region Remove Calendar Events
-        [HttpPost("remove_events"), HttpPost("~/skill/{controller}/remove_events")]
+        [HttpPost("remove"), HttpPost("~/skill/{controller}/remove")]
         public async Task<ServerResponse> RemoveEvents(RemoveEventsRequest Para)
         {
             System.Diagnostics.Debug.WriteLine("[vertex][Events][RemoveEvents]");
@@ -126,7 +126,7 @@ namespace GCalendar.Controllers
         #endregion
 
         #region Get a Recurring Calendar Event
-        [HttpPost("get_recurring_event"), HttpPost("~/skill/{controller}/get_recurring_event")]
+        [HttpPost("get_recurring"), HttpPost("~/skill/{controller}/get_recurring")]
         public async Task<GetRecurringEventResponse> GetRecurringEvent(GetRecurringEventRequest Para)
         {
             System.Diagnostics.Debug.WriteLine("[vertex][Events][GetRecurringEvent]");
