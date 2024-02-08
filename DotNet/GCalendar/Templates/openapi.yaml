@@ -14,7 +14,7 @@ paths:
     post:
       title: Create a new event
       operationId: CreateEvent
-      summary: Create a new event in a specific calendar
+      summary: Create a new event in the primary calendar
       responses:
         "200":
           description: OK  
@@ -46,7 +46,7 @@ paths:
     post:
       title: Get events
       operationId: GetEvents
-      summary: Get events from a specific calendar
+      summary: Get events from the primary calendar
       responses:
         "200":
           description: OK  
@@ -78,7 +78,7 @@ paths:
     post:
       title: Remove events
       operationId: RemoveEvents
-      summary: Remove events by ID from a specific calendar
+      summary: Remove events by ID from the primary calendar
       responses:
         "200":
           description: OK  
@@ -381,7 +381,7 @@ components:
         event:
           title: Event
           type: object
-          description: Event info
+          description: Event basic information, based on the schema of Event
           allOf:
             - $ref: '#/components/schemas/Event'
           required:
