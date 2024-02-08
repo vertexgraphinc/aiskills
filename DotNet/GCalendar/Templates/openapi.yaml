@@ -405,14 +405,14 @@ components:
           title: Time Max
           description: |
             Upper bound (exclusive) for an event's start time to filter by.
-            The default is the current time.
+            Must be an RFC3339 timestamp with mandatory time zone offset
         timeMin:
           type: string
           format: date-time
           title: Time Min
           description: |
             Lower bound (inclusive) for an event's end time to filter by.
-            The default is the current time.
+            Must be an RFC3339 timestamp with mandatory time zone offset
       required:
         - timeMin
         - timeMax

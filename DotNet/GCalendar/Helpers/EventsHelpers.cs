@@ -40,36 +40,21 @@ namespace GCalendar.Helpers
         {
             System.Diagnostics.Debug.WriteLine("[vertex][ListEvents]");
 
-            var events = new List<Event>();
-
-            if (!Has(Para.TimeMin))
-            {
-                throw new Exception("Time min is not provided.");
-            }
-
-            if (!Has(Para.TimeMax))
-            {
-                throw new Exception("Time max is not provided.");
-            }
-
+            
+            Para.TimeMin = ParseDate(Para.TimeMin, DateTime.Today);
+   
+            Para.TimeMax = ParseDate(Para.TimeMax, DateTime.Today.AddDays(7));
+            
             string searchParams = AssembleOptionalParameters(Para);
 
             System.Diagnostics.Debug.WriteLine("[vertex][ListEvents]:searchParams:" + searchParams);
 
             var result = await Get<GCalendarListEventsMessage>($"/primary/events?{searchParams}");
             if (!(Has(result) && Has(result.Items)))
-                return events;
+                return new List<Event>();
 
             System.Diagnostics.Debug.WriteLine("[vertex][ListEvents]:searchParams:" + searchParams);
-            foreach (var item in result.Items)
-            {
-                
-                System.Diagnostics.Debug.WriteLine("[vertex][ListEvents]:event:" + System.Text.Json.JsonSerializer.Serialize(item));
-                System.Diagnostics.Debug.WriteLine("[vertex][ListEvents]:==================================");
-
-                events.Add(item);
-            }
-            return events;
+            return result.Items;
         }
 
         public async Task<ServerResponse> DeleteMultipleEvents(RemoveEventsRequest Para)
@@ -78,15 +63,9 @@ namespace GCalendar.Helpers
 
             var response = new ServerResponse();
 
-            if (!Has(Para.TimeMin))
-            {
-                throw new Exception("Time min is not provided.");
-            }
+            Para.TimeMin = ParseDate(Para.TimeMin, DateTime.Today);
 
-            if (!Has(Para.TimeMax))
-            {
-                throw new Exception("Time max is not provided.");
-            }
+            Para.TimeMax = ParseDate(Para.TimeMax, DateTime.Today.AddDays(7));
 
             object getPara = new
             {
@@ -171,15 +150,11 @@ namespace GCalendar.Helpers
 
             var events = new List<Event>();
 
-            if (!Has(Para.TimeMin))
-            {
-                throw new Exception("Time min is not provided.");
-            }
+            Para.OriginalStart = ParseDate(Para.OriginalStart, DateTime.Today);
 
-            if (!Has(Para.TimeMax))
-            {
-                throw new Exception("Time max is not provided.");
-            }
+            Para.TimeMin = ParseDate(Para.TimeMin, DateTime.Today);
+
+            Para.TimeMax = ParseDate(Para.TimeMax, DateTime.Today.AddDays(7));
 
             object getPara = new
             {

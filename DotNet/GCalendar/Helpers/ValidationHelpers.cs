@@ -62,6 +62,23 @@ namespace GCalendar.Helpers
             return string.Join("&", flattenedParameters);
         }
 
+        public string ParseDate(string date, DateTime defaultDate)
+        {
+            DateTime dt = defaultDate;
+            try
+            {
+                dt = DateTime.Parse(date);
+                System.Diagnostics.Debug.WriteLine("[vertex][ParseDate]date:" + date);
+                System.Diagnostics.Debug.WriteLine("[vertex][ParseDate]formatted:" + dt.ToString("yyyy-MM-ddTHH:mm:ssZ"));
+                return dt.ToString("yyyy-MM-ddTHH:mm:ssZ");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[vertex][ParseDate]ex.Message:" + ex.Message);
+            }
+            return dt.ToString("yyyy-MM-ddTHH:mm:ssZ");
+        }
+
         private Dictionary<string, string> Flatten(object obj, string prefix = "")
         {
             var result = new Dictionary<string, string>();
@@ -73,7 +90,8 @@ namespace GCalendar.Helpers
 
             foreach (var property in properties)
             {
-                var key = string.IsNullOrEmpty(prefix) ? property.Name : $"{prefix}.{property.Name}";
+                var propertyName = property.Name[..1].ToLower() + property.Name[1..];
+                var key = string.IsNullOrEmpty(prefix) ? propertyName : $"{prefix}.{propertyName}";
                 var value = property.GetValue(obj);
 
                 if (value != null)
