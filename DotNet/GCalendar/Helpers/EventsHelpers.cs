@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using GCalendar.Contracts;
 using GCalendar.GCalendarClient;
@@ -13,19 +14,63 @@ namespace GCalendar.Helpers
         public async Task<ServerResponse> AddEvent(CreateEventRequest Para)
         {
             System.Diagnostics.Debug.WriteLine("[vertex][AddEvent]");
-
             var response = new ServerResponse();
 
-            var result = await Post<Event>($"/primary/events", JsonConvert.SerializeObject(Para.Event, Formatting.None,
+            var attendeeList = new List<Attendee>();
+            string[] emailArray = Para.Attendees.Trim().Split(',');
+            foreach (var email in emailArray)
+            {
+                if (!Regex.IsMatch(email, @"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"))
+                {
+                    System.Diagnostics.Debug.WriteLine("[vertex][AttendeeEmailParse]:Sent attendee email in a wrong format");
+                    response.Message = "Attendee email in a wrong format";
+                }
+                var newAttendee = new Attendee { Email = email };
+                attendeeList.Add(newAttendee);
+            }
+
+            TimeZoneInfo timeZone = TimeZoneInfo.Local;
+            if (Has(Para.StartTimeZone))
+            {
+                timeZone = TimeZoneInfo.FindSystemTimeZoneById(Para.StartTimeZone);
+            }
+            
+            DateTime currentTime = DateTime.Now;
+            TimeSpan offset = timeZone.GetUtcOffset(currentTime);
+
+            var eventObject = new Event
+            {
+                Summary = Para.Summary,
+                Description = Para.Description,
+                Start = new Start
+                {
+                    DateTime = ParseDate(Para.StartDateTime, DateTime.MinValue, offset.ToString()),
+                    TimeZone = Para.StartTimeZone 
+                },
+                End = new End
+                {
+                    DateTime = ParseDate(Para.EndDateTime, DateTime.MinValue, offset.ToString()),
+                    TimeZone = Para.EndTimeZone 
+                },
+                Attendees = attendeeList
+        
+            };
+
+            
+            System.Diagnostics.Debug.WriteLine("[vertex][AddEvent]:test: " + eventObject.ToString());
+
+
+
+            var result = await Post<Event>($"/primary/events", JsonConvert.SerializeObject(eventObject, Formatting.None,
                             new JsonSerializerSettings
                             {
                                 NullValueHandling = NullValueHandling.Ignore
                             }));
-            
+
             if (Has(result))
             {
                 System.Diagnostics.Debug.WriteLine("[vertex][AddEvent]:Success");
-                response.Message = "";
+                response.Message = "Event added successfully";
             }
             else
             {
@@ -40,10 +85,13 @@ namespace GCalendar.Helpers
         {
             System.Diagnostics.Debug.WriteLine("[vertex][ListEvents]");
 
-            
-            Para.TimeMin = ParseDate(Para.TimeMin, DateTime.Today);
+            TimeZoneInfo timeZone = TimeZoneInfo.Local;
+  
+            DateTime currentTime = DateTime.Now;
+            TimeSpan offset = timeZone.GetUtcOffset(currentTime);
+            Para.TimeMin = ParseDate(Para.TimeMin, DateTime.Today, offset.ToString());
    
-            Para.TimeMax = ParseDate(Para.TimeMax, DateTime.Today.AddDays(7));
+            Para.TimeMax = ParseDate(Para.TimeMax, DateTime.Today.AddDays(7), offset.ToString());
             
             string searchParams = AssembleOptionalParameters(Para);
 
@@ -63,9 +111,14 @@ namespace GCalendar.Helpers
 
             var response = new ServerResponse();
 
-            Para.TimeMin = ParseDate(Para.TimeMin, DateTime.Today);
+            TimeZoneInfo timeZone = TimeZoneInfo.Local;
 
-            Para.TimeMax = ParseDate(Para.TimeMax, DateTime.Today.AddDays(7));
+            DateTime currentTime = DateTime.Now;
+            TimeSpan offset = timeZone.GetUtcOffset(currentTime);
+
+            Para.TimeMin = ParseDate(Para.TimeMin, DateTime.Today, offset.ToString());
+
+            Para.TimeMax = ParseDate(Para.TimeMax, DateTime.Today.AddDays(7), offset.ToString());
 
             object getPara = new
             {
@@ -150,11 +203,16 @@ namespace GCalendar.Helpers
 
             var events = new List<Event>();
 
-            Para.OriginalStart = ParseDate(Para.OriginalStart, DateTime.Today);
+            TimeZoneInfo timeZone = TimeZoneInfo.Local;
 
-            Para.TimeMin = ParseDate(Para.TimeMin, DateTime.Today);
+            DateTime currentTime = DateTime.Now;
+            TimeSpan offset = timeZone.GetUtcOffset(currentTime);
 
-            Para.TimeMax = ParseDate(Para.TimeMax, DateTime.Today.AddDays(7));
+            Para.OriginalStart = ParseDate(Para.OriginalStart, DateTime.Today, offset.ToString());
+
+            Para.TimeMin = ParseDate(Para.TimeMin, DateTime.Today, offset.ToString());
+
+            Para.TimeMax = ParseDate(Para.TimeMax, DateTime.Today.AddDays(7), offset.ToString());
 
             object getPara = new
             {

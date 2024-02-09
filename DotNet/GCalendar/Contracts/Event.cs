@@ -41,7 +41,7 @@ namespace GCalendar.Contracts
         public string Date { get; set; }
 
         [JsonProperty("dateTime"), JsonPropertyName("dateTime")]
-        public DateTime DateTime { get; set; }
+        public string DateTime { get; set; }
 
         [JsonProperty("timeZone"), JsonPropertyName("timeZone")]
         public string TimeZone { get; set; }
@@ -53,7 +53,7 @@ namespace GCalendar.Contracts
         public string Date { get; set; }
 
         [JsonProperty("dateTime"), JsonPropertyName("dateTime")]
-        public DateTime DateTime { get; set; }
+        public string DateTime { get; set; }
 
         [JsonProperty("timeZone"), JsonPropertyName("timeZone")]
         public string TimeZone { get; set; }

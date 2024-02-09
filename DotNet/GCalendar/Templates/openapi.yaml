@@ -378,17 +378,29 @@ components:
       title: Parameters for Create Event operations.
       type: object
       properties:
-        event:
-          title: Event
-          type: object
-          description: Event basic information, based on the schema of Event
-          allOf:
-            - $ref: '#/components/schemas/Event'
-          required:
-            - start
-            - end
-      required:
-        - event
+        summary:
+          type: string
+          description: Summary of the event.
+        description:
+          type: string
+          description: Description of the event.
+        startDateTime:
+          type: string
+          description: Start date and time of the event.
+        startTimeZone:
+          type: string
+          description: Time zone of the start time.
+        endDateTime:
+          type: string
+          description: End date and time of the event.
+        endTimeZone:
+          type: string
+          description: Time zone of the end time.
+        attendees:
+          type: string
+          description: Attendees email addresses concatnated together with a comma in between
+          example: "test@test.com,test1@test1.com,test2@test2.com"
+
 ### GetEventsRequest====================================
     GetEventsRequest:
       title: Parameters for Get Events operations.

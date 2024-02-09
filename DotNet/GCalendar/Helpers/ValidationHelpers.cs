@@ -62,7 +62,7 @@ namespace GCalendar.Helpers
             return string.Join("&", flattenedParameters);
         }
 
-        public string ParseDate(string date, DateTime defaultDate)
+        public string ParseDate(string date, DateTime defaultDate, string offset)
         {
             DateTime dt = defaultDate;
             try
@@ -70,13 +70,14 @@ namespace GCalendar.Helpers
                 dt = DateTime.Parse(date);
                 System.Diagnostics.Debug.WriteLine("[vertex][ParseDate]date:" + date);
                 System.Diagnostics.Debug.WriteLine("[vertex][ParseDate]formatted:" + dt.ToString("yyyy-MM-ddTHH:mm:ssZ"));
-                return dt.ToString("yyyy-MM-ddTHH:mm:ssZ");
+                return dt.ToString("yyyy-MM-ddTHH:mm:ss") + offset;
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine("[vertex][ParseDate]ex.Message:" + ex.Message);
+                if (dt == DateTime.MinValue) throw;
             }
-            return dt.ToString("yyyy-MM-ddTHH:mm:ssZ");
+            return dt.ToString("yyyy-MM-ddTHH:mm:ss") + offset;
         }
 
         private Dictionary<string, string> Flatten(object obj, string prefix = "")
