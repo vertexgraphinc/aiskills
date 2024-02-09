@@ -202,169 +202,169 @@ paths:
   #           schema:
   #             $ref: '#/components/schemas/RemoveCalendarRequest'      
 ### /calendars/update--------------------------------------------- 
-  $skillapproot/events/update:
-    post:
-      title: Update an event
-      operationId: UpdateEvent
-      summary: Update an event
-      responses:
-        "200":
-          description: OK  
-          content:        
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerResponse'    
-        "500":
-          description: Server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerResponse'  
-        "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerResponse'
-      requestBody:
-        description: Request body to get update event params
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UpdateEventRequest'     
+#   $skillapproot/events/update:
+#     post:
+#       title: Update an event
+#       operationId: UpdateEvent
+#       summary: Update an event
+#       responses:
+#         "200":
+#           description: OK  
+#           content:        
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/ServerResponse'    
+#         "500":
+#           description: Server error
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/ServerResponse'  
+#         "401":
+#           description: Unauthorized
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/ServerResponse'
+#       requestBody:
+#         description: Request body to get update event params
+#         required: true
+#         content:
+#           application/json:
+#             schema:
+#               $ref: '#/components/schemas/UpdateEventRequest'     
               
-### /calendars/move--------------------------------------------- 
-  $skillapproot/events/move:
-    post:
-      title: Move an event to a different calendar
-      operationId: MoveEvent
-      summary: Move an event to a different calendar
-      responses:
-        "200":
-          description: OK  
-          content:        
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerResponse'    
-        "500":
-          description: Server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerResponse'  
-        "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerResponse'
-      requestBody:
-        description: Request body to move event to a different calendar
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/MoveEventRequest'                
+# ### /calendars/move--------------------------------------------- 
+#   $skillapproot/events/move:
+#     post:
+#       title: Move an event to a different calendar
+#       operationId: MoveEvent
+#       summary: Move an event to a different calendar
+#       responses:
+#         "200":
+#           description: OK  
+#           content:        
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/ServerResponse'    
+#         "500":
+#           description: Server error
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/ServerResponse'  
+#         "401":
+#           description: Unauthorized
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/ServerResponse'
+#       requestBody:
+#         description: Request body to move event to a different calendar
+#         required: true
+#         content:
+#           application/json:
+#             schema:
+#               $ref: '#/components/schemas/MoveEventRequest'                
               
-### /calendars/create---------------------------------------------------- 
-  $skillapproot/calendars/create:
-    post:
-      title: Create a new calendar
-      operationId: CreateCalendar
-      summary: Create a new calendar
-      responses:
-        "200":
-          description: OK  
-          content:        
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerResponse'    
-        "500":
-          description: Server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerResponse'  
-        "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerResponse'
-      requestBody:
-        description: Request body to create a new event
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateCalendarRequest'
+# ### /calendars/create---------------------------------------------------- 
+#   $skillapproot/calendars/create:
+#     post:
+#       title: Create a new calendar
+#       operationId: CreateCalendar
+#       summary: Create a new calendar
+#       responses:
+#         "200":
+#           description: OK  
+#           content:        
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/ServerResponse'    
+#         "500":
+#           description: Server error
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/ServerResponse'  
+#         "401":
+#           description: Unauthorized
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/ServerResponse'
+#       requestBody:
+#         description: Request body to create a new event
+#         required: true
+#         content:
+#           application/json:
+#             schema:
+#               $ref: '#/components/schemas/CreateCalendarRequest'
               
-### /calendars/get------------------------------------------------------ 
-  $skillapproot/calendars/get:          
-    post:
-      title: Get Calendar Metadata
-      operationId: GetCalendar
-      summary: Get Calendar Metadata
-      responses:
-        "200":
-          description: OK  
-          content:        
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GetCalendarResponse'    
-        "500":
-          description: Server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GetCalendarResponse'  
-        "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GetCalendarResponse'
-      requestBody:
-        description: Request body to get calendar
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/GetCalendarRequest'              
+# ### /calendars/get------------------------------------------------------ 
+#   $skillapproot/calendars/get:          
+#     post:
+#       title: Get Calendar Metadata
+#       operationId: GetCalendar
+#       summary: Get Calendar Metadata
+#       responses:
+#         "200":
+#           description: OK  
+#           content:        
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/GetCalendarResponse'    
+#         "500":
+#           description: Server error
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/GetCalendarResponse'  
+#         "401":
+#           description: Unauthorized
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/GetCalendarResponse'
+#       requestBody:
+#         description: Request body to get calendar
+#         required: true
+#         content:
+#           application/json:
+#             schema:
+#               $ref: '#/components/schemas/GetCalendarRequest'              
 
-### /calendars/update--------------------------------------------- 
-  $skillapproot/calendars/update:
-    post:
-      title: Update a calendar
-      operationId: Updatecalendar
-      summary: Update a calendar
-      responses:
-        "200":
-          description: OK  
-          content:        
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerResponse'    
-        "500":
-          description: Server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerResponse'  
-        "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerResponse'
-      requestBody:
-        description: Request body to get update calendar params
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UpdateCalendarRequest'                 
+# ### /calendars/update--------------------------------------------- 
+#   $skillapproot/calendars/update:
+#     post:
+#       title: Update a calendar
+#       operationId: Updatecalendar
+#       summary: Update a calendar
+#       responses:
+#         "200":
+#           description: OK  
+#           content:        
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/ServerResponse'    
+#         "500":
+#           description: Server error
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/ServerResponse'  
+#         "401":
+#           description: Unauthorized
+#           content:
+#             application/json:
+#               schema:
+#                 $ref: '#/components/schemas/ServerResponse'
+#       requestBody:
+#         description: Request body to get update calendar params
+#         required: true
+#         content:
+#           application/json:
+#             schema:
+#               $ref: '#/components/schemas/UpdateCalendarRequest'                 
               
 ### ===========================================================================
 ### COMPONENTS=================================================================
