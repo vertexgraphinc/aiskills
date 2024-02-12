@@ -297,41 +297,7 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Event"
-          description: A list of event instances
-          
-### Calendar=============================================== 
-    Calendar:
-      type: object
-      properties:
-        kind:
-          type: string
-          description: The type of resource. This is always "calendar#calendar".
-        etag:
-          type: string
-          description: An ETag used to cache responses.
-        id:
-          type: string
-          description: The identifier for the calendar.
-        summary:
-          type: string
-          description: A short summary of the calendar.
-        description:
-          type: string
-          description: A description of the calendar.
-        location:
-          type: string
-          description: The location of the calendar.
-        timeZone:
-          type: string
-          description: The time zone of the calendar.
-        conferenceProperties:
-          type: object
-          properties:
-            allowedConferenceSolutionTypes:
-              type: array
-              items:
-                type: string
-              description: Types of conferencing solutions allowed for events on the calendar.      
+          description: A list of event instances    
 
 ### Event=============================================== 
     Event:
