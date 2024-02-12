@@ -24,5 +24,9 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="if not exist &quot;$(SolutionDir)bin&quot; mkdir &quot;$(SolutionDir)bin&quot;&#xD;&#xA;if not exist &quot;$(SolutionDir)bin\gmailskills&quot; mkdir &quot;$(SolutionDir)bin\gmailskills&quot;&#xD;&#xA;&#xD;&#xA;del &quot;$(SolutionDir)bin\gmailskills\*.*&quot;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;xcopy /Y /E /I &quot;$(TargetDir.TrimEnd(&quot;\&quot;))&quot;  &quot;$(SolutionDir)bin\gmailskills&quot;&#xD;&#xA;del &quot;$(SolutionDir)bin\gmailskills\*.pdb&quot;&#xD;&#xA;" />
+  </Target>
+
 
 </Project>
