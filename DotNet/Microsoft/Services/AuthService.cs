@@ -21,7 +21,7 @@ namespace Microsoft.Services
         public async Task<OAuthToken> RedeemToken(OAuthTokenPara Para)
         {
             TokenResponse resp = null;
-            string tenant = "organizations";
+            string tenant = "common";
 
             if (Para.GrantType == "authorization_code")
             {
