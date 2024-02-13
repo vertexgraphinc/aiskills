@@ -7,6 +7,6 @@ namespace GCalendar.Contracts
     public class GetEventsResponse : ServerResponse
     {
         [JsonProperty("events"), JsonPropertyName("events")]
-        public List<Event> Events { get; set; }
+        public List<SimpleEvent> Events { get; set; }
     }
 }
