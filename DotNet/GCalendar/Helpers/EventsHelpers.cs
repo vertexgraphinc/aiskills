@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using GCalendar.Contracts;
@@ -81,7 +81,7 @@ namespace GCalendar.Helpers
             return response;
         }
 
-        public async Task<List<Event>> ListEvents(GetEventsRequest Para)
+        public async Task<List<SimpleEvent>> ListEvents(GetEventsRequest Para)
         {
             System.Diagnostics.Debug.WriteLine("[vertex][ListEvents]");
 
@@ -99,10 +99,15 @@ namespace GCalendar.Helpers
 
             var result = await Get<GCalendarListEventsMessage>($"/primary/events?{searchParams}");
             if (!(Has(result) && Has(result.Items)))
-                return new List<Event>();
+                return new List<SimpleEvent>();
 
             System.Diagnostics.Debug.WriteLine("[vertex][ListEvents]:searchParams:" + searchParams);
-            return result.Items;
+            var events = new List<SimpleEvent>();
+            foreach (var item in result.Items)
+            {
+                events.Add(SimplifyEvent(item));
+            }
+            return events;
         }
 
         public async Task<ServerResponse> DeleteMultipleEvents(RemoveEventsRequest Para)
@@ -197,11 +202,11 @@ namespace GCalendar.Helpers
             return response;
         }
 
-        public async Task<List<Event>> GetEventInstances(GetRecurringEventRequest Para)
+        public async Task<List<SimpleEvent>> GetEventInstances(GetRecurringEventRequest Para)
         {
             System.Diagnostics.Debug.WriteLine("[vertex][GetEventInstances]");
 
-            var events = new List<Event>();
+            var events = new List<SimpleEvent>();
 
             TimeZoneInfo timeZone = TimeZoneInfo.Local;
 
@@ -242,7 +247,7 @@ namespace GCalendar.Helpers
                         System.Diagnostics.Debug.WriteLine("[vertex][GetEventInstances]:eventInstance:" + System.Text.Json.JsonSerializer.Serialize(instance));
                         System.Diagnostics.Debug.WriteLine("[vertex][GetEventInstances]:==================================");
 
-                        events.Add(item);
+                        events.Add(SimplifyEvent(item));
                     }
                 }
 

@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Text.RegularExpressions;
-using HtmlAgilityPack;
 using System.Collections.Generic;
 using System.Linq;
+using GCalendar.Contracts;
 
 namespace GCalendar.Helpers
 {
@@ -118,6 +118,26 @@ namespace GCalendar.Helpers
         private static bool IsSimpleType(Type type)
         {
             return type.IsPrimitive || type.IsEnum || type == typeof(string) || type == typeof(decimal) || type == typeof(DateTime);
+        }
+
+        public SimpleEvent SimplifyEvent(Event item) {
+            return new SimpleEvent
+            {
+                Id = item.Id,
+                Status = item.Status,
+                Summary = item.Summary,
+                Description = item.Description,
+                Location = item.Location,
+                StartDateTime = Has(item.Start.DateTime) ? item.Start.DateTime : item.Start.Date,
+                StartTimeZone = item.Start.TimeZone,
+                EndDateTime = Has(item.End.DateTime) ? item.End.DateTime : item.End.Date,
+                EndTimeZone = item.End.TimeZone,
+                Recurrence = Has(item.Recurrence) ? string.Join(",", item.Recurrence) : null,
+                RecurringEventId = item.RecurringEventId,
+                OriginalStartDateTime = Has(item.OriginalStartTime) ? (Has(item.OriginalStartTime.DateTime) ? item.OriginalStartTime.DateTime.ToString() : item.OriginalStartTime.Date.ToString()) : null,
+                OriginalStartTimeZone = Has(item.OriginalStartTime) ? item.OriginalStartTime.TimeZone : null,
+                AttendeesEmails = string.Join(",", item.Attendees.Select(attendee => attendee.Email))
+            };
         }
     }
 }
