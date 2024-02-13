@@ -170,9 +170,8 @@ components:
           description: Time zone of the end time.
         attendees:
           type: string
-          description: Attendees email addresses concatnated together with a comma in between
+          description: Attendees email addresses concatenated together with commas in between
           example: "test@test.com,test1@test1.com,test2@test2.com"
-
 ### GetEventsRequest====================================
     GetEventsRequest:
       title: Parameters for Get Events operations.
@@ -188,15 +187,13 @@ components:
           format: date-time
           title: Time Max
           description: |
-            Upper bound (exclusive) for an event's start time to filter by.
-            Must be an RFC3339 timestamp with mandatory time zone offset
+            Upper bound (exclusive) for an event's start date and time to filter by.
         timeMin:
           type: string
           format: date-time
           title: Time Min
           description: |
-            Lower bound (inclusive) for an event's end time to filter by.
-            Must be an RFC3339 timestamp with mandatory time zone offset
+            Lower bound (inclusive) for an event's end date and time to filter by.
       required:
         - timeMin
         - timeMax
