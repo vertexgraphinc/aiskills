@@ -279,7 +279,7 @@ components:
         events:
           type: array
           items:
-            $ref: "#/components/schemas/Event"
+            $ref: "#/components/schemas/SimpleEvent"
           description: A list of events  
 ### GetRecurringEventResponse+++++++++++++++++++++++++++  
     GetRecurringEventResponse:
@@ -293,21 +293,13 @@ components:
         events:
           type: array
           items:
-            $ref: "#/components/schemas/Event"
+            $ref: "#/components/schemas/SimpleEvent"
           description: A list of event instances    
 
-### Event=============================================== 
-    Event:
+### SimpleEvent========================================= 
+    SimpleEvent:
       type: object
       properties:
-        kind:
-          type: string
-          title: Kind
-          description: Type of the resource. This is always "calendar#event".
-        etag:
-          type: string
-          title: ETag
-          description: ETag of the resource.
         id:
           type: string
           title: ID
@@ -316,20 +308,6 @@ components:
           type: string
           title: Status
           description: Status of the event. Possible values are "confirmed", "tentative", or "cancelled".
-        htmlLink:
-          type: string
-          title: HTML Link
-          description: Link to the event in the Google Calendar web UI.
-        created:
-          type: string
-          format: date-time
-          title: Created
-          description: Date and time the event was created.
-        updated:
-          type: string
-          format: date-time
-          title: Updated
-          description: Date and time the event was last modified.
         summary:
           type: string
           title: Summary
@@ -342,522 +320,44 @@ components:
           type: string
           title: Location
           description: Location of the event.
-        colorId:
+        startDateTime:
           type: string
-          title: Color ID
-          description: Color of the event.
-        creator:
-          type: object
-          title: Creator
-          description: Information about the creator of the event.
-          properties:
-            id:
-              type: string
-              title: ID
-              description: ID of the creator.
-            email:
-              type: string
-              title: Email
-              description: Email address of the creator.
-            displayName:
-              type: string
-              title: Display Name
-              description: Display name of the creator.
-            self:
-              type: boolean
-              title: Self
-              description: Whether the creator is the authenticated user.
-        organizer:
-          type: object
-          title: Organizer
-          description: Information about the organizer of the event.
-          properties:
-            id:
-              type: string
-              title: ID
-              description: ID of the organizer.
-            email:
-              type: string
-              title: Email
-              description: Email address of the organizer.
-            displayName:
-              type: string
-              title: Display Name
-              description: Display name of the organizer.
-            self:
-              type: boolean
-              title: Self
-              description: Whether the organizer is the authenticated user.
-        start:
-          type: object
-          title: Start
-          description: The start time of the event.
-          properties:
-            date:
-              type: string
-              format: date
-              title: Date
-              description: Date when the event starts.
-            dateTime:
-              type: string
-              format: date-time
-              title: Date Time
-              description: Date and time when the event starts.
-            timeZone:
-              type: string
-              title: Time Zone
-              description: The time zone in which the event starts.
-        end:
-          type: object
-          title: End
-          description: The end time of the event.
-          properties:
-            date:
-              type: string
-              format: date
-              title: Date
-              description: Date when the event ends.
-            dateTime:
-              type: string
-              format: date-time
-              title: Date Time
-              description: Date and time when the event ends.
-            timeZone:
-              type: string
-              title: Time Zone
-              description: The time zone in which the event ends.
-        endTimeUnspecified:
-          type: boolean
-          title: End Time Unspecified
-          description: Whether the end time is unspecified.
+          format: date-time
+          title: Start Date Time
+          description: Date and time when the event starts.
+        startTimeZone:
+          type: string
+          title: Start Time Zone
+          description: The time zone in which the event starts.
+        endDateTime:
+          type: string
+          format: date-time
+          title: End Date Time
+          description: Date and time when the event ends.
+        endTimeZone:
+          type: string
+          title: End Time Zone
+          description: The time zone in which the event ends.
         recurrence:
-          type: array
-          items:
-            type: string
+          type: string
           title: Recurrence
-          description: List of RRULE, RDATE, and EXDATE lines for a recurring event.
+          description: List of RRULE, RDATE, and EXDATE lines for a recurring event concatenated together with commas in between. Only available for recurring events.
         recurringEventId:
           type: string
           title: Recurring Event ID
-          description: ID of the recurring event.
+          description: ID of the recurring event. Only available for recurring events.
         originalStartTime:
-          type: object
-          title: Original Start Time
-          description: For an instance of a recurring event, this is the original start time of the instance.
-          properties:
-            date:
-              type: string
-              format: date
-              title: Date
-              description: The original start date of the instance.
-            dateTime:
-              type: string
-              format: date-time
-              title: Date Time
-              description: The original start date and time of the instance.
-            timeZone:
-              type: string
-              title: Time Zone
-              description: The time zone of the original start time of the instance.
-        transparency:
           type: string
-          title: Transparency
-          description: Whether the event blocks time on the calendar as "opaque" or allows changes as "transparent".
-        visibility:
+          format: date-time
+          title: Original Date Time
+          description: The original start date and time of the instance. Only available for recurring events.
+        originalStartTimeZone:
           type: string
-          title: Visibility
-          description: Visibility of the event. Possible values are "default", "public", "private", or "confidential".
-        iCalUID:
+          title: Original Time Zone
+          description: The time zone of the original start time of the instance.
+        attendeesEmails:
           type: string
-          title: iCal UID
-          description: The unique identifier for the event in the iCalendar format.
-        sequence:
-          type: integer
-          title: Sequence
-          description: Sequence number as per iCalendar specification.
-        attendees:
-          type: array
-          items:
-            type: object
-            title: Attendee
-            description: Information about attendees of the event.
-            properties:
-              id:
-                type: string
-                title: ID
-                description: The attendee's profile ID, if available.
-              email:
-                type: string
-                title: Email
-                description: The attendee's email address, if available.
-              displayName:
-                type: string
-                title: Display Name
-                description: The attendee's name, if available.
-              organizer:
-                type: boolean
-                title: Organizer
-                description: Whether the attendee is the organizer of the event.
-              self:
-                type: boolean
-                title: Self
-                description: Whether the attendee is the authenticated user.
-              resource:
-                type: boolean
-                title: Resource
-                description: Whether this is a resource attendee.
-              optional:
-                type: boolean
-                title: Optional
-                description: Whether this attendee is optional.
-              responseStatus:
-                type: string
-                title: Response Status
-                description: The attendee's response status. Possible values are "needsAction", "declined", "tentative", or "accepted".
-              comment:
-                type: string
-                title: Comment
-                description: The attendee's response comment, if available.
-              additionalGuests:
-                type: integer
-                title: Additional Guests
-                description: Number of additional guests this attendee is bringing.
-        attendeesOmitted:
-          type: boolean
-          title: Attendees Omitted
-          description: Whether information about attendees is omitted in the event's representation.
-        extendedProperties:
-          type: object
-          title: Extended Properties
-          description: Extended properties of the event.
-          properties:
-            private:
-              type: object
-              title: Private
-              description: Private extended properties for the event.
-              additionalProperties:
-                type: string
-            shared:
-              type: object
-              title: Shared
-              description: Shared extended properties for the event.
-              additionalProperties:
-                type: string
-        hangoutLink:
-          type: string
-          title: Hangout Link
-          description: Link to the event's Hangout.
-        conferenceData:
-          type: object
-          title: Conference Data
-          description: Information about conferencing for this event.
-          properties:
-            createRequest:
-              type: object
-              title: Create Request
-              description: Request to create a conference for this event.
-              properties:
-                requestId:
-                  type: string
-                  title: Request ID
-                  description: The unique identifier for the request to create a conference.
-                conferenceSolutionKey:
-                  type: object
-                  title: Conference Solution Key
-                  description: The key for the conference solution.
-                  properties:
-                    type:
-                      type: string
-                      title: Type
-                      description: The type of the conference solution.
-                status:
-                  type: object
-                  title: Status
-                  description: The status of the conference creation request.
-                  properties:
-                    statusCode:
-                      type: string
-                      title: Status Code
-                      description: The status code for the conference creation request.
-            entryPoints:
-              type: array
-              title: Entry Points
-              description: The entry points available for this conference.
-              items:
-                type: object
-                properties:
-                  entryPointType:
-                    type: string
-                    title: Entry Point Type
-                    description: The type of the conference entry point.
-                  uri:
-                    type: string
-                    title: URI
-                    description: The URI of the conference entry point.
-                  label:
-                    type: string
-                    title: Label
-                    description: The label for the conference entry point.
-                  pin:
-                    type: string
-                    title: PIN
-                    description: The PIN for the conference entry point.
-                  accessCode:
-                    type: string
-                    title: Access Code
-                    description: The access code for the conference entry point.
-                  meetingCode:
-                    type: string
-                    title: Meeting Code
-                    description: The meeting code for the conference entry point.
-                  passcode:
-                    type: string
-                    title: Passcode
-                    description: The passcode for the conference entry point.
-                  password:
-                    type: string
-                    title: Password
-                    description: The password for the conference entry point.
-            conferenceSolution:
-              type: object
-              title: Conference Solution
-              description: Information about the conference solution.
-              properties:
-                key:
-                  type: object
-                  title: Key
-                  description: The key for the conference solution.
-                  properties:
-                    type:
-                      type: string
-                      title: Type
-                      description: The type of the conference solution.
-                name:
-                  type: string
-                  title: Name
-                  description: The name of the conference solution.
-                iconUri:
-                  type: string
-                  title: Icon URI
-                  description: The icon URI for the conference solution.
-            conferenceId:
-              type: string
-              title: Conference ID
-              description: The ID of the conference.
-            signature:
-              type: string
-              title: Signature
-              description: The signature of the conference data.
-            notes:
-              type: string
-              title: Notes
-              description: Notes added by the organizer when setting up this conference.
-        gadget:
-          type: object
-          title: Gadget
-          description: Information about an event gadget.
-          properties:
-            type:
-              type: string
-              title: Type
-              description: The type of the gadget.
-            title:
-              type: string
-              title: Title
-              description: The title of the gadget.
-            link:
-              type: string
-              title: Link
-              description: The link to the gadget.
-            iconLink:
-              type: string
-              title: Icon Link
-              description: The icon link of the gadget.
-            width:
-              type: integer
-              title: Width
-              description: The width of the gadget in pixels.
-            height:
-              type: integer
-              title: Height
-              description: The height of the gadget in pixels.
-            display:
-              type: string
-              title: Display
-              description: The display mode of the gadget. Possible values are "icon", "chip", or "highlight".
-            preferences:
-              type: object
-              title: Preferences
-              description: Preferences of the gadget.
-              additionalProperties:
-                type: string
-        anyoneCanAddSelf:
-          type: boolean
-          title: Anyone Can Add Self
-          description: Whether anyone can invite themselves to the event.
-        guestsCanInviteOthers:
-          type: boolean
-          title: Guests Can Invite Others
-          description: Whether guests can invite others to the event.
-        guestsCanModify:
-          type: boolean
-          title: Guests Can Modify
-          description: Whether guests can modify the event.
-        guestsCanSeeOtherGuests:
-          type: boolean
-          title: Guests Can See Other Guests
-          description: Whether guests can see other guests.
-        privateCopy:
-          type: boolean
-          title: Private Copy
-          description: Whether this is a private copy of an event owned by others.
-        locked:
-          type: boolean
-          title: Locked
-          description: Whether the event is locked.
-        reminders:
-          type: object
-          title: Reminders
-          description: Information about the reminders for the event.
-          properties:
-            useDefault:
-              type: boolean
-              title: Use Default
-              description: Whether the default reminders are used for this event.
-            overrides:
-              type: array
-              title: Overrides
-              description: The list of reminder overrides.
-              items:
-                type: object
-                properties:
-                  method:
-                    type: string
-                    title: Method
-                    description: The method used for the reminder. Possible values are "popup", "email", or "sms".
-                  minutes:
-                    type: integer
-                    title: Minutes
-                    description: The number of minutes before the event to trigger the reminder.
-        source:
-          type: object
-          title: Source
-          description: Source from which the event was created.
-          properties:
-            url:
-              type: string
-              title: URL
-              description: The URL of the source of the event.
-            title:
-              type: string
-              title: Title
-              description: The title of the source.
-        workingLocationProperties:
-          type: object
-          title: Working Location Properties
-          description: Information about the working location.
-          properties:
-            type:
-              type: string
-              title: Type
-              description: The type of working location.
-            homeOffice:
-              type: boolean
-              title: Home Office
-              description: Whether the working location is a home office.
-            customLocation:
-              type: object
-              title: Custom Location
-              description: Information about a custom working location.
-              properties:
-                label:
-                  type: string
-                  title: Label
-                  description: The label for the custom working location.
-            officeLocation:
-              type: object
-              title: Office Location
-              description: Information about an office location.
-              properties:
-                buildingId:
-                  type: string
-                  title: Building ID
-                  description: The ID of the building.
-                floorId:
-                  type: string
-                  title: Floor ID
-                  description: The ID of the floor.
-                floorSectionId:
-                  type: string
-                  title: Floor Section ID
-                  description: The ID of the floor section.
-                deskId:
-                  type: string
-                  title: Desk ID
-                  description: The ID of the desk.
-                label:
-                  type: string
-                  title: Label
-                  description: The label for the office location.
-        outOfOfficeProperties:
-          type: object
-          title: Out of Office Properties
-          description: Information about the out-of-office status.
-          properties:
-            autoDeclineMode:
-              type: string
-              title: Auto Decline Mode
-              description: The auto-decline mode for out-of-office status.
-            declineMessage:
-              type: string
-              title: Decline Message
-              description: The message to be sent for declined events during out-of-office status.
-        focusTimeProperties:
-          type: object
-          title: Focus Time Properties
-          description: Information about the focus time status.
-          properties:
-            autoDeclineMode:
-              type: string
-              title: Auto Decline Mode
-              description: The auto-decline mode for focus time status.
-            declineMessage:
-              type: string
-              title: Decline Message
-              description: The message to be sent for declined events during focus time status.
-            chatStatus:
-              type: string
-              title: Chat Status
-              description: The chat status during focus time.
-        attachments:
-          type: array
-          title: Attachments
-          description: List of file attachments for the event.
-          items:
-            type: object
-            properties:
-              fileUrl:
-                type: string
-                title: File URL
-                description: The URL of the attached file.
-              title:
-                type: string
-                title: Title
-                description: The title of the attachment.
-              mimeType:
-                type: string
-                title: Mime Type
-                description: The MIME type of the attached file.
-              iconLink:
-                type: string
-                title: Icon Link
-                description: The link to the icon of the attachment.
-              fileId:
-                type: string
-                title: File ID
-                description: The ID of the attached file.
-        eventType:
-          type: string
-          title: Event Type
-          description: The type of the event. Possible values are "default", "outOfOffice", or "focusTime".
+          title: Attendees' Emails
+          description: Attendees email addresses concatenated together with commas in between
+          example: "test@test.com,test1@test1.com,test2@test2.com"
 ### ++++++++++++++++++++++++++++++++++++++++++++++++++++
