@@ -20,7 +20,7 @@ namespace Microsoft.Controllers
         [HttpGet("auth")]
         public void Auth()
         {
-            string tenant = "organizations";
+            string tenant = "common";
             Response.Redirect(APIConstants.GraphApiAuthURL + $"{tenant}/oauth2/v2.0/authorize{Request.QueryString}");
         }
 

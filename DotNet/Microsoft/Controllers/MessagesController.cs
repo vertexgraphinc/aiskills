@@ -64,14 +64,14 @@ namespace Microsoft.Controllers
                 return null;
             }
 
-            bool isSent = await _mailService.DeleteMessage(request, token);
-            if (isSent)
+            bool isDeleted = await _mailService.DeleteMessage(request, token);
+            if (isDeleted)
             {
-                return Ok("Message sent successfully.");
+                return Ok("Message deleted successfully.");
             }
             else
             {
-                return BadRequest("Failed to send message.");
+                return BadRequest("Failed to delete message.");
             }
         }
 

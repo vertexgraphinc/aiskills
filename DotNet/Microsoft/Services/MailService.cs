@@ -112,7 +112,7 @@ namespace Microsoft.Services
                 return msgs.Values.Select(msg => new EmailResponse
                 {
                     Id = msg.Id,
-                    From = msg.From.EmailAddress.Address,
+                    From = (msg.From != null && msg.From.EmailAddress != null ? msg.From.EmailAddress.Address : null),
                     Subject = msg.Subject,
                     Body = msg.BodyPreview, //Utils.CleanHtml(msg.BodyPreview);
                     Received = msg.ReceivedDateTime.ToString()
