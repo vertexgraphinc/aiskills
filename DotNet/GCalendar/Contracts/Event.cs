@@ -377,7 +377,7 @@ namespace GCalendar.Contracts
         public End End { get; set; }
 
         [JsonProperty("endTimeUnspecified"), JsonPropertyName("endTimeUnspecified")]
-        public bool EndTimeUnspecified { get; set; }
+        public bool? EndTimeUnspecified { get; set; }
 
         [JsonProperty("recurrence"), JsonPropertyName("recurrence")]
         public List<string> Recurrence { get; set; }
@@ -398,13 +398,13 @@ namespace GCalendar.Contracts
         public string ICalUID { get; set; }
 
         [JsonProperty("sequence"), JsonPropertyName("sequence")]
-        public int Sequence { get; set; }
+        public int? Sequence { get; set; }
 
         [JsonProperty("attendees"), JsonPropertyName("attendees")]
         public List<Attendee> Attendees { get; set; }
 
         [JsonProperty("attendeesOmitted"), JsonPropertyName("attendeesOmitted")]
-        public bool AttendeesOmitted { get; set; }
+        public bool? AttendeesOmitted { get; set; }
 
         [JsonProperty("extendedProperties"), JsonPropertyName("extendedProperties")]
         public ExtendedProperties ExtendedProperties { get; set; }
@@ -419,22 +419,22 @@ namespace GCalendar.Contracts
         public Gadget Gadget { get; set; }
 
         [JsonProperty("anyoneCanAddSelf"), JsonPropertyName("anyoneCanAddSelf")]
-        public bool AnyoneCanAddSelf { get; set; }
+        public bool? AnyoneCanAddSelf { get; set; }
 
         [JsonProperty("guestsCanInviteOthers"), JsonPropertyName("guestsCanInviteOthers")]
-        public bool GuestsCanInviteOthers { get; set; }
+        public bool? GuestsCanInviteOthers { get; set; }
 
         [JsonProperty("guestsCanModify"), JsonPropertyName("guestsCanModify")]
-        public bool GuestsCanModify { get; set; }
+        public bool? GuestsCanModify { get; set; }
 
         [JsonProperty("guestsCanSeeOtherGuests"), JsonPropertyName("guestsCanSeeOtherGuests")]
-        public bool GuestsCanSeeOtherGuests { get; set; }
+        public bool? GuestsCanSeeOtherGuests { get; set; }
 
         [JsonProperty("privateCopy"), JsonPropertyName("privateCopy")]
-        public bool PrivateCopy { get; set; }
+        public bool? PrivateCopy { get; set; }
 
         [JsonProperty("locked"), JsonPropertyName("locked")]
-        public bool Locked { get; set; }
+        public bool? Locked { get; set; }
 
         [JsonProperty("reminders"), JsonPropertyName("reminders")]
         public Reminders Reminders { get; set; }

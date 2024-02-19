@@ -22,6 +22,7 @@
 		<PackageReference Include="HtmlAgilityPack" Version="1.11.55" />
 		<PackageReference Include="IdentityModel" Version="6.2.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="TimeZoneConverter" Version="6.1.0" />
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">

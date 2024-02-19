@@ -1,0 +1,32 @@
+﻿using Newtonsoft.Json;
+using System.Text.Json.Serialization;
+
+namespace GCalendar.Contracts
+{
+    public class UpdateEventRequest
+    {
+        [JsonProperty("id"), JsonPropertyName("id")]
+        public string Id { get; set; }
+
+        [JsonProperty("timeZone"), JsonPropertyName("timeZone")]
+        public string TimeZone { get; set; }
+
+        [JsonProperty("updatedSummary"), JsonPropertyName("updatedSummary")]
+        public string UpdatedSummary { get; set; }
+
+        [JsonProperty("updatedDescription"), JsonPropertyName("updatedDescription")]
+        public string UpdatedDescription { get; set; }
+
+        [JsonProperty("updatedStartDateTime"), JsonPropertyName("updatedStartDateTime")]
+        public string UpdatedStartDateTime { get; set; }
+
+        [JsonProperty("updatedEndDateTime"), JsonPropertyName("updatedEndDateTime")]
+        public string UpdatedEndDateTime { get; set; }
+
+        [JsonProperty("attendeesToRemove"), JsonPropertyName("attendeesToRemove")]
+        public string AttendeesToRemove { get; set; }
+
+        [JsonProperty("attendeesToAdd"), JsonPropertyName("attendeesToAdd")]
+        public string AttendeesToAdd { get; set; }
+    }
+}

@@ -137,7 +137,38 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/GetRecurringEventRequest'
-
+### /events/update---------------------------------------------------- 
+  $skillapproot/events/update:
+    post:
+      title: Update event
+      operationId: UpdateEvent
+      summary: Update an event from primary calendar
+      responses:
+        "200":
+          description: OK  
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'    
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'  
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+      requestBody:
+        description: Request body to remove an event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateEventRequest'
 ### ===========================================================================
 ### COMPONENTS=================================================================
 ### ===========================================================================    
@@ -159,15 +190,13 @@ components:
         startDateTime:
           type: string
           description: Start date and time of the event.
-        startTimeZone:
-          type: string
-          description: Time zone of the start time.
         endDateTime:
           type: string
           description: End date and time of the event.
-        endTimeZone:
+        localTimeZone:
           type: string
-          description: Time zone of the end time.
+          description: The local time zone of the event.
+          example: "America/Toronto"
         attendees:
           type: string
           description: Attendees email addresses concatenated together with commas in between
@@ -255,7 +284,39 @@ components:
       required:
         - timeMin
         - timeMax
-
+### UpdateEventRequest==================================
+    UpdateEventRequest:
+      title: Parameters for Update Event operation.
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the event
+        timeZone:
+          type: string
+          description: The time zone of the event.
+          example: "America/Toronto"
+        updatedSummary:
+          type: string
+          description: The updated summary of the event.
+        updatedStartDateTime:
+          type: string
+          description: The updated start date and time of the event in UTC time.
+          format: date-time
+          example: "2024-02-16T19:00:00Z"
+        updatedEndDateTime:
+          type: string
+          description: The updated end date and time of the event in UTC time.
+          format: date-time
+          example: "2024-02-16T19:00:00Z"
+        attendeesToRemove:
+          type: string
+          description: Comma-separated list of attendee emails to be removed from the event
+          example: "test@test.com,test1@test1.com,test2@test2.com"
+        attendeesToAdd:
+          type: string
+          description: Comma-separated list of attendee emails to be added to the event
+          example: "test@test.com,test1@test1.com,test2@test2.com"
 ### ++++++++++++++++++++++++++++++++++++++++++++++++++++   
 ### RESPONSE COMPONENTS+++++++++++++++++++++++++++++++++   
 ### ServerResponse++++++++++++++++++++++++++++++++++++++      

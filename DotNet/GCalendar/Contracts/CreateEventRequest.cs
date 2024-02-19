@@ -16,14 +16,11 @@ namespace GCalendar.Contracts
         [JsonProperty("startDateTime"), JsonPropertyName("startDateTime")]
         public string StartDateTime { get; set; }
 
-        [JsonProperty("startTimeZone"), JsonPropertyName("startTimeZone")]
-        public string StartTimeZone { get; set; }
+        [JsonProperty("localTimeZone"), JsonPropertyName("localTimeZone")]
+        public string TimeZone { get; set; }
 
         [JsonProperty("endDateTime"), JsonPropertyName("endDateTime")]
         public string EndDateTime { get; set; }
-
-        [JsonProperty("EndTimeZone"), JsonPropertyName("EndTimeZone")]
-        public string EndTimeZone { get; set; }
 
         [JsonProperty("attendees"), JsonPropertyName("attendees")]
         public string Attendees { get; set; }

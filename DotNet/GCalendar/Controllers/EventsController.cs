@@ -53,6 +53,38 @@ namespace GCalendar.Controllers
         }
         #endregion
 
+        #region Update Calendar Event
+        [HttpPost("update"), HttpPost("~/skill/{controller}/update")]
+        public async Task<ServerResponse> UpdateEvent(UpdateEventRequest Para)
+        {
+            System.Diagnostics.Debug.WriteLine("[vertex][Events][UpdateEvent]");
+            var response = new ServerResponse();
+            Response.StatusCode = 200;
+
+            string Token = GetSessionToken();
+            if (!Has(Token))
+            {
+                Response.StatusCode = 401;
+                response.Message = "Unauthorized.";
+                return response;
+            }
+            try
+            {
+                response = await Update(Para);
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = 500;
+                response.Message = ex.Message;
+                return response;
+            }
+
+            System.Diagnostics.Debug.WriteLine("[vertex][Events][UpdateEvent]response:" + JsonConvert.SerializeObject(response));
+
+            return response;
+        }
+        #endregion
+
         #region Get Calendar Events
         [HttpPost("get"), HttpPost("~/skill/{controller}/get")]
         public async Task<GetEventsResponse> GetEvents(GetEventsRequest Para)

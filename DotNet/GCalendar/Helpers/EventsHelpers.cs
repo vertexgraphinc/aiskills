@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using GCalendar.Contracts;
 using GCalendar.GCalendarClient;
 using Newtonsoft.Json;
+using TimeZoneConverter;
 
 namespace GCalendar.Helpers
 {
@@ -13,26 +15,28 @@ namespace GCalendar.Helpers
     {
         public async Task<ServerResponse> AddEvent(CreateEventRequest Para)
         {
-            System.Diagnostics.Debug.WriteLine("[vertex][AddEvent]");
+            System.Diagnostics.Debug.WriteLine("[vertex][CreateEvent Params]" + Para.TimeZone + " Time:" + Para.StartDateTime);
             var response = new ServerResponse();
-
             var attendeeList = new List<Attendee>();
-            string[] emailArray = Para.Attendees.Trim().Split(',');
-            foreach (var email in emailArray)
-            {
-                if (!Regex.IsMatch(email, @"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"))
-                {
-                    System.Diagnostics.Debug.WriteLine("[vertex][AttendeeEmailParse]:Sent attendee email in a wrong format");
-                    response.Message = "Attendee email in a wrong format";
-                }
-                var newAttendee = new Attendee { Email = email };
-                attendeeList.Add(newAttendee);
-            }
 
-            TimeZoneInfo timeZone = TimeZoneInfo.Local;
-            if (Has(Para.StartTimeZone))
+            if (Has(Para.Attendees))
             {
-                timeZone = TimeZoneInfo.FindSystemTimeZoneById(Para.StartTimeZone);
+                string[] emailArray = Para.Attendees.Replace(" ", "").Split(',');
+                foreach (var email in emailArray)
+                {
+                    if (!Regex.IsMatch(email, @"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"))
+                    {
+                        System.Diagnostics.Debug.WriteLine("[vertex][AttendeeEmailParse]:Sent attendee email in a wrong format");
+                        response.Message = "Attendee email in a wrong format";
+                    }
+                    var newAttendee = new Attendee { Email = email };
+                    attendeeList.Add(newAttendee);
+                }
+            }
+            TimeZoneInfo timeZone = TimeZoneInfo.Local;
+            if (Has(Para.TimeZone))
+            {
+                timeZone = TZConvert.GetTimeZoneInfo(Para.TimeZone);
             }
             
             DateTime currentTime = DateTime.Now;
@@ -45,12 +49,12 @@ namespace GCalendar.Helpers
                 Start = new Start
                 {
                     DateTime = ParseDate(Para.StartDateTime, DateTime.MinValue, offset.ToString()),
-                    TimeZone = Para.StartTimeZone 
+                    TimeZone = Para.TimeZone
                 },
                 End = new End
                 {
                     DateTime = ParseDate(Para.EndDateTime, DateTime.MinValue, offset.ToString()),
-                    TimeZone = Para.EndTimeZone 
+                    TimeZone = Para.TimeZone
                 },
                 Attendees = attendeeList
         
@@ -76,6 +80,93 @@ namespace GCalendar.Helpers
             {
                 System.Diagnostics.Debug.WriteLine("[vertex][AddEvent]:Failure");
                 response.Message = "Failed to create an event.";
+            }
+
+            return response;
+        }
+
+        public async Task<ServerResponse> Update(UpdateEventRequest Para)
+        {
+            System.Diagnostics.Debug.WriteLine("[vertex][UppdateEvent] Time Params: " + Para.TimeZone + Para.UpdatedStartDateTime);
+            var response = new ServerResponse();
+
+            var eventToUpdate = await Get<Event>($"/primary/events/{Para.Id}");
+
+            var attendeeList = new List<Attendee>(eventToUpdate?.Attendees ?? new List<Attendee>());
+            if (Has(Para.AttendeesToRemove))
+            {
+                string[] emailsToRemove = Para.AttendeesToRemove.Replace(" ", "").Split(',');
+                attendeeList.RemoveAll(attendee => emailsToRemove.Contains(attendee.Email));
+            }
+
+            if (Has(Para.AttendeesToAdd))
+            {
+                string[] emailsToAdd = Para.AttendeesToAdd.Replace(" ", "").Split(',');
+                foreach (var email in emailsToAdd)
+                {
+                    if (!Regex.IsMatch(email, @"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"))
+                    {
+                        System.Diagnostics.Debug.WriteLine("[vertex][UpdateEvent]:Sent attendee email in a wrong format");
+                        response.Message = "Attendee email in a wrong format";
+                    }
+                    var newAttendee = new Attendee { Email = email };
+                    attendeeList.Add(newAttendee);
+                }
+            }
+
+            /*TimeZoneInfo timeZone = TimeZoneInfo.Local;
+            if (Has(Para.TimeZone))
+            {
+                timeZone = TZConvert.GetTimeZoneInfo(Para.TimeZone);
+            }
+
+            DateTime currentTime = DateTime.Now;
+            TimeSpan offset = timeZone.GetUtcOffset(currentTime);*/
+
+            var eventObject = new Event
+            {
+                Summary = Para.UpdatedSummary,
+                Description = Para.UpdatedSummary,
+                Attendees = attendeeList
+
+            };
+
+            if (Has(Para.UpdatedStartDateTime))
+            {
+                eventObject.Start = new Start
+                {
+                    DateTime = ParseDate(Para.UpdatedStartDateTime, DateTime.MinValue, "0:00"),
+                };
+            }
+
+            if (Has(Para.UpdatedEndDateTime))
+            {
+                eventObject.End = new End
+                {
+                    DateTime = ParseDate(Para.UpdatedEndDateTime, DateTime.MinValue, "0:00"),
+                };
+            }
+
+
+            System.Diagnostics.Debug.WriteLine("[vertex][UpdateEvent]:test: " + eventObject.ToString());
+
+
+
+            var result = await Patch($"/primary/events/{Para.Id}", JsonConvert.SerializeObject(eventObject, Formatting.None,
+                            new JsonSerializerSettings
+                            {
+                                NullValueHandling = NullValueHandling.Ignore
+                            }));
+
+            if (result)
+            {
+                System.Diagnostics.Debug.WriteLine("[vertex][UpdateEvent]:Success");
+                response.Message = "Event successfully updated";
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine("[vertex][UpdateEvent]:Failure");
+                response.Message = "Failed to update an event.";
             }
 
             return response;
