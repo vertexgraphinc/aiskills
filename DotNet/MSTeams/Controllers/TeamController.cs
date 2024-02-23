@@ -2,7 +2,6 @@
 using MSTeams.Contracts;
 using MSTeams.Helpers;
 using MSTeams.Interfaces;
-using MSTeams.Services;
 using System.Linq;
 using System.Threading.Tasks;
 
