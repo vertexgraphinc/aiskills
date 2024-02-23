@@ -14,6 +14,8 @@ namespace MSTeams.Interfaces
 
         Task<bool> UpdateTeam(TeamUpdateRequest request, string token);
 
+        Task<bool> RemoveTeam(TeamRemoveRequest request, string token);
+
         Task<List<MemberResponse>> QueryTeamMembers(TeamMembersQueryRequest request, string token);
 
         Task<MemberResponse> GetTeamMember(TeamMemberGetRequest request, string token);
