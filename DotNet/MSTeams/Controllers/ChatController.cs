@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MSTeams.Contracts;
+using MSTeams.Helpers;
 using MSTeams.Interfaces;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace MSTeams.Controllers
@@ -16,82 +18,260 @@ namespace MSTeams.Controllers
             _chatService = chatService;
         }
 
-        [HttpPost("query")]
+        [HttpPost("query"), HttpPost("~/skill/{controller}/query")]
         public async Task<ChatsQueryResponse> QueryChats(ChatsQueryRequest request)
         {
+            ChatsQueryResponse resp = new ChatsQueryResponse
+            {
+                Chats = null
+            };
 
+            string authorizationHeader = Request.Headers["Authorization"].FirstOrDefault();
+            string token = TokenHelper.GetSessionToken(authorizationHeader);
+            if (string.IsNullOrEmpty(token))
+            {
+                Response.StatusCode = 401;
+                return null;
+            }
+
+            resp.Chats = await _chatService.QueryChats(request, token);
+            return resp;
         }
 
-        [HttpPost("get")]
+        [HttpPost("get"), HttpPost("~/skill/{controller}/get")]
         public async Task<ChatResponse> GetChat(ChatGetRequest request)
         {
+            string authorizationHeader = Request.Headers["Authorization"].FirstOrDefault();
+            string token = TokenHelper.GetSessionToken(authorizationHeader);
+            if (string.IsNullOrEmpty(token))
+            {
+                Response.StatusCode = 401;
+                return null;
+            }
 
+            return await _chatService.GetChat(request, token);
         }
 
-        [HttpPost("create")]
+        [HttpPost("create"), HttpPost("~/skill/{controller}/create")]
         public async Task<IActionResult> CreateChat(ChatCreateRequest request)
         {
+            string authorizationHeader = Request.Headers["Authorization"].FirstOrDefault();
+            string token = TokenHelper.GetSessionToken(authorizationHeader);
+            if (string.IsNullOrEmpty(token))
+            {
+                Response.StatusCode = 401;
+                return null;
+            }
 
+            bool isCreated = await _chatService.CreateChat(request, token);
+            if (isCreated)
+            {
+                return Ok("Chat created successfully.");
+            }
+            else
+            {
+                return BadRequest("Failed to create chat.");
+            }
         }
 
-        [HttpPost("update")]
+        [HttpPost("update"), HttpPost("~/skill/{controller}/update")]
         public async Task<IActionResult> UpdateChat(ChatUpdateRequest request)
         {
+            string authorizationHeader = Request.Headers["Authorization"].FirstOrDefault();
+            string token = TokenHelper.GetSessionToken(authorizationHeader);
+            if (string.IsNullOrEmpty(token))
+            {
+                Response.StatusCode = 401;
+                return null;
+            }
 
+            bool isUpdated = await _chatService.UpdateChat(request, token);
+            if (isUpdated)
+            {
+                return Ok("Chat updated successfully.");
+            }
+            else
+            {
+                return BadRequest("Failed to update chat.");
+            }
         }
 
-        [HttpPost("queryMembers")]
+        [HttpPost("queryMembers"), HttpPost("~/skill/{controller}/members/query")]
         public async Task<ChatMembersQueryResponse> QueryChatMembers(ChatMembersQueryRequest request)
         {
+            ChatMembersQueryResponse resp = new ChatMembersQueryResponse
+            {
+                Members = null
+            };
 
+            string authorizationHeader = Request.Headers["Authorization"].FirstOrDefault();
+            string token = TokenHelper.GetSessionToken(authorizationHeader);
+            if (string.IsNullOrEmpty(token))
+            {
+                Response.StatusCode = 401;
+                return null;
+            }
+
+            resp.Members = await _chatService.QueryChatMembers(request, token);
+            return resp;
         }
 
-        [HttpPost("getMember")]
+        [HttpPost("getMember"), HttpPost("~/skill/{controller}/members/get")]
         public async Task<MemberResponse> GetChatMember(ChatMemberGetRequest request)
         {
+            string authorizationHeader = Request.Headers["Authorization"].FirstOrDefault();
+            string token = TokenHelper.GetSessionToken(authorizationHeader);
+            if (string.IsNullOrEmpty(token))
+            {
+                Response.StatusCode = 401;
+                return null;
+            }
 
+            return await _chatService.GetChatMember(request, token);
         }
 
-        [HttpPost("addMember")]
+        [HttpPost("addMember"), HttpPost("~/skill/{controller}/members/add")]
         public async Task<IActionResult> AddChatMember(ChatMemberAddRequest request)
         {
+            string authorizationHeader = Request.Headers["Authorization"].FirstOrDefault();
+            string token = TokenHelper.GetSessionToken(authorizationHeader);
+            if (string.IsNullOrEmpty(token))
+            {
+                Response.StatusCode = 401;
+                return null;
+            }
 
+            bool isAdded = await _chatService.AddChatMember(request, token);
+            if (isAdded)
+            {
+                return Ok("Chat member added successfully.");
+            }
+            else
+            {
+                return BadRequest("Failed to add chat member.");
+            }
         }
 
-        [HttpPost("removeMember")]
+        [HttpPost("removeMember"), HttpPost("~/skill/{controller}/members/remove")]
         public async Task<IActionResult> RemoveChatMember(ChatMemberRemoveRequest request)
         {
+            string authorizationHeader = Request.Headers["Authorization"].FirstOrDefault();
+            string token = TokenHelper.GetSessionToken(authorizationHeader);
+            if (string.IsNullOrEmpty(token))
+            {
+                Response.StatusCode = 401;
+                return null;
+            }
 
+            bool isRemoved = await _chatService.RemoveChatMember(request, token);
+            if (isRemoved)
+            {
+                return Ok("Chat member removed successfully.");
+            }
+            else
+            {
+                return BadRequest("Failed to remove chat member.");
+            }
         }
 
-        [HttpPost("queryMessages")]
+        [HttpPost("queryMessages"), HttpPost("~/skill/{controller}/messages/query")]
         public async Task<ChatMessagesQueryResponse> QueryChatMessages(ChatMessagesQueryRequest request)
         {
+            ChatMessagesQueryResponse resp = new ChatMessagesQueryResponse
+            {
+                Messages = null
+            };
 
+            string authorizationHeader = Request.Headers["Authorization"].FirstOrDefault();
+            string token = TokenHelper.GetSessionToken(authorizationHeader);
+            if (string.IsNullOrEmpty(token))
+            {
+                Response.StatusCode = 401;
+                return null;
+            }
+
+            resp.Messages = await _chatService.QueryChatMessages(request, token);
+            return resp;
         }
 
-        [HttpPost("getMessage")]
+        [HttpPost("getMessage"), HttpPost("~/skill/{controller}/messages/get")]
         public async Task<MessageResponse> GetChatMessage(ChatMessageGetRequest request)
         {
+            string authorizationHeader = Request.Headers["Authorization"].FirstOrDefault();
+            string token = TokenHelper.GetSessionToken(authorizationHeader);
+            if (string.IsNullOrEmpty(token))
+            {
+                Response.StatusCode = 401;
+                return null;
+            }
 
+            return await _chatService.GetChatMessage(request, token);
         }
 
-        [HttpPost("sendMessage")]
+        [HttpPost("sendMessage"), HttpPost("~/skill/{controller}/messages/send")]
         public async Task<IActionResult> SendChatMessage(ChatMessageSendRequest request)
         {
+            string authorizationHeader = Request.Headers["Authorization"].FirstOrDefault();
+            string token = TokenHelper.GetSessionToken(authorizationHeader);
+            if (string.IsNullOrEmpty(token))
+            {
+                Response.StatusCode = 401;
+                return null;
+            }
 
+            bool isSent = await _chatService.SendChatMessage(request, token);
+            if (isSent)
+            {
+                return Ok("Chat message sent successfully.");
+            }
+            else
+            {
+                return BadRequest("Failed to send chat message.");
+            }
         }
 
-        [HttpPost("updateMessage")]
+        [HttpPost("updateMessage"), HttpPost("~/skill/{controller}/messages/update")]
         public async Task<IActionResult> UpdateChatMessage(ChatMessageUpdateRequest request)
         {
+            string authorizationHeader = Request.Headers["Authorization"].FirstOrDefault();
+            string token = TokenHelper.GetSessionToken(authorizationHeader);
+            if (string.IsNullOrEmpty(token))
+            {
+                Response.StatusCode = 401;
+                return null;
+            }
 
+            bool isUpdated = await _chatService.UpdateChatMessage(request, token);
+            if (isUpdated)
+            {
+                return Ok("Chat message updated successfully.");
+            }
+            else
+            {
+                return BadRequest("Failed to update chat message.");
+            }
         }
 
-        [HttpPost("removeMessage")]
+        [HttpPost("removeMessage"), HttpPost("~/skill/{controller}/messages/remove")]
         public async Task<IActionResult> RemoveChatMessage(ChatMessageRemoveRequest request)
         {
+            string authorizationHeader = Request.Headers["Authorization"].FirstOrDefault();
+            string token = TokenHelper.GetSessionToken(authorizationHeader);
+            if (string.IsNullOrEmpty(token))
+            {
+                Response.StatusCode = 401;
+                return null;
+            }
 
+            bool isRemoved = await _chatService.RemoveChatMessage(request, token);
+            if (isRemoved)
+            {
+                return Ok("Chat message removed successfully.");
+            }
+            else
+            {
+                return BadRequest("Failed to remove chat message.");
+            }
         }
     }
 }
