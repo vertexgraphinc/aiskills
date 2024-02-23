@@ -35,6 +35,11 @@ namespace MSTeams.Services
 
         }
 
+        public async Task<bool> RemoveTeam(TeamRemoveRequest request, string token)
+        {
+
+        }
+
         public async Task<List<MemberResponse>> QueryTeamMembers(TeamMembersQueryRequest request, string token)
         {
 
