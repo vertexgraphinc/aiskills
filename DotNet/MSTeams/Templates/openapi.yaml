@@ -1,0 +1,990 @@
+﻿openapi: 3.1.0
+info:
+  title: MSTeams Skill
+  description: A VertexGraph skill to access user's MSteams account info
+  version: 1.0.0
+servers:
+  - url: $skillhost
+paths:
+  $skillapproot/chats/query:
+    post:
+      summary: Query MSTeams Chats
+      description: Search for chats in the user's MSTeams chat list
+      operationId: QueryChats
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChatsQueryRequest"
+      responses:
+        "200":
+          description: Returns chats that match the query parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatsQueryResponse'
+        "401":
+          description: Unauthorized, requires valid authentication.
+        "500":
+          description: Server Error
+  $skillapproot/chats/get:
+    post:
+      summary: Retrieve MSTeams Chat Details
+      description: Fetches details of a specific chat using its unique ID.
+      operationId: GetChat
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatGetRequest'
+      responses:
+        '200':
+          description: Successfully retrieved the chat details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatResponse'
+        '401':
+          description: Unauthorized access, invalid or missing token.
+        '500':
+          description: Server Error
+  $skillapproot/chats/create:
+    post:
+      summary: Create a new MSTeams Chat
+      description: Create a new chat in user's MSTeams
+      operationId: CreateChat
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatCreateRequest'
+      responses:
+        '201':
+          description: Chat created successfully.
+        '400':
+          description: Error in creating the chat, possibly due to invalid input.
+        '401':
+          description: Unauthorized, requires valid authentication.
+        '500':
+          description: Server Error
+  $skillapproot/chats/update:
+    post:
+      summary: Update MSTeams Chat Details
+      description: Update details of a specific chat using its unique ID.
+      operationId: UpdateChat
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatUpdateRequest'
+      responses:
+        '200':
+          description: Chat updated successfully.
+        '400':
+          description: Error in updating the chat, possibly due to invalid input.
+        '401':
+          description: Unauthorized, requires valid authentication.
+        '404':
+          description: Original chat not found or inaccessible.
+        '500':
+          description: Server Error
+  $skillapproot/chats/members/query:
+    post:
+      summary: Query MSTeams Chat Members
+      description: Search for chat members in a specific chat
+      operationId: QueryChatMembers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChatMembersQueryRequest"
+      responses:
+        "200":
+          description: Returns chat members that match the query parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatMembersQueryResponse'
+        "401":
+          description: Unauthorized, requires valid authentication.
+        "500":
+          description: Server Error
+  $skillapproot/chats/members/get:
+    post:
+      summary: Retrieve MSTeams Chat Member Details
+      description: Fetches details of a specific chat member using his/her unique ID.
+      operationId: GetChatMember
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatMemberGetRequest'
+      responses:
+        '200':
+          description: Successfully retrieved the chat member details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemberResponse'
+        '401':
+          description: Unauthorized access, invalid or missing token.
+        '500':
+          description: Server Error
+  $skillapproot/chats/members/add:
+    post:
+      summary: Add member to MSTeams Chat
+      description: Add a member to a MSTeams Chat
+      operationId: AddChatMember
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatMemberAddRequest'
+      responses:
+        '201':
+          description: Chat member added successfully.
+        '400':
+          description: Error in adding the chat member, possibly due to invalid input.
+        '401':
+          description: Unauthorized, requires valid authentication.
+        '404':
+          description: Original chat or member not found or inaccessible.
+        '500':
+          description: Server Error
+  $skillapproot/chats/members/remove:
+    post:
+      summary: Remove member from MSTeams Chat
+      description: Remove a member from a MSTeams Chat
+      operationId: RemoveChatMember
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatMemberRemoveRequest'
+      responses:
+        '200':
+          description: Chat member removed successfully.
+        '400':
+          description: Error in removing the chat member, possibly due to invalid input.
+        '401':
+          description: Unauthorized, requires valid authentication.
+        '404':
+          description: Original chat or member not found or inaccessible.
+        '500':
+          description: Server Error
+  $skillapproot/chats/messages/query:
+    post:
+      summary: Query MSTeams Chat Messages
+      description: List chat messages in a specific chat
+      operationId: QueryChatMessages
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChatMessagesQueryRequest"
+      responses:
+        "200":
+          description: Returns messages of a specific chat.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatMessagesQueryResponse'
+        "401":
+          description: Unauthorized, requires valid authentication.
+        "500":
+          description: Server Error
+  $skillapproot/chats/messages/get:
+    post:
+      summary: Retrieve MSTeams Chat Message Details
+      description: Fetches a specific chat message detail using its unique ID.
+      operationId: GetChatMessage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatMessageGetRequest'
+      responses:
+        '200':
+          description: Successfully retrieved the chat message details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '401':
+          description: Unauthorized access, invalid or missing token.
+        '500':
+          description: Server Error
+  $skillapproot/chats/messages/send:
+    post:
+      summary: Send message to MSTeams Chat
+      description: Send a message to a MSTeams Chat
+      operationId: SendChatMessage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatMessageSendRequest'
+      responses:
+        '201':
+          description: Chat message sent successfully.
+        '400':
+          description: Error in sending the message in the chat, possibly due to invalid input.
+        '401':
+          description: Unauthorized, requires valid authentication.
+        '404':
+          description: Original chat not found or inaccessible.
+        '500':
+          description: Server Error
+  $skillapproot/chats/messages/update:
+    post:
+      summary: Update MSTeams Chat Message Details
+      description: Update details of a specific chat using its unique ID.
+      operationId: UpdateChatMessage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatMessageUpdateRequest'
+      responses:
+        '200':
+          description: Chat message updated successfully.
+        '400':
+          description: Error in updating the chat message, possibly due to invalid input.
+        '401':
+          description: Unauthorized, requires valid authentication.
+        '404':
+          description: Original chat or chat message not found or inaccessible.
+        '500':
+          description: Server Error
+  $skillapproot/chats/messages/remove:
+    post:
+      summary: Remove message in MSTeams Chat
+      description: Delete a message in a MSTeams Chat
+      operationId: RemoveChatMessage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatMessageRemoveRequest'
+      responses:
+        '200':
+          description: Chat message removed successfully.
+        '400':
+          description: Error in removing the chat message, possibly due to invalid input.
+        '401':
+          description: Unauthorized, requires valid authentication.
+        '404':
+          description: Original chat or chat message not found or inaccessible.
+        '500':
+          description: Server Error
+  $skillapproot/teams/query:
+    post:
+      summary: Query MSTeams Teams
+      description: Search for teams in the user's MSTeams team list
+      operationId: QueryTeams
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TeamsQueryRequest"
+      responses:
+        "200":
+          description: Returns teams that match the query parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamsQueryResponse'
+        "401":
+          description: Unauthorized, requires valid authentication.
+        "500":
+          description: Server Error
+  $skillapproot/teams/get:
+    post:
+      summary: Retrieve MSTeams Team Details
+      description: Fetches details of a specific team using its unique ID.
+      operationId: GetTeam
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeamGetRequest'
+      responses:
+        '200':
+          description: Successfully retrieved the team details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamResponse'
+        '401':
+          description: Unauthorized access, invalid or missing token.
+        '500':
+          description: Server Error
+  $skillapproot/teams/create:
+    post:
+      summary: Create a new MSTeams Team
+      description: Create a new team in user's MSTeams
+      operationId: CreateTeam
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeamCreateRequest'
+      responses:
+        '201':
+          description: Team created successfully.
+        '400':
+          description: Error in creating the team, possibly due to invalid input.
+        '401':
+          description: Unauthorized, requires valid authentication.
+        '500':
+          description: Server Error
+  $skillapproot/teams/update:
+    post:
+      summary: Update MSTeams Team Details
+      description: Update details of a specific team
+      operationId: UpdateTeam
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeamUpdateRequest'
+      responses:
+        '200':
+          description: Team updated successfully.
+        '400':
+          description: Error in updating the team, possibly due to invalid input.
+        '401':
+          description: Unauthorized, requires valid authentication.
+        '404':
+          description: Original team not found or inaccessible.
+        '500':
+          description: Server Error
+  $skillapproot/teams/remove:
+    post:
+      summary: Remove MSTeams Team
+      description: Remove a specific team from user's MSTeams
+      operationId: RemoveTeam
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeamRemoveRequest'
+      responses:
+        '200':
+          description: Team removed successfully.
+        '400':
+          description: Error in removing the team, possibly due to invalid input.
+        '401':
+          description: Unauthorized, requires valid authentication.
+        '404':
+          description: Original team not found or inaccessible.
+        '500':
+          description: Server Error
+  $skillapproot/teams/members/query:
+    post:
+      summary: Query MSTeams Team Members
+      description: Search for team members in a specific team
+      operationId: QueryTeamMembers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TeamMembersQueryRequest"
+      responses:
+        "200":
+          description: Returns team members that match the query parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamMembersQueryResponse'
+        "401":
+          description: Unauthorized, requires valid authentication.
+        "500":
+          description: Server Error
+  $skillapproot/teams/members/get:
+    post:
+      summary: Retrieve MSTeams Team Member Details
+      description: Fetches details of a specific team member using his/her unique ID.
+      operationId: GetTeamMember
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeamMemberGetRequest'
+      responses:
+        '200':
+          description: Successfully retrieved the Team member details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemberResponse'
+        '401':
+          description: Unauthorized access, invalid or missing token.
+        '500':
+          description: Server Error
+  $skillapproot/teams/members/add:
+    post:
+      summary: Add member to MSTeams Team
+      description: Add a member to a MSTeams Team
+      operationId: AddTeamMember
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeamMemberAddRequest'
+      responses:
+        '201':
+          description: Team member added successfully.
+        '400':
+          description: Error in adding the team member, possibly due to invalid input.
+        '401':
+          description: Unauthorized, requires valid authentication.
+        '404':
+          description: Original team or member not found or inaccessible.
+        '500':
+          description: Server Error
+  $skillapproot/teams/members/remove:
+    post:
+      summary: Remove member from MSTeams Team
+      description: Remove a member from a MSTeams Team
+      operationId: RemoveTeamMember
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeamMemberRemoveRequest'
+      responses:
+        '200':
+          description: Team member removed successfully.
+        '400':
+          description: Error in removing the team member, possibly due to invalid input.
+        '401':
+          description: Unauthorized, requires valid authentication.
+        '404':
+          description: Original team or member not found or inaccessible.
+        '500':
+          description: Server Error
+components:
+  schemas:
+    ChatsQueryRequest:
+      title: Parameters to search for chats in user's MSTeams chat list
+      type: object
+      properties:
+        topic:
+          title: Topic
+          type: string
+          description: Searches for chats with topics containing the specified keyword, allowing partial matches for flexibility.
+        chatType:
+          title: chatType
+          type: string
+          description: Searches for chats with type matching the specified chat type. The possible values are 'group' or 'oneOnOne'.
+        memberEmails:
+          title: Member Emails
+          type: string
+          description: Members email addresses concatenated together with commas in between. The search will return chats with members having this specified emails.
+          example: "test@test.com,test1@test1.com,test2@test2.com"
+        lastUpdatedBeginTime:
+          title: Last Updated Begin Time
+          type: string         
+          description: Specifies the exact starting point in last updated time for the chat search. The search will return chats updated strictly after this specified time.
+        lastUpdatedEndTime:
+          title: Last Updated End Time
+          type: string         
+          description: Defines the end boundary for the chat search. The search includes chats updated before this timestamp.
+    ChatsQueryResponse:
+      type: object
+      properties:
+        chats:
+          type: array
+          items:
+            $ref: "#/components/schemas/ChatResponse"
+          description: The list of MSTeams chats.
+    ChatGetRequest:
+      title: Parameters to get MSTeams chat details
+      type: object
+      properties:
+        id:
+          title: Chat ID
+          type: string
+          description: A unique identifier for the chat, used for tracking and referencing purposes.
+    ChatResponse:
+      type: object
+      properties:
+        id:
+          title: Chat ID
+          type: string
+          description: A unique identifier for the chat, used for tracking and referencing purposes.
+        tenantId:
+          title: Tenent ID
+          type: string
+          description: A unique identifier for the tenant in  which the chat was created, used for tracking and referencing purposes.
+        chatType:
+          title: chatType
+          type: string
+          description: The type of the chat. The possible values are 'group' or 'oneOnOne'.
+        topic:
+          title: Chat Topic
+          type: string
+          description: The topic of the chat.
+        memberEmails:
+          title: Member Emails
+          type: string
+          description: Members email addresses concatenated together with commas in between.
+          example: "test@test.com,test1@test1.com,test2@test2.com"
+        lastUpdated:
+          title: Chat Last Updated Timestamp
+          type: string
+          description: The timestamp indicating when the chat was last updated.
+        webUrl:
+          title: Web URL
+          type: string
+          description: The URL of the chat in MSTeams.
+    ChatCreateRequest:
+      title: Parameters to create a MSTeams chat
+      type: object
+      properties:
+        topic:
+          title: Chat Topic
+          type: string
+          description: The topic of the chat.
+        chatType:
+          title: chatType
+          type: string
+          description: The type of the chat. The possible values are 'group' or 'oneOnOne'.
+        memberEmails:
+          title: Member Emails
+          type: string
+          description: Members email addresses concatenated together with commas in between.
+          example: "test@test.com,test1@test1.com,test2@test2.com"
+      required:
+        - chatType
+        - memberEmails
+    ChatUpdateRequest:
+      title: Parameters to update or modify a MSTeams chat
+      type: object
+      properties:
+        id:
+          title: Chat ID
+          type: string
+          description: A unique identifier for the chat, used for tracking and referencing purposes.
+        topic:
+          title: Chat Topic
+          type: string
+          description: The topic of the chat.
+      required:
+        - id
+    ChatMembersQueryRequest:
+      title: Parameters to search for chat members in user's MSTeams specific chat
+      type: object
+      properties:
+        id:
+          title: Chat ID
+          type: string
+          description: A unique identifier for the chat, used for tracking and referencing purposes.
+        displayName:
+          title: Display Name
+          type: string
+          description: Searches for chat members with display name containing the specified keyword, allowing partial matches for flexibility.
+        role:
+          title: Role
+          type: string
+          description: Searched for chat members with roles containing the specified role.
+      required:
+        - id
+    ChatMembersQueryResponse:
+      type: object
+      properties:
+        members:
+          type: array
+          items:
+            $ref: "#/components/schemas/MemberResponse"
+          description: The list of MSTeams chat members.
+    ChatMemberGetRequest:
+      title: Parameters to get MSTeams chat member detail
+      type: object
+      properties:
+        id:
+          title: Chat ID
+          type: string
+          description: A unique identifier for the chat, used for tracking and referencing purposes.
+        memberId:
+          title: Member ID
+          type: string
+          description: A unique identifier for the chat member, used for tracking and referencing purposes.
+      required:
+        - id
+        - memberId
+    MemberResponse:
+      title: MSTeams Member Details
+      type: object
+      properties:
+        id:
+          title: Member ID
+          type: string
+          description: A unique identifier for the member, used for tracking and referencing purposes in the group.
+        email:
+          title: Email
+          type: string
+          format: email
+          description: Email address of the member.
+        displayName:
+          title: Display Name
+          type: string
+          description: Display name of the member in the group.
+        roles:
+          title: Roles
+          type: array
+          description: Roles of the member in the group.
+          items:
+            type: string
+        visibleHistoryStart:
+          title: Visible History Start
+          type: string
+          description: The timestamp denoting how far back a group history is shared with the member.
+    ChatMemberAddRequest:
+      title: Parameters to add a member to a MSTeams chat
+      type: object
+      properties:
+        id:
+          title: Chat ID
+          type: string
+          description: A unique identifier for the chat member, used for tracking and referencing purposes.
+        email:
+          title: Email
+          type: string
+          format: email
+          description: Email address of the member.
+      required:
+        - id
+        - email
+    ChatMemberRemoveRequest:
+      title: Parameters to remove a member from a MSTeams chat
+      type: object
+      properties:
+        id:
+          title: Chat ID
+          type: string
+          description: A unique identifier for the chat, used for tracking and referencing purposes.
+        email:
+          title: Email
+          type: string
+          format: email
+          description: Email address of the member.
+      required:
+        - id
+        - email
+    ChatMessagesQueryRequest:
+      title: Parameters to search for messages in user's MSTeams team
+      type: object
+      properties:
+        from:
+          title: From
+          type: string
+          description: A string value representing the sender's email address. The search returns team messages only from this specified sender.
+        lastModifiedBeginTime:
+          title: Last Updated Begin Time
+          type: string         
+          description: Specifies the exact starting point in last updated time for the chat message search. The search will return chat messages updated strictly after this specified time.
+        lastModifiedEndTime:
+          title: Last Updated End Time
+          type: string         
+          description: Defines the end boundary for the chat message search. The search includes chat messages updated before this timestamp.
+    ChatMessagesQueryResponse:
+      type: object
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: "#/components/schemas/MessageResponse"
+          description: The list of MSTeams teams.
+    ChatMessageGetRequest:
+      title: Parameters to get MSTeams chat message details
+      type: object
+      properties:
+        id:
+          title: Chat ID
+          type: string
+          description: A unique identifier for the chat, used for tracking and referencing purposes.
+        messageId:
+          title: Message ID
+          type: string
+          description: A unique identifier for the chat message, used for tracking and referencing purposes.
+      required:
+        - id
+        - messageId
+    MessageResponse:
+      type: object
+      properties:
+        id:
+          title: Message ID
+          type: string
+          description: A unique identifier for the chat message, used for tracking and referencing purposes.
+        chatId:
+          title: Chat ID
+          type: string
+          description: A unique identifier for the chat, used for tracking and referencing purposes.
+        from:
+          title: From
+          type: string
+          description: A string value representing the sender's email address.
+        content:
+          title: Content
+          type: string
+          description: Content of the chat message.
+        lastModified:
+          title: Last Updated
+          type: string         
+          description: The timestamp when the message was last modified.
+    ChatMessageSendRequest:
+      title: Parameters to send a message to a MSTeams chat
+      type: object
+      properties:
+        id:
+          title: Chat ID
+          type: string
+          description: A unique identifier for the chat, used for tracking and referencing purposes.
+        content:
+          title: Content
+          type: string
+          description: Content of the chat message.
+      required:
+        - id
+        - content
+    ChatMessageUpdateRequest:
+      title: Parameters to update or modify a message in a MSTeams chat
+      type: object
+      properties:
+        id:
+          title: Chat ID
+          type: string
+          description: A unique identifier for the chat, used for tracking and referencing purposes.
+        messageId:
+          title: Message ID
+          type: string
+          description: A unique identifier for the chat message, used for tracking and referencing purposes.
+        content:
+          title: Content
+          type: string
+          description: Content of the chat message.
+      required:
+        - id
+        - messageId
+    ChatMessageRemoveRequest:
+      title: Parameters to remove a message in a MSTeams team
+      type: object
+      properties:
+        id:
+          title: Chat ID
+          type: string
+          description: A unique identifier for the chat, used for tracking and referencing purposes.
+        messageId:
+          title: Message ID
+          type: string
+          description: A unique identifier for the chat message, used for tracking and referencing purposes.
+      required:
+        - id
+        - messageId
+    TeamsQueryRequest:
+      title: Parameters to search for teams in user's MSTeams
+      type: object
+      properties:
+        displayName:
+          title: Display Name
+          type: string
+          description: Searches for teams with display name containing the specified keyword, allowing partial matches for flexibility.
+        description:
+          title: Description
+          type: string
+          description: Searches for teams with description containing the specified keyword, allowing partial matches for flexibility.
+        memberEmails:
+          title: Member Emails
+          type: string
+          description: Members email addresses concatenated together with commas in between. The search will return teams with members having this specified emails.
+          example: "test@test.com,test1@test1.com,test2@test2.com"
+    TeamsQueryResponse:
+      type: object
+      properties:
+        teams:
+          type: array
+          items:
+            $ref: "#/components/schemas/TeamResponse"
+          description: The list of MSTeams teams.
+    TeamGetRequest:
+      title: Parameters to get MSTeams team details
+      type: object
+      properties:
+        id:
+          title: Team ID
+          type: string
+          description: A unique identifier for the team, used for tracking and referencing purposes.
+    TeamResponse:
+      type: object
+      properties:
+        id:
+          title: Team ID
+          type: string
+          description: A unique identifier for the team, used for tracking and referencing purposes.
+        tenantId:
+          title: Tenent ID
+          type: string
+          description: A unique identifier for the tenant in  which the team was created, used for tracking and referencing purposes.
+        displayName:
+          title: Display Name
+          type: string
+          description: Searches for teams with display name containing the specified keyword, allowing partial matches for flexibility.
+        description:
+          title: Description
+          type: string
+          description: Searches for teams with description containing the specified keyword, allowing partial matches for flexibility.
+        memberEmails:
+          title: Member Emails
+          type: string
+          description: Members email addresses concatenated together with commas in between.
+          example: "test@test.com,test1@test1.com,test2@test2.com"
+        webUrl:
+          title: Web URL
+          type: string
+          description: The URL of the team in MSTeams.
+    TeamCreateRequest:
+      title: Parameters to create a MSTeams team
+      type: object
+      properties:
+        displayName:
+          title: Display Name
+          type: string
+          description: Display name of the team.
+        description:
+          title: Description
+          type: string
+          description: Description of the team.
+        memberEmails:
+          title: Member Emails
+          type: string
+          description: Members email addresses concatenated together with commas in between.
+          example: "test@test.com,test1@test1.com,test2@test2.com"
+      required:
+        - displayName
+        - memberEmails
+    TeamUpdateRequest:
+      title: Parameters to update or modify a MSTeams team
+      type: object
+      properties:
+        id:
+          title: Team ID
+          type: string
+          description: A unique identifier for the team, used for tracking and referencing purposes.
+        displayName:
+          title: Display Name
+          type: string
+          description: Display name of the team.
+        description:
+          title: Description
+          type: string
+          description: Description of the team.
+      required:
+        - id
+    TeamRemoveRequest:
+      title: Parameters to remove a MSTeams team
+      type: object
+      properties:
+        id:
+          title: Team ID
+          type: string
+          description: A unique identifier for the team, used for tracking and referencing purposes.
+      required:
+        - id
+    TeamMembersQueryRequest:
+      title: Parameters to search for team members in user's MSTeams specific team
+      type: object
+      properties:
+        id:
+          title: Team ID
+          type: string
+          description: A unique identifier for the team, used for tracking and referencing purposes.
+        displayName:
+          title: Display Name
+          type: string
+          description: Searches for team members with display name containing the specified keyword, allowing partial matches for flexibility.
+        role:
+          title: Role
+          type: string
+          description: Searched for team members with roles containing the specified role.
+      required:
+        - id
+    TeamMembersQueryResponse:
+      type: object
+      properties:
+        members:
+          type: array
+          items:
+            $ref: "#/components/schemas/MemberResponse"
+          description: The list of MSTeams team members.
+    TeamMemberGetRequest:
+      title: Parameters to get MSTeams team member detail
+      type: object
+      properties:
+        id:
+          title: Team ID
+          type: string
+          description: A unique identifier for the team, used for tracking and referencing purposes.
+        memberId:
+          title: Member ID
+          type: string
+          description: A unique identifier for the team member, used for tracking and referencing purposes.
+      required:
+        - id
+        - memberId
+    TeamMemberAddRequest:
+      title: Parameters to add a member to a MSTeams team
+      type: object
+      properties:
+        id:
+          title: Team ID
+          type: string
+          description: A unique identifier for the team member, used for tracking and referencing purposes.
+        email:
+          title: Email
+          type: string
+          format: email
+          description: Email address of the member.
+      required:
+        - id
+        - email
+    TeamMemberRemoveRequest:
+      title: Parameters to remove a member from a MSTeams team
+      type: object
+      properties:
+        id:
+          title: Team ID
+          type: string
+          description: A unique identifier for the team, used for tracking and referencing purposes.
+        email:
+          title: Email
+          type: string
+          format: email
+          description: Email address of the member.
+      required:
+        - id
+        - email
