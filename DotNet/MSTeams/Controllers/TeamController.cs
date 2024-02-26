@@ -61,7 +61,7 @@ namespace MSTeams.Controllers
         }
 
         [HttpPost("update"), HttpPost("~/skill/{controller}/update")]
-        public async Task<IActionResult> UpdateTeam(TeamUpdateRequest request)
+        public async Task<IActionResult> UpdateTeams(TeamUpdateRequest request)
         {
             string authorizationHeader = Request.Headers["Authorization"].FirstOrDefault();
             string token = TokenHelper.GetSessionToken(authorizationHeader);
@@ -83,7 +83,7 @@ namespace MSTeams.Controllers
         }
 
         [HttpPost("remove"), HttpPost("~/skill/{controller}/remove")]
-        public async Task<IActionResult> RemoveTeam(TeamRemoveRequest request)
+        public async Task<IActionResult> RemoveTeams(TeamRemoveRequest request)
         {
             string authorizationHeader = Request.Headers["Authorization"].FirstOrDefault();
             string token = TokenHelper.GetSessionToken(authorizationHeader);

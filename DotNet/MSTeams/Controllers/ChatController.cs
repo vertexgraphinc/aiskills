@@ -166,8 +166,8 @@ namespace MSTeams.Controllers
             return resp;
         }
 
-        [HttpPost("sendMessage"), HttpPost("~/skill/{controller}/messages/send")]
-        public async Task<IActionResult> SendChatMessage(ChatMessageSendRequest request)
+        [HttpPost("sendMessages"), HttpPost("~/skill/{controller}/messages/send")]
+        public async Task<IActionResult> SendChatMessages(ChatMessageSendRequest request)
         {
             string authorizationHeader = Request.Headers["Authorization"].FirstOrDefault();
             string token = TokenHelper.GetSessionToken(authorizationHeader);
@@ -188,8 +188,8 @@ namespace MSTeams.Controllers
             }
         }
 
-        [HttpPost("updateMessage"), HttpPost("~/skill/{controller}/messages/update")]
-        public async Task<IActionResult> UpdateChatMessage(ChatMessageUpdateRequest request)
+        [HttpPost("updateMessages"), HttpPost("~/skill/{controller}/messages/update")]
+        public async Task<IActionResult> UpdateChatMessages(ChatMessageUpdateRequest request)
         {
             string authorizationHeader = Request.Headers["Authorization"].FirstOrDefault();
             string token = TokenHelper.GetSessionToken(authorizationHeader);
@@ -210,8 +210,8 @@ namespace MSTeams.Controllers
             }
         }
 
-        [HttpPost("removeMessage"), HttpPost("~/skill/{controller}/messages/remove")]
-        public async Task<IActionResult> RemoveChatMessage(ChatMessageRemoveRequest request)
+        [HttpPost("removeMessages"), HttpPost("~/skill/{controller}/messages/remove")]
+        public async Task<IActionResult> RemoveChatMessages(ChatMessageRemoveRequest request)
         {
             string authorizationHeader = Request.Headers["Authorization"].FirstOrDefault();
             string token = TokenHelper.GetSessionToken(authorizationHeader);
