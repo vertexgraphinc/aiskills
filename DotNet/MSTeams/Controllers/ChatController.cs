@@ -38,20 +38,6 @@ namespace MSTeams.Controllers
             return resp;
         }
 
-        [HttpPost("get"), HttpPost("~/skill/{controller}/get")]
-        public async Task<ChatResponse> GetChat(ChatGetRequest request)
-        {
-            string authorizationHeader = Request.Headers["Authorization"].FirstOrDefault();
-            string token = TokenHelper.GetSessionToken(authorizationHeader);
-            if (string.IsNullOrEmpty(token))
-            {
-                Response.StatusCode = 401;
-                return null;
-            }
-
-            return await _chatService.GetChat(request, token);
-        }
-
         [HttpPost("create"), HttpPost("~/skill/{controller}/create")]
         public async Task<IActionResult> CreateChat(ChatCreateRequest request)
         {
@@ -75,7 +61,7 @@ namespace MSTeams.Controllers
         }
 
         [HttpPost("update"), HttpPost("~/skill/{controller}/update")]
-        public async Task<IActionResult> UpdateChat(ChatUpdateRequest request)
+        public async Task<IActionResult> UpdateChats(ChatUpdateRequest request)
         {
             string authorizationHeader = Request.Headers["Authorization"].FirstOrDefault();
             string token = TokenHelper.GetSessionToken(authorizationHeader);
@@ -85,7 +71,7 @@ namespace MSTeams.Controllers
                 return null;
             }
 
-            bool isUpdated = await _chatService.UpdateChat(request, token);
+            bool isUpdated = await _chatService.UpdateChats(request, token);
             if (isUpdated)
             {
                 return Ok("Chat updated successfully.");
@@ -114,20 +100,6 @@ namespace MSTeams.Controllers
 
             resp.Members = await _chatService.QueryChatMembers(request, token);
             return resp;
-        }
-
-        [HttpPost("getMember"), HttpPost("~/skill/{controller}/members/get")]
-        public async Task<MemberResponse> GetChatMember(ChatMemberGetRequest request)
-        {
-            string authorizationHeader = Request.Headers["Authorization"].FirstOrDefault();
-            string token = TokenHelper.GetSessionToken(authorizationHeader);
-            if (string.IsNullOrEmpty(token))
-            {
-                Response.StatusCode = 401;
-                return null;
-            }
-
-            return await _chatService.GetChatMember(request, token);
         }
 
         [HttpPost("addMember"), HttpPost("~/skill/{controller}/members/add")]
@@ -194,20 +166,6 @@ namespace MSTeams.Controllers
             return resp;
         }
 
-        [HttpPost("getMessage"), HttpPost("~/skill/{controller}/messages/get")]
-        public async Task<MessageResponse> GetChatMessage(ChatMessageGetRequest request)
-        {
-            string authorizationHeader = Request.Headers["Authorization"].FirstOrDefault();
-            string token = TokenHelper.GetSessionToken(authorizationHeader);
-            if (string.IsNullOrEmpty(token))
-            {
-                Response.StatusCode = 401;
-                return null;
-            }
-
-            return await _chatService.GetChatMessage(request, token);
-        }
-
         [HttpPost("sendMessage"), HttpPost("~/skill/{controller}/messages/send")]
         public async Task<IActionResult> SendChatMessage(ChatMessageSendRequest request)
         {
@@ -219,7 +177,7 @@ namespace MSTeams.Controllers
                 return null;
             }
 
-            bool isSent = await _chatService.SendChatMessage(request, token);
+            bool isSent = await _chatService.SendChatMessages(request, token);
             if (isSent)
             {
                 return Ok("Chat message sent successfully.");
@@ -241,7 +199,7 @@ namespace MSTeams.Controllers
                 return null;
             }
 
-            bool isUpdated = await _chatService.UpdateChatMessage(request, token);
+            bool isUpdated = await _chatService.UpdateChatMessages(request, token);
             if (isUpdated)
             {
                 return Ok("Chat message updated successfully.");
@@ -263,7 +221,7 @@ namespace MSTeams.Controllers
                 return null;
             }
 
-            bool isRemoved = await _chatService.RemoveChatMessage(request, token);
+            bool isRemoved = await _chatService.RemoveChatMessages(request, token);
             if (isRemoved)
             {
                 return Ok("Chat message removed successfully.");

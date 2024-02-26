@@ -38,20 +38,6 @@ namespace MSTeams.Controllers
             return resp;
         }
 
-        [HttpPost("get"), HttpPost("~/skill/{controller}/get")]
-        public async Task<TeamResponse> GetTeam(TeamGetRequest request)
-        {
-            string authorizationHeader = Request.Headers["Authorization"].FirstOrDefault();
-            string token = TokenHelper.GetSessionToken(authorizationHeader);
-            if (string.IsNullOrEmpty(token))
-            {
-                Response.StatusCode = 401;
-                return null;
-            }
-
-            return await _teamService.GetTeam(request, token);
-        }
-
         [HttpPost("create"), HttpPost("~/skill/{controller}/create")]
         public async Task<IActionResult> CreateTeam(TeamCreateRequest request)
         {
@@ -85,7 +71,7 @@ namespace MSTeams.Controllers
                 return null;
             }
 
-            bool isUpdated = await _teamService.UpdateTeam(request, token);
+            bool isUpdated = await _teamService.UpdateTeams(request, token);
             if (isUpdated)
             {
                 return Ok("Team updated successfully.");
@@ -107,7 +93,7 @@ namespace MSTeams.Controllers
                 return null;
             }
 
-            bool isRemoved = await _teamService.RemoveTeam(request, token);
+            bool isRemoved = await _teamService.RemoveTeams(request, token);
             if (isRemoved)
             {
                 return Ok("Team removed successfully.");
@@ -136,20 +122,6 @@ namespace MSTeams.Controllers
 
             resp.Members = await _teamService.QueryTeamMembers(request, token);
             return resp;
-        }
-
-        [HttpPost("getMember"), HttpPost("~/skill/{controller}/members/get")]
-        public async Task<MemberResponse> GetTeamMember(TeamMemberGetRequest request)
-        {
-            string authorizationHeader = Request.Headers["Authorization"].FirstOrDefault();
-            string token = TokenHelper.GetSessionToken(authorizationHeader);
-            if (string.IsNullOrEmpty(token))
-            {
-                Response.StatusCode = 401;
-                return null;
-            }
-
-            return await _teamService.GetTeamMember(request, token);
         }
 
         [HttpPost("addMember"), HttpPost("~/skill/{controller}/members/add")]
