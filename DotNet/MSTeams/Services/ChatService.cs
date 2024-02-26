@@ -20,27 +20,17 @@ namespace MSTeams.Services
 
         }
 
-        public async Task<ChatResponse> GetChat(ChatGetRequest request, string token)
-        {
-
-        }
-
         public async Task<bool> CreateChat(ChatCreateRequest request, string token)
         {
 
         }
 
-        public async Task<bool> UpdateChat(ChatUpdateRequest request, string token)
+        public async Task<bool> UpdateChats(ChatUpdateRequest request, string token)
         {
 
         }
 
         public async Task<List<MemberResponse>> QueryChatMembers(ChatMembersQueryRequest request, string token)
-        {
-
-        }
-
-        public async Task<MemberResponse> GetChatMember(ChatMemberGetRequest request, string token)
         {
 
         }
@@ -59,22 +49,18 @@ namespace MSTeams.Services
         {
 
         }
-        public async Task<MessageResponse> GetChatMessage(ChatMessageGetRequest request, string token)
+
+        public async Task<bool> SendChatMessages(ChatMessageSendRequest request, string token)
         {
 
         }
 
-        public async Task<bool> SendChatMessage(ChatMessageSendRequest request, string token)
+        public async Task<bool> UpdateChatMessages(ChatMessageUpdateRequest request, string token)
         {
 
         }
 
-        public async Task<bool> UpdateChatMessage(ChatMessageUpdateRequest request, string token)
-        {
-
-        }
-
-        public async Task<bool> RemoveChatMessage(ChatMessageRemoveRequest request, string token)
+        public async Task<bool> RemoveChatMessages(ChatMessageRemoveRequest request, string token)
         {
 
         }

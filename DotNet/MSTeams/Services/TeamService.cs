@@ -20,32 +20,22 @@ namespace MSTeams.Services
 
         }
 
-        public async Task<TeamResponse> GetTeam(TeamGetRequest request, string token)
-        {
-
-        }
-
         public async Task<bool> CreateTeam(TeamCreateRequest request, string token)
         {
 
         }
 
-        public async Task<bool> UpdateTeam(TeamUpdateRequest request, string token)
+        public async Task<bool> UpdateTeams(TeamUpdateRequest request, string token)
         {
 
         }
 
-        public async Task<bool> RemoveTeam(TeamRemoveRequest request, string token)
+        public async Task<bool> RemoveTeams(TeamRemoveRequest request, string token)
         {
 
         }
 
         public async Task<List<MemberResponse>> QueryTeamMembers(TeamMembersQueryRequest request, string token)
-        {
-
-        }
-
-        public async Task<MemberResponse> GetTeamMember(TeamMemberGetRequest request, string token)
         {
 
         }
