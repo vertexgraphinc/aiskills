@@ -8,15 +8,11 @@ namespace MSTeams.Interfaces
     {
         Task<List<ChatResponse>> QueryChats(ChatsQueryRequest request, string token);
 
-        Task<ChatResponse> GetChat(ChatGetRequest request, string token);
-
         Task<bool> CreateChat(ChatCreateRequest request, string token);
 
-        Task<bool> UpdateChat(ChatUpdateRequest request, string token);
+        Task<bool> UpdateChats(ChatUpdateRequest request, string token);
 
         Task<List<MemberResponse>> QueryChatMembers(ChatMembersQueryRequest request, string token);
-
-        Task<MemberResponse> GetChatMember(ChatMemberGetRequest request, string token);
 
         Task<bool> AddChatMember(ChatMemberAddRequest request, string token);
 
@@ -24,12 +20,10 @@ namespace MSTeams.Interfaces
 
         Task<List<MessageResponse>> QueryChatMessages(ChatMessagesQueryRequest request, string token);
 
-        Task<MessageResponse> GetChatMessage(ChatMessageGetRequest request, string token);
+        Task<bool> SendChatMessages(ChatMessageSendRequest request, string token);
 
-        Task<bool> SendChatMessage(ChatMessageSendRequest request, string token);
+        Task<bool> UpdateChatMessages(ChatMessageUpdateRequest request, string token);
 
-        Task<bool> UpdateChatMessage(ChatMessageUpdateRequest request, string token);
-
-        Task<bool> RemoveChatMessage(ChatMessageRemoveRequest request, string token);
+        Task<bool> RemoveChatMessages(ChatMessageRemoveRequest request, string token);
     }
 }
