@@ -6,10 +6,6 @@ namespace MSTeams.Contracts
 {
     public class MemberResponse
     {
-        [JsonProperty("id")]
-        [JsonPropertyName("id")]
-        public string Id { get; set; }
-
         [JsonProperty("email")]
         [JsonPropertyName("email")]
         public string Email { get; set; }

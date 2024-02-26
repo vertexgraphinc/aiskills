@@ -5,14 +5,6 @@ namespace MSTeams.Contracts
 {
     public class MessageResponse
     {
-        [JsonProperty("id")]
-        [JsonPropertyName("id")]
-        public string Id { get; set; }
-
-        [JsonProperty("chatId")]
-        [JsonPropertyName("chatId")]
-        public string ChatId { get; set; }
-
         [JsonProperty("from")]
         [JsonPropertyName("from")]
         public string From { get; set; }

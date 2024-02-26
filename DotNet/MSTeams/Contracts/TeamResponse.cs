@@ -5,14 +5,6 @@ namespace MSTeams.Contracts
 {
     public class TeamResponse
     {
-        [JsonProperty("id")]
-        [JsonPropertyName("id")]
-        public string Id { get; set; }
-
-        [JsonProperty("tenantId")]
-        [JsonPropertyName("tenantId")]
-        public string TenantId { get; set; }
-
         [JsonProperty("displayName")]
         [JsonPropertyName("displayName")]
         public string DisplayName { get; set; }

@@ -5,14 +5,6 @@ namespace MSTeams.Contracts
 {
     public class ChatResponse
     {
-        [JsonProperty("id")]
-        [JsonPropertyName("id")]
-        public string Id { get; set; }
-
-        [JsonProperty("tenantId")]
-        [JsonPropertyName("tenantId")]
-        public string TenantId { get; set; }
-
         [JsonProperty("topic")]
         [JsonPropertyName("topic")]
         public string Topic { get; set; }

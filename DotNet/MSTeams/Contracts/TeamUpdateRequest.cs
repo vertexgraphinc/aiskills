@@ -5,10 +5,6 @@ namespace MSTeams.Contracts
 {
     public class TeamUpdateRequest
     {
-        [JsonProperty("id")]
-        [JsonPropertyName("id")]
-        public string Id { get; set; }
-
         [JsonProperty("displayName")]
         [JsonPropertyName("displayName")]
         public string DisplayName { get; set; }
@@ -16,5 +12,17 @@ namespace MSTeams.Contracts
         [JsonProperty("description")]
         [JsonPropertyName("description")]
         public string Description { get; set; }
+
+        [JsonProperty("memberEmails")]
+        [JsonPropertyName("memberEmails")]
+        public string MemberEmails { get; set; }
+
+        [JsonProperty("updatedDisplayName")]
+        [JsonPropertyName("updatedDisplayName")]
+        public string UpdatedDisplayName { get; set; }
+
+        [JsonProperty("updatedDescription")]
+        [JsonPropertyName("updatedDescription")]
+        public string UpdatedDescription { get; set; }
     }
 }
