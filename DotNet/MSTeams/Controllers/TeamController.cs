@@ -93,7 +93,7 @@ namespace MSTeams.Controllers
                 return null;
             }
 
-            bool isRemoved = await _teamService.RemoveTeams(request, token);
+            bool isRemoved = await _teamService.ArchiveTeams(request, token);
             if (isRemoved)
             {
                 return Ok("Team removed successfully.");
