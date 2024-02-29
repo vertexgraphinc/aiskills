@@ -12,7 +12,7 @@ namespace MSTeams.Interfaces
 
         Task<bool> UpdateTeams(TeamUpdateRequest request, string token);
 
-        Task<bool> RemoveTeams(TeamRemoveRequest request, string token);
+        Task<bool> ArchiveTeams(TeamRemoveRequest request, string token);
 
         Task<List<MemberResponse>> QueryTeamMembers(TeamMembersQueryRequest request, string token);
 
