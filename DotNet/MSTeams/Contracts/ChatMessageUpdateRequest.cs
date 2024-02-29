@@ -25,6 +25,14 @@ namespace MSTeams.Contracts
         [JsonPropertyName("lastUpdatedEndTime")]
         public string LastUpdatedEndTime { get; set; }
 
+        [JsonProperty("lastModifiedBeginTime")]
+        [JsonPropertyName("lastModifiedBeginTime")]
+        public string LastModifiedBeginTime { get; set; }
+
+        [JsonProperty("lastModifiedEndTime")]
+        [JsonPropertyName("lastModifiedEndTime")]
+        public string LastModifiedEndTime { get; set; }
+
         [JsonProperty("content")]
         [JsonPropertyName("content")]
         public string Content { get; set; }
