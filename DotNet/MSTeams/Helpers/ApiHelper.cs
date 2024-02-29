@@ -83,6 +83,14 @@ namespace MSTeams.Helpers
         {
             if (!url.StartsWith(APIConstants.GraphApiBaseURL))
             {
+                //if (!url.StartsWith("users"))
+                //{
+                //    url = APIConstants.GraphApiBaseURL + url;
+                //} 
+                //else
+                //{
+                //    url = APIConstants.GraphApiBaseURL.Remove(APIConstants.GraphApiBaseURL.LastIndexOf("me/")) + url;
+                //}
                 url = APIConstants.GraphApiBaseURL + url;
             }
 
@@ -104,5 +112,35 @@ namespace MSTeams.Helpers
             }
         }
 
+        public async Task<bool> Patch(string url, object requestBody, string token)
+        {
+            if (!url.StartsWith(APIConstants.GraphApiBaseURL))
+            {
+                url = APIConstants.GraphApiBaseURL + url;
+            }
+
+            var request = new HttpRequestMessage(HttpMethod.Patch, url);
+            request.Headers.Add("Authorization", "Bearer " + token);
+
+            if (requestBody != null)
+            {
+                string jsonRequestBody = JsonConvert.SerializeObject(requestBody);
+                request.Content = new StringContent(jsonRequestBody, Encoding.UTF8, "application/json");
+            }
+
+            using (var httpResponse = await _httpClient.SendAsync(request))
+            {
+                if (httpResponse.IsSuccessStatusCode)
+                {
+                    return true;
+                }
+                else
+                {
+                    // Handle error response, log it or throw an exception as appropriate
+                    // You might want to return false or throw a specific exception depending on your application's needs
+                    return false;
+                }
+            }
+        }
     }
 }
