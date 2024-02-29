@@ -456,21 +456,61 @@ components:
         - chatType
         - memberEmails
     ChatsUpdateRequest:
-      allOf:
-        - $ref: '#/components/schemas/ChatsQueryRequest'
       title: Parameters to update or modify a MSTeams chat
       type: object
       properties:
+        topic:
+          title: Topic
+          type: string
+          description: Searches for chats with topics containing the specified keyword, allowing partial matches for flexibility.
+        chatType:
+          title: chatType
+          type: string
+          description: Searches for chats with type matching the specified chat type. The possible values are 'group' or 'oneOnOne'.
+        memberEmails:
+          title: Member Emails
+          type: string
+          description: Members email addresses concatenated together with commas in between. The search will return chats with members having this specified emails.
+          example: "test@test.com,test1@test1.com,test2@test2.com"
+        lastUpdatedBeginTime:
+          title: Last Updated Begin Time
+          type: string         
+          description: Specifies the exact starting point in last updated time for the chat search. The search will return chats updated strictly after this specified time.
+        lastUpdatedEndTime:
+          title: Last Updated End Time
+          type: string         
+          description: Defines the end boundary for the chat search. The search includes chats updated before this timestamp.
         updatedTopic:
           title: Updated Chat Topic
           type: string
           description: The updated topic of the chat.
+      required:
+        - updatedTopic
     ChatMembersQueryRequest:
-      allOf:
-        - $ref: '#/components/schemas/ChatsQueryRequest'
       title: Parameters to search for chat members in user's MSTeams specific chat
       type: object
       properties:
+        topic:
+          title: Topic
+          type: string
+          description: Searches for chats with topics containing the specified keyword, allowing partial matches for flexibility.
+        chatType:
+          title: chatType
+          type: string
+          description: Searches for chats with type matching the specified chat type. The possible values are 'group' or 'oneOnOne'.
+        memberEmails:
+          title: Member Emails
+          type: string
+          description: Members email addresses concatenated together with commas in between. The search will return chats with members having this specified emails.
+          example: "test@test.com,test1@test1.com,test2@test2.com"
+        lastUpdatedBeginTime:
+          title: Last Updated Begin Time
+          type: string         
+          description: Specifies the exact starting point in last updated time for the chat search. The search will return chats updated strictly after this specified time.
+        lastUpdatedEndTime:
+          title: Last Updated End Time
+          type: string         
+          description: Defines the end boundary for the chat search. The search includes chats updated before this timestamp.
         displayName:
           title: Display Name
           type: string
@@ -511,11 +551,30 @@ components:
           type: string
           description: The timestamp denoting how far back a group history is shared with the member.
     ChatMemberAddRequest:
-      allOf:
-        - $ref: '#/components/schemas/ChatsQueryRequest'
       title: Parameters to add a member to MSTeams chats
       type: object
       properties:
+        topic:
+          title: Topic
+          type: string
+          description: Searches for chats with topics containing the specified keyword, allowing partial matches for flexibility.
+        chatType:
+          title: chatType
+          type: string
+          description: Searches for chats with type matching the specified chat type. The possible values are 'group' or 'oneOnOne'.
+        memberEmails:
+          title: Member Emails
+          type: string
+          description: Members email addresses concatenated together with commas in between. The search will return chats with members having this specified emails.
+          example: "test@test.com,test1@test1.com,test2@test2.com"
+        lastUpdatedBeginTime:
+          title: Last Updated Begin Time
+          type: string         
+          description: Specifies the exact starting point in last updated time for the chat search. The search will return chats updated strictly after this specified time.
+        lastUpdatedEndTime:
+          title: Last Updated End Time
+          type: string         
+          description: Defines the end boundary for the chat search. The search includes chats updated before this timestamp.
         email:
           title: Email
           type: string
@@ -524,11 +583,30 @@ components:
       required:
         - email
     ChatMemberRemoveRequest:
-      allOf:
-        - $ref: '#/components/schemas/ChatsQueryRequest'
       title: Parameters to remove a member from MSTeams chats
       type: object
       properties:
+        topic:
+          title: Topic
+          type: string
+          description: Searches for chats with topics containing the specified keyword, allowing partial matches for flexibility.
+        chatType:
+          title: chatType
+          type: string
+          description: Searches for chats with type matching the specified chat type. The possible values are 'group' or 'oneOnOne'.
+        memberEmails:
+          title: Member Emails
+          type: string
+          description: Members email addresses concatenated together with commas in between. The search will return chats with members having this specified emails.
+          example: "test@test.com,test1@test1.com,test2@test2.com"
+        lastUpdatedBeginTime:
+          title: Last Updated Begin Time
+          type: string         
+          description: Specifies the exact starting point in last updated time for the chat search. The search will return chats updated strictly after this specified time.
+        lastUpdatedEndTime:
+          title: Last Updated End Time
+          type: string         
+          description: Defines the end boundary for the chat search. The search includes chats updated before this timestamp.
         email:
           title: Email
           type: string
@@ -537,11 +615,30 @@ components:
       required:
         - email
     ChatMessagesQueryRequest:
-      allOf:
-        - $ref: '#/components/schemas/ChatsQueryRequest'
       title: Parameters to search for messages in user's MSTeams team
       type: object
       properties:
+        topic:
+          title: Topic
+          type: string
+          description: Searches for chats with topics containing the specified keyword, allowing partial matches for flexibility.
+        chatType:
+          title: chatType
+          type: string
+          description: Searches for chats with type matching the specified chat type. The possible values are 'group' or 'oneOnOne'.
+        memberEmails:
+          title: Member Emails
+          type: string
+          description: Members email addresses concatenated together with commas in between. The search will return chats with members having this specified emails.
+          example: "test@test.com,test1@test1.com,test2@test2.com"
+        lastUpdatedBeginTime:
+          title: Last Updated Begin Time
+          type: string         
+          description: Specifies the exact starting point in last updated time for the chat search. The search will return chats updated strictly after this specified time.
+        lastUpdatedEndTime:
+          title: Last Updated End Time
+          type: string         
+          description: Defines the end boundary for the chat search. The search includes chats updated before this timestamp.
         from:
           title: From
           type: string
@@ -578,11 +675,30 @@ components:
           type: string         
           description: The timestamp when the message was last modified.
     ChatMessagesSendRequest:
-      allOf:
-        - $ref: '#/components/schemas/ChatsQueryRequest'
       title: Parameters to send messages to MSTeams chats
       type: object
       properties:
+        topic:
+          title: Topic
+          type: string
+          description: Searches for chats with topics containing the specified keyword, allowing partial matches for flexibility.
+        chatType:
+          title: chatType
+          type: string
+          description: Searches for chats with type matching the specified chat type. The possible values are 'group' or 'oneOnOne'.
+        memberEmails:
+          title: Member Emails
+          type: string
+          description: Members email addresses concatenated together with commas in between. The search will return chats with members having this specified emails.
+          example: "test@test.com,test1@test1.com,test2@test2.com"
+        lastUpdatedBeginTime:
+          title: Last Updated Begin Time
+          type: string         
+          description: Specifies the exact starting point in last updated time for the chat search. The search will return chats updated strictly after this specified time.
+        lastUpdatedEndTime:
+          title: Last Updated End Time
+          type: string         
+          description: Defines the end boundary for the chat search. The search includes chats updated before this timestamp.
         content:
           title: Content
           type: string
@@ -590,20 +706,75 @@ components:
       required:
         - content
     ChatMessagesUpdateRequest:
-      allOf:
-        - $ref: '#/components/schemas/ChatMessagesQueryRequest'
       title: Parameters to update or modify messages in a MSTeams chat
       type: object
       properties:
+        topic:
+          title: Topic
+          type: string
+          description: Searches for chats with topics containing the specified keyword, allowing partial matches for flexibility.
+        chatType:
+          title: chatType
+          type: string
+          description: Searches for chats with type matching the specified chat type. The possible values are 'group' or 'oneOnOne'.
+        memberEmails:
+          title: Member Emails
+          type: string
+          description: Members email addresses concatenated together with commas in between. The search will return chats with members having this specified emails.
+          example: "test@test.com,test1@test1.com,test2@test2.com"
+        lastUpdatedBeginTime:
+          title: Last Updated Begin Time
+          type: string         
+          description: Specifies the exact starting point in last updated time for the chat search. The search will return chats updated strictly after this specified time.
+        lastUpdatedEndTime:
+          title: Last Updated End Time
+          type: string         
+          description: Defines the end boundary for the chat search. The search includes chats updated before this timestamp.
+        lastModifiedBeginTime:
+          title: Last Updated Begin Time
+          type: string         
+          description: Specifies the exact starting point in last updated time for the chat message search. The search will return chat messages updated strictly after this specified time.
+        lastModifiedEndTime:
+          title: Last Updated End Time
+          type: string         
+          description: Defines the end boundary for the chat message search. The search includes chat messages updated before this timestamp.
         content:
           title: Content
           type: string
           description: Content of the chat message.
     ChatMessagesRemoveRequest:
-      allOf:
-        - $ref: '#/components/schemas/ChatMessagesQueryRequest'
       title: Parameters to remove messages in a MSTeams team
       type: object
+      properties:
+        topic:
+          title: Topic
+          type: string
+          description: Searches for chats with topics containing the specified keyword, allowing partial matches for flexibility.
+        chatType:
+          title: chatType
+          type: string
+          description: Searches for chats with type matching the specified chat type. The possible values are 'group' or 'oneOnOne'.
+        memberEmails:
+          title: Member Emails
+          type: string
+          description: Members email addresses concatenated together with commas in between. The search will return chats with members having this specified emails.
+          example: "test@test.com,test1@test1.com,test2@test2.com"
+        lastUpdatedBeginTime:
+          title: Last Updated Begin Time
+          type: string         
+          description: Specifies the exact starting point in last updated time for the chat search. The search will return chats updated strictly after this specified time.
+        lastUpdatedEndTime:
+          title: Last Updated End Time
+          type: string         
+          description: Defines the end boundary for the chat search. The search includes chats updated before this timestamp.
+        lastModifiedBeginTime:
+          title: Last Updated Begin Time
+          type: string         
+          description: Specifies the exact starting point in last updated time for the chat message search. The search will return chat messages updated strictly after this specified time.
+        lastModifiedEndTime:
+          title: Last Updated End Time
+          type: string         
+          description: Defines the end boundary for the chat message search. The search includes chat messages updated before this timestamp.
     TeamsQueryRequest:
       title: Parameters to search for teams in user's MSTeams
       type: object
@@ -670,30 +841,64 @@ components:
         - displayName
         - memberEmails
     TeamsUpdateRequest:
-      allOf:
-        - $ref: '#/components/schemas/TeamsQueryRequest'
       title: Parameters to update or modify MSTeams teams
       type: object
       properties:
         displayName:
           title: Display Name
           type: string
-          description: Display name of the team.
+          description: Searches for teams with display name containing the specified keyword, allowing partial matches for flexibility.
         description:
+          title: Description
+          type: string
+          description: Searches for teams with description containing the specified keyword, allowing partial matches for flexibility.
+        memberEmails:
+          title: Member Emails
+          type: string
+          description: Members email addresses concatenated together with commas in between. The search will return teams with members having this specified emails.
+          example: "test@test.com,test1@test1.com,test2@test2.com"
+        updatedDisplayName:
+          title: Display Name
+          type: string
+          description: Display name of the team.
+        updatedDescription:
           title: Description
           type: string
           description: Description of the team.
     TeamsRemoveRequest:
-      allOf:
-        - $ref: '#/components/schemas/TeamsQueryRequest'
       title: Parameters to remove MSTeams teams
       type: object
+      properties:
+        displayName:
+          title: Display Name
+          type: string
+          description: Searches for teams with display name containing the specified keyword, allowing partial matches for flexibility.
+        description:
+          title: Description
+          type: string
+          description: Searches for teams with description containing the specified keyword, allowing partial matches for flexibility.
+        memberEmails:
+          title: Member Emails
+          type: string
+          description: Members email addresses concatenated together with commas in between. The search will return teams with members having this specified emails.
+          example: "test@test.com,test1@test1.com,test2@test2.com"
     TeamMembersQueryRequest:
-      allOf:
-        - $ref: '#/components/schemas/TeamsQueryRequest'
       title: Parameters to search for team members in user's MSTeams specific teams
       type: object
       properties:
+        displayName:
+          title: Display Name
+          type: string
+          description: Searches for teams with display name containing the specified keyword, allowing partial matches for flexibility.
+        description:
+          title: Description
+          type: string
+          description: Searches for teams with description containing the specified keyword, allowing partial matches for flexibility.
+        memberEmails:
+          title: Member Emails
+          type: string
+          description: Members email addresses concatenated together with commas in between. The search will return teams with members having this specified emails.
+          example: "test@test.com,test1@test1.com,test2@test2.com"
         memberDisplayName:
           title: Member Display Name
           type: string
@@ -713,11 +918,22 @@ components:
             $ref: "#/components/schemas/MemberResponse"
           description: The list of MSTeams team members.
     TeamMemberAddRequest:
-      allOf:
-        - $ref: '#/components/schemas/TeamsQueryRequest'
       title: Parameters to add a member to MSTeams teams
       type: object
       properties:
+        displayName:
+          title: Display Name
+          type: string
+          description: Searches for teams with display name containing the specified keyword, allowing partial matches for flexibility.
+        description:
+          title: Description
+          type: string
+          description: Searches for teams with description containing the specified keyword, allowing partial matches for flexibility.
+        memberEmails:
+          title: Member Emails
+          type: string
+          description: Members email addresses concatenated together with commas in between. The search will return teams with members having this specified emails.
+          example: "test@test.com,test1@test1.com,test2@test2.com"
         email:
           title: Email
           type: string
@@ -726,11 +942,22 @@ components:
       required:
         - email
     TeamMemberRemoveRequest:
-      allOf:
-        - $ref: '#/components/schemas/TeamsQueryRequest'
       title: Parameters to remove a member from MSTeams teams
       type: object
       properties:
+        displayName:
+          title: Display Name
+          type: string
+          description: Searches for teams with display name containing the specified keyword, allowing partial matches for flexibility.
+        description:
+          title: Description
+          type: string
+          description: Searches for teams with description containing the specified keyword, allowing partial matches for flexibility.
+        memberEmails:
+          title: Member Emails
+          type: string
+          description: Members email addresses concatenated together with commas in between. The search will return teams with members having this specified emails.
+          example: "test@test.com,test1@test1.com,test2@test2.com"
         email:
           title: Email
           type: string
