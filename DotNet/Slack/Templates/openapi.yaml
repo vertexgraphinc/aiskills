@@ -1,0 +1,597 @@
+﻿openapi: 3.1.0
+info:
+  title: Slack Skill
+  description: A VertexGraph Skill to access and perform tasks on the user's Slack account.
+  version: 1.0.0
+servers:
+  - url: $skillhost 
+### ===========================================================================
+### ENDPOINTS==================================================================
+### ===========================================================================   
+paths:                
+### /messages/send---------------------------------------------------- 
+  $skillapproot/messages/send:
+    post:
+      title: Send a new message
+      operationId: SendMessage
+      summary: Send a new message to a channel
+      responses:
+        "200":
+          description: OK  
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'    
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'  
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+      requestBody:
+        description: Request body to create a new event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendMessageRequest'
+### /messages/list---------------------------------------------------- 
+  $skillapproot/messages/list/channel:
+    post:
+      title: Get messages from channel
+      operationId: ListChannelMessages
+      summary: Get messages from channel
+      responses:
+        "200":
+          description: OK  
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListChannelMsgsResponse'    
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListChannelMsgsResponse'  
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListChannelMsgsResponse'
+      requestBody:
+        description: Request body for getting messages from channel
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListChannelMsgsRequest'
+              
+### /messages/list---------------------------------------------------- 
+  # $skillapproot/messages/list/all:
+  #   post:
+  #     title: Get messages from all channels
+  #     operationId: ListAllMessages
+  #     summary: Get messages from all channels
+  #     responses:
+  #       "200":
+  #         description: OK  
+  #         content:        
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/ListAllMsgsResponse'    
+  #       "500":
+  #         description: Server error
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/ListAllMsgsResponse'  
+  #       "401":
+  #         description: Unauthorized
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/ListAllMsgsResponse'
+  #     requestBody:
+  #       description: Request body for getting messages from all channel
+  #       required: true
+  #       content:
+  #         application/json:
+  #           schema:
+  #             $ref: '#/components/schemas/ListAllMsgsRequest'
+### /reminders/add---------------------------------------------------- 
+  $skillapproot/reminders/add:
+    post:
+      title: Add a reminder
+      operationId: AddReminder
+      summary: Create a new reminder
+      responses:
+        "200":
+          description: OK  
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'    
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'  
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+      requestBody:
+        description: Request body to create a new reminder
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddReminderRequest'
+              
+### /reminders/complete---------------------------------------------------- 
+  # $skillapproot/reminders/complete:
+  #   post:
+  #     title: Complete a reminder
+  #     operationId: CompleteReminder
+  #     summary: Mark a reminder as complete
+  #     responses:
+  #       "200":
+  #         description: OK  
+  #         content:        
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/ServerResponse'    
+  #       "500":
+  #         description: Server error
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/ServerResponse'  
+  #       "401":
+  #         description: Unauthorized
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/ServerResponse'
+  #     requestBody:
+  #       description: Request body to mark a reminder as complete
+  #       required: true
+  #       content:
+  #         application/json:
+  #           schema:
+  #             $ref: '#/components/schemas/UpdateReminderRequest'
+              
+### /reminders/delete---------------------------------------------------- 
+  # $skillapproot/reminders/delete:
+  #   post:
+  #     title: Delete a reminder
+  #     operationId: DeleteReminder
+  #     summary: Delete a reminder
+  #     responses:
+  #       "200":
+  #         description: OK  
+  #         content:        
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/ServerResponse'    
+  #       "500":
+  #         description: Server error
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/ServerResponse'  
+  #       "401":
+  #         description: Unauthorized
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/ServerResponse'
+  #     requestBody:
+  #       description: Request body to delete a reminder
+  #       required: true
+  #       content:
+  #         application/json:
+  #           schema:
+  #             $ref: '#/components/schemas/UpdateReminderRequest'
+              
+### /reminders/info---------------------------------------------------- 
+  # $skillapproot/reminders/info:
+  #   post:
+  #     title: Get reminder information
+  #     operationId: GetReminderInfo
+  #     summary: Get information about a reminder
+  #     responses:
+  #       "200":
+  #         description: OK  
+  #         content:        
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/ReminderInfoResponse'    
+  #       "500":
+  #         description: Server error
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/ReminderInfoResponse'  
+  #       "401":
+  #         description: Unauthorized
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/ReminderInfoResponse'
+  #     requestBody:
+  #       description: Request body to get information about a reminder
+  #       required: true
+  #       content:
+  #         application/json:
+  #           schema:
+  #             $ref: '#/components/schemas/ReminderInfoRequest'
+              
+### /reminders/list---------------------------------------------------- 
+  # $skillapproot/reminders/list:
+  #   post:
+  #     title: List reminders
+  #     operationId: ListReminders
+  #     summary: List all reminders
+  #     responses:
+  #       "200":
+  #         description: OK  
+  #         content:        
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/ListRemindersResponse'    
+  #       "500":
+  #         description: Server error
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/ListRemindersResponse'  
+  #       "401":
+  #         description: Unauthorized
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/ListRemindersResponse'
+  #     requestBody:
+  #       description: Request body to list all reminders
+  #       required: true
+  #       content:
+  #         application/json:
+  #           schema:
+  #             $ref: '#/components/schemas/ListRemindersRequest'
+### /dnd/setSnooze---------------------------------------------------- 
+  $skillapproot/user/dnd:
+    post:
+      title: Set Do Not Disturb mode
+      operationId: SetDnd
+      summary: Turn on Do Not Disturb mode or change its duration
+      responses:
+        "200":
+          description: OK  
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'    
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'  
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+      requestBody:
+        description: Request body to set Do Not Disturb mode
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetDndRequest'
+              
+### /user/status---------------------------------------------------- 
+  # $skillapproot/user/status:
+  #   post:
+  #     title: Set User Custom Status
+  #     operationId: SetUserCustomStatus
+  #     summary: Set a user's custom status
+  #     responses:
+  #       "200":
+  #         description: OK  
+  #         content:        
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/ServerResponse'    
+  #       "500":
+  #         description: Server error
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/ServerResponse'  
+  #       "401":
+  #         description: Unauthorized
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/ServerResponse'
+  #     requestBody:
+  #       description: Request body to set a user's custom status
+  #       required: true
+  #       content:
+  #         application/json:
+  #           schema:
+  #             $ref: '#/components/schemas/SetUserStatusRequest'
+
+### /search/files---------------------------------------------------- 
+  # $skillapproot/search/files:
+  #   post:
+  #     title: Search for files
+  #     operationId: SearchFiles
+  #     summary: Searches for files matching a query
+  #     responses:
+  #       "200":
+  #         description: OK  
+  #         content:        
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/SearchFilesResponse'    
+  #       "500":
+  #         description: Server error
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/SearchFilesResponse'  
+  #       "401":
+  #         description: Unauthorized
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/SearchFilesResponse'
+  #     requestBody:
+  #       description: Request body for searching files
+  #       required: true
+  #       content:
+  #         application/json:
+  #           schema:
+  #             $ref: '#/components/schemas/SearchFilesRequest'
+              
+### /search/messages---------------------------------------------------- 
+  # $skillapproot/search/messages:
+  #   post:
+  #     title: Search for messages
+  #     operationId: SearchMessages
+  #     summary: Searches for messages matching a query
+  #     responses:
+  #       "200":
+  #         description: OK  
+  #         content:        
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/SearchMessagesResponse'    
+  #       "500":
+  #         description: Server error
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/SearchMessagesResponse'  
+  #       "401":
+  #         description: Unauthorized
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: '#/components/schemas/SearchMessagesResponse'
+  #     requestBody:
+  #       description: Request body for searching messages
+  #       required: true
+  #       content:
+  #         application/json:
+  #           schema:
+  #             $ref: '#/components/schemas/SearchMessagesRequest'
+
+### ===========================================================================
+### COMPONENTS=================================================================
+### ===========================================================================    
+components:
+  schemas:   
+### ====================================================   
+### REQUEST COMPONENTS==================================  
+### SendMessageRequest==================================
+    SendMessageRequest:
+      title: Parameters for Send Message operations.
+      type: object
+      properties:
+        channel:
+          type: string
+          description: Name of the channel/conversation.
+        text:
+          type: string
+          description: Message text.
+### ListChannelRequest====================================
+    ListChannelMsgsRequest:
+      title: Parameters for List Channel Messages operations.
+      type: object
+      properties:
+        channel:
+          type: string
+          description: Name of the channel/conversation.
+        oldest:
+          type: string
+          format: date-time
+          title: Time Max
+          description: |
+            Upper bound for messages sent time to filter by.
+        latest:
+          type: string
+          format: date-time
+          title: Time Min
+          description: |
+            Lower bound for messages sent time to filter by.
+### ListAllMsgsRequest==================================
+    ListAllMsgsRequest:
+      title: Parameters for Listing all messages operation.
+      type: object
+      properties:
+        oldest:
+          type: string
+          format: date-time
+          title: Time Max
+          description: |
+            Upper bound for messages sent time to filter by.
+        latest:
+          type: string
+          format: date-time
+          title: Time Min
+          description: |
+            Lower bound for messages sent time to filter by.
+            
+### AddReminderRequest============================
+    AddReminderRequest:
+      title: Parameters for Create Reminder operations.
+      type: object
+      properties:
+        text:
+          type: string
+          title: Reminder text
+          description: The content of the reminder 
+        time:
+          type: string
+          title: Reminder time
+          description: The time the reminder should happen
+### UpdateReminderRequest============================
+    UpdateReminderRequest:
+      title: Parameters for Updating Reminder operations.
+      type: object
+      properties:
+        id:
+          type: string
+          title: Reminder Id
+          description: The id of the reminder
+### ReminderInfoRequest============================
+    ReminderInfoRequest:
+      title: Parameters for Get Reminder operations.
+      type: object
+      properties:
+        reminderText:
+          type: string
+          title: Reminder Id
+          description: The id of the reminder    
+        time:
+          type: string
+          title: Reminder time
+          description: The time the reminder should happen
+          
+### ListRemindersRequest============================
+    ListRemindersRequest:
+      title: Parameters for List Reminder operations.
+      type: object
+      properties:
+        timeMax:
+          type: string
+          format: date-time
+          title: Time Max
+          description: |
+            Upper bound for reminder time to filter by.
+        timeMin:
+          type: string
+          format: date-time
+          title: Time Min
+          description: |
+            Lower bound for reminder time to filter by.
+### SetDndRequest============================
+    SetDndRequest:
+      title: Parameters for Set DND operations.
+      type: object
+      properties:
+        num_minutes:
+          type: number
+          title: DND duration
+          description: The duration of DND status in minutes
+          
+### SetUserStatusRequest============================
+    SetUserStatusRequest:
+      title: Parameters for User Status Request operations.
+      type: object
+      properties:
+        statusEmoji:
+          type: string
+          description: The displayed emoji for the status
+        statusExpiration:
+          type: integer
+          description: The Unix timestamp of when the status will expire
+        statusText:
+          type: string
+          maxLength: 100
+          description: The displayed text of the status
+         
+### SearchFilesRequest==================================
+    SearchFilesRequest:
+      title: Parameters for Search file operations.
+      type: object
+      properties:
+        query:
+          type: string    
+          description: Search query.     
+### SearchMessagesRequest==================================
+    SearchMessagesRequest:
+      title: Parameters for Search message operations.
+      type: object
+      properties:
+        query:
+          type: string    
+          description: Search query.  
+### ++++++++++++++++++++++++++++++++++++++++++++++++++++   
+### RESPONSE COMPONENTS+++++++++++++++++++++++++++++++++   
+### ServerResponse++++++++++++++++++++++++++++++++++++++      
+    ServerResponse:  
+      title: Server Response
+      type: object
+      properties: 
+        message:   
+          title: Message from Server. Used by various operations.
+          type: string    
+          description: A success or error message. 
+    ListChannelMsgsResponse:
+      type: object
+      properties:
+        channel:
+          type: string
+          description: The channel identifier.
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+          description: The list of messages in the channel.    
+    Message:
+      type: object
+      properties:
+        channel:
+          type: string
+          description: The channel identifier.
+        text:
+          type: string
+          description: The text of the message.
+        user:
+          type: string
+          description: The user who sent the message.
+        type:
+          type: string
+          description: The type of message.
+        ts:
+          type: string
+          description: The timestamp of the message.      
+
+### ++++++++++++++++++++++++++++++++++++++++++++++++++++ 
