@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GMail", "DotNet\GMail\GMail
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GCalendar", "DotNet\GCalendar\GCalendar.csproj", "{F9C66B02-0114-4E8C-AB01-978FFDC6010A}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft", "DotNet\Microsoft\Microsoft.csproj", "{7F15EE9E-4D7F-493C-9E95-15EB24097D5F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{F9C66B02-0114-4E8C-AB01-978FFDC6010A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9C66B02-0114-4E8C-AB01-978FFDC6010A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F9C66B02-0114-4E8C-AB01-978FFDC6010A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F15EE9E-4D7F-493C-9E95-15EB24097D5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F15EE9E-4D7F-493C-9E95-15EB24097D5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F15EE9E-4D7F-493C-9E95-15EB24097D5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F15EE9E-4D7F-493C-9E95-15EB24097D5F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
