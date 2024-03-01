@@ -4,6 +4,6 @@
     {
         public const string GraphApiAuthURL = "https://login.microsoftonline.com/";
         public const string GraphApiBaseURL = "https://graph.microsoft.com/v1.0/me/";
-        public const string GraphApiScope = "User.Read Chat.ReadWrite ChatMember.ReadWrite Group.ReadWrite.All TeamMember.ReadWrite.All Team.ReadBasic.All";
+        public const string GraphApiScope = "User.Read User.ReadBasic.All Chat.ReadWrite ChatMember.ReadWrite Group.ReadWrite.All TeamMember.ReadWrite.All Team.ReadBasic.All";
     }
 }
