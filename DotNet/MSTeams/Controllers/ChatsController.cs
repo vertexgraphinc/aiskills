@@ -9,11 +9,11 @@ namespace MSTeams.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class ChatController : ControllerBase
+    public class ChatsController : ControllerBase
     {
         private readonly IChatService _chatService;
 
-        public ChatController(IChatService chatService)
+        public ChatsController(IChatService chatService)
         {
             _chatService = chatService;
         }

@@ -9,11 +9,11 @@ namespace MSTeams.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class TeamController : ControllerBase
+    public class TeamsController : ControllerBase
     {
         private readonly ITeamService _teamService;
 
-        public TeamController(ITeamService teamService)
+        public TeamsController(ITeamService teamService)
         {
             _teamService = teamService;
         }
