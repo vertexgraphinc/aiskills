@@ -1,0 +1,967 @@
+﻿openapi: 3.1.0
+info:
+  title: MSTeams Skill
+  description: A VertexGraph skill to access user's MSteams account info
+  version: 1.0.0
+servers:
+  - url: $skillhost
+paths:
+  $skillapproot/chats/query:
+    post:
+      summary: Query MSTeams Chats
+      description: Search for chats in the user's MSTeams chat list
+      operationId: QueryChats
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChatsQueryRequest"
+      responses:
+        "200":
+          description: Returns chats that match the query parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatsQueryResponse'
+        "401":
+          description: Unauthorized, requires valid authentication.
+        "500":
+          description: Server Error
+  $skillapproot/chats/create:
+    post:
+      summary: Create a new MSTeams Chat
+      description: Create a new chat in user's MSTeams
+      operationId: CreateChat
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatCreateRequest'
+      responses:
+        '201':
+          description: Chat created successfully.
+        '400':
+          description: Error in creating the chat, possibly due to invalid input.
+        '401':
+          description: Unauthorized, requires valid authentication.
+        '500':
+          description: Server Error
+  $skillapproot/chats/update:
+    post:
+      summary: Update MSTeams Chat Details
+      description: Update details of specific chats
+      operationId: UpdateChats
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatsUpdateRequest'
+      responses:
+        '200':
+          description: Chats updated successfully.
+        '400':
+          description: Error in updating the chats, possibly due to invalid input.
+        '401':
+          description: Unauthorized, requires valid authentication.
+        '404':
+          description: Original chats not found or inaccessible.
+        '500':
+          description: Server Error
+  $skillapproot/chats/members/query:
+    post:
+      summary: Query MSTeams Chat Members
+      description: Search for chat members in a specific chat
+      operationId: QueryChatMembers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChatMembersQueryRequest"
+      responses:
+        "200":
+          description: Returns chat members that match the query parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatMembersQueryResponse'
+        "401":
+          description: Unauthorized, requires valid authentication.
+        "500":
+          description: Server Error
+  $skillapproot/chats/members/add:
+    post:
+      summary: Add member to MSTeams Chats
+      description: Add a member to MSTeams Chats
+      operationId: AddChatMember
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatMemberAddRequest'
+      responses:
+        '201':
+          description: Chat member added successfully.
+        '400':
+          description: Error in adding the chat member, possibly due to invalid input.
+        '401':
+          description: Unauthorized, requires valid authentication.
+        '404':
+          description: Original chats or member not found or inaccessible.
+        '500':
+          description: Server Error
+  $skillapproot/chats/members/remove:
+    post:
+      summary: Remove member from MSTeams Chats
+      description: Remove a member from MSTeams Chats
+      operationId: RemoveChatMember
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatMemberRemoveRequest'
+      responses:
+        '200':
+          description: Chat member removed successfully.
+        '400':
+          description: Error in removing the chat member, possibly due to invalid input.
+        '401':
+          description: Unauthorized, requires valid authentication.
+        '404':
+          description: Original chats or member not found or inaccessible.
+        '500':
+          description: Server Error
+  $skillapproot/chats/messages/query:
+    post:
+      summary: Query MSTeams Chat Messages
+      description: List chat messages in a specific chat
+      operationId: QueryChatMessages
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChatMessagesQueryRequest"
+      responses:
+        "200":
+          description: Returns messages of a specific chat.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatMessagesQueryResponse'
+        "401":
+          description: Unauthorized, requires valid authentication.
+        "500":
+          description: Server Error
+  $skillapproot/chats/messages/send:
+    post:
+      summary: Send messages to MSTeams Chats
+      description: Send messages to MSTeams Chats
+      operationId: SendChatMessages
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatMessagesSendRequest'
+      responses:
+        '201':
+          description: Chat messages sent successfully.
+        '400':
+          description: Error in sending the messages in the chats, possibly due to invalid input.
+        '401':
+          description: Unauthorized, requires valid authentication.
+        '404':
+          description: Original chats not found or inaccessible.
+        '500':
+          description: Server Error
+  $skillapproot/chats/messages/update:
+    post:
+      summary: Update MSTeams Chat Message Details
+      description: Update details of specific chat messages
+      operationId: UpdateChatMessages
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatMessagesUpdateRequest'
+      responses:
+        '200':
+          description: Chat messages updated successfully.
+        '400':
+          description: Error in updating the chat messages, possibly due to invalid input.
+        '401':
+          description: Unauthorized, requires valid authentication.
+        '404':
+          description: Original chats or chat messages not found or inaccessible.
+        '500':
+          description: Server Error
+  $skillapproot/chats/messages/remove:
+    post:
+      summary: Remove messages in MSTeams Chats
+      description: Delete messages in a MSTeams Chats
+      operationId: RemoveChatMessages
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatMessagesRemoveRequest'
+      responses:
+        '200':
+          description: Chat messages removed successfully.
+        '400':
+          description: Error in removing the chat messages, possibly due to invalid input.
+        '401':
+          description: Unauthorized, requires valid authentication.
+        '404':
+          description: Original chats or chat messages not found or inaccessible.
+        '500':
+          description: Server Error
+  $skillapproot/teams/query:
+    post:
+      summary: Query MSTeams Teams
+      description: Search for teams in the user's MSTeams team list
+      operationId: QueryTeams
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TeamsQueryRequest"
+      responses:
+        "200":
+          description: Returns teams that match the query parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamsQueryResponse'
+        "401":
+          description: Unauthorized, requires valid authentication.
+        "500":
+          description: Server Error
+  $skillapproot/teams/create:
+    post:
+      summary: Create a new MSTeams Team
+      description: Create a new team in user's MSTeams
+      operationId: CreateTeam
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeamCreateRequest'
+      responses:
+        '201':
+          description: Team created successfully.
+        '400':
+          description: Error in creating the team, possibly due to invalid input.
+        '401':
+          description: Unauthorized, requires valid authentication.
+        '500':
+          description: Server Error
+  $skillapproot/teams/update:
+    post:
+      summary: Update MSTeams Team Details
+      description: Update details of specific teams
+      operationId: UpdateTeams
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeamsUpdateRequest'
+      responses:
+        '200':
+          description: Teams updated successfully.
+        '400':
+          description: Error in updating the teams, possibly due to invalid input.
+        '401':
+          description: Unauthorized, requires valid authentication.
+        '404':
+          description: Original teams not found or inaccessible.
+        '500':
+          description: Server Error
+  $skillapproot/teams/remove:
+    post:
+      summary: Remove MSTeams Teams
+      description: Remove specific teams from user's MSTeams
+      operationId: RemoveTeams
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeamsRemoveRequest'
+      responses:
+        '200':
+          description: Teams removed successfully.
+        '400':
+          description: Error in removing the teams, possibly due to invalid input.
+        '401':
+          description: Unauthorized, requires valid authentication.
+        '404':
+          description: Original teams not found or inaccessible.
+        '500':
+          description: Server Error
+  $skillapproot/teams/members/query:
+    post:
+      summary: Query MSTeams Team Members
+      description: Search for team members in specific teams
+      operationId: QueryTeamMembers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TeamMembersQueryRequest"
+      responses:
+        "200":
+          description: Returns team members that match the query parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamMembersQueryResponse'
+        "401":
+          description: Unauthorized, requires valid authentication.
+        "500":
+          description: Server Error
+  $skillapproot/teams/members/add:
+    post:
+      summary: Add member to MSTeams Teams
+      description: Add a member to MSTeams Teams
+      operationId: AddTeamMember
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeamMemberAddRequest'
+      responses:
+        '201':
+          description: Team member added successfully.
+        '400':
+          description: Error in adding the team member, possibly due to invalid input.
+        '401':
+          description: Unauthorized, requires valid authentication.
+        '404':
+          description: Original teams or member not found or inaccessible.
+        '500':
+          description: Server Error
+  $skillapproot/teams/members/remove:
+    post:
+      summary: Remove member from MSTeams Teams
+      description: Remove a member from MSTeams Teams
+      operationId: RemoveTeamMember
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TeamMemberRemoveRequest'
+      responses:
+        '200':
+          description: Team member removed successfully.
+        '400':
+          description: Error in removing the team member, possibly due to invalid input.
+        '401':
+          description: Unauthorized, requires valid authentication.
+        '404':
+          description: Original teams or member not found or inaccessible.
+        '500':
+          description: Server Error
+components:
+  schemas:
+    ChatsQueryRequest:
+      title: Parameters to search for chats in user's MSTeams chat list
+      type: object
+      properties:
+        topic:
+          title: Topic
+          type: string
+          description: Searches for chats with topics containing the specified keyword, allowing partial matches for flexibility.
+        chatType:
+          title: chatType
+          type: string
+          description: Searches for chats with type matching the specified chat type. The possible values are 'group' or 'oneOnOne'.
+        memberEmails:
+          title: Member Emails
+          type: string
+          description: Members email addresses concatenated together with commas in between. The search will return chats with members having this specified emails.
+          example: "test@test.com,test1@test1.com,test2@test2.com"
+        lastUpdatedBeginTime:
+          title: Last Updated Begin Time
+          type: string         
+          description: Specifies the exact starting point in last updated time for the chat search. The search will return chats updated strictly after this specified time.
+        lastUpdatedEndTime:
+          title: Last Updated End Time
+          type: string         
+          description: Defines the end boundary for the chat search. The search includes chats updated before this timestamp.
+    ChatsQueryResponse:
+      type: object
+      properties:
+        chats:
+          type: array
+          items:
+            $ref: "#/components/schemas/ChatResponse"
+          description: The list of MSTeams chats.
+    ChatResponse:
+      type: object
+      properties:
+        chatType:
+          title: chatType
+          type: string
+          description: The type of the chat. The possible values are 'group' or 'oneOnOne'.
+        topic:
+          title: Chat Topic
+          type: string
+          description: The topic of the chat.
+        memberEmails:
+          title: Member Emails
+          type: string
+          description: Members email addresses concatenated together with commas in between.
+          example: "test@test.com,test1@test1.com,test2@test2.com"
+        lastUpdated:
+          title: Chat Last Updated Timestamp
+          type: string
+          description: The timestamp indicating when the chat was last updated.
+        webUrl:
+          title: Web URL
+          type: string
+          description: The URL of the chat in MSTeams.
+    ChatCreateRequest:
+      title: Parameters to create a MSTeams chat
+      type: object
+      properties:
+        topic:
+          title: Chat Topic
+          type: string
+          description: The topic of the chat.
+        chatType:
+          title: chatType
+          type: string
+          description: The type of the chat. The possible values are 'group' or 'oneOnOne'.
+        memberEmails:
+          title: Member Emails
+          type: string
+          description: Members email addresses concatenated together with commas in between.
+          example: "test@test.com,test1@test1.com,test2@test2.com"
+      required:
+        - chatType
+        - memberEmails
+    ChatsUpdateRequest:
+      title: Parameters to update or modify a MSTeams chat
+      type: object
+      properties:
+        topic:
+          title: Topic
+          type: string
+          description: Searches for chats with topics containing the specified keyword, allowing partial matches for flexibility.
+        chatType:
+          title: chatType
+          type: string
+          description: Searches for chats with type matching the specified chat type. The possible values are 'group' or 'oneOnOne'.
+        memberEmails:
+          title: Member Emails
+          type: string
+          description: Members email addresses concatenated together with commas in between. The search will return chats with members having this specified emails.
+          example: "test@test.com,test1@test1.com,test2@test2.com"
+        lastUpdatedBeginTime:
+          title: Last Updated Begin Time
+          type: string         
+          description: Specifies the exact starting point in last updated time for the chat search. The search will return chats updated strictly after this specified time.
+        lastUpdatedEndTime:
+          title: Last Updated End Time
+          type: string         
+          description: Defines the end boundary for the chat search. The search includes chats updated before this timestamp.
+        updatedTopic:
+          title: Updated Chat Topic
+          type: string
+          description: The updated topic of the chat.
+      required:
+        - updatedTopic
+    ChatMembersQueryRequest:
+      title: Parameters to search for chat members in user's MSTeams specific chat
+      type: object
+      properties:
+        topic:
+          title: Topic
+          type: string
+          description: Searches for chats with topics containing the specified keyword, allowing partial matches for flexibility.
+        chatType:
+          title: chatType
+          type: string
+          description: Searches for chats with type matching the specified chat type. The possible values are 'group' or 'oneOnOne'.
+        memberEmails:
+          title: Member Emails
+          type: string
+          description: Members email addresses concatenated together with commas in between. The search will return chats with members having this specified emails.
+          example: "test@test.com,test1@test1.com,test2@test2.com"
+        lastUpdatedBeginTime:
+          title: Last Updated Begin Time
+          type: string         
+          description: Specifies the exact starting point in last updated time for the chat search. The search will return chats updated strictly after this specified time.
+        lastUpdatedEndTime:
+          title: Last Updated End Time
+          type: string         
+          description: Defines the end boundary for the chat search. The search includes chats updated before this timestamp.
+        displayName:
+          title: Display Name
+          type: string
+          description: Searches for chat members with display name containing the specified keyword, allowing partial matches for flexibility.
+        role:
+          title: Role
+          type: string
+          description: Searched for chat members with roles containing the specified role.
+    ChatMembersQueryResponse:
+      type: object
+      properties:
+        members:
+          type: array
+          items:
+            $ref: "#/components/schemas/MemberResponse"
+          description: The list of MSTeams chat members.
+    MemberResponse:
+      title: MSTeams Member Details
+      type: object
+      properties:
+        email:
+          title: Email
+          type: string
+          format: email
+          description: Email address of the member.
+        displayName:
+          title: Display Name
+          type: string
+          description: Display name of the member in the group.
+        roles:
+          title: Roles
+          type: array
+          description: Roles of the member in the group.
+          items:
+            type: string
+        visibleHistoryStart:
+          title: Visible History Start
+          type: string
+          description: The timestamp denoting how far back a group history is shared with the member.
+    ChatMemberAddRequest:
+      title: Parameters to add a member to MSTeams chats
+      type: object
+      properties:
+        topic:
+          title: Topic
+          type: string
+          description: Searches for chats with topics containing the specified keyword, allowing partial matches for flexibility.
+        chatType:
+          title: chatType
+          type: string
+          description: Searches for chats with type matching the specified chat type. The possible values are 'group' or 'oneOnOne'.
+        memberEmails:
+          title: Member Emails
+          type: string
+          description: Members email addresses concatenated together with commas in between. The search will return chats with members having this specified emails.
+          example: "test@test.com,test1@test1.com,test2@test2.com"
+        lastUpdatedBeginTime:
+          title: Last Updated Begin Time
+          type: string         
+          description: Specifies the exact starting point in last updated time for the chat search. The search will return chats updated strictly after this specified time.
+        lastUpdatedEndTime:
+          title: Last Updated End Time
+          type: string         
+          description: Defines the end boundary for the chat search. The search includes chats updated before this timestamp.
+        email:
+          title: Email
+          type: string
+          format: email
+          description: Email address of the member.
+      required:
+        - email
+    ChatMemberRemoveRequest:
+      title: Parameters to remove a member from MSTeams chats
+      type: object
+      properties:
+        topic:
+          title: Topic
+          type: string
+          description: Searches for chats with topics containing the specified keyword, allowing partial matches for flexibility.
+        chatType:
+          title: chatType
+          type: string
+          description: Searches for chats with type matching the specified chat type. The possible values are 'group' or 'oneOnOne'.
+        memberEmails:
+          title: Member Emails
+          type: string
+          description: Members email addresses concatenated together with commas in between. The search will return chats with members having this specified emails.
+          example: "test@test.com,test1@test1.com,test2@test2.com"
+        lastUpdatedBeginTime:
+          title: Last Updated Begin Time
+          type: string         
+          description: Specifies the exact starting point in last updated time for the chat search. The search will return chats updated strictly after this specified time.
+        lastUpdatedEndTime:
+          title: Last Updated End Time
+          type: string         
+          description: Defines the end boundary for the chat search. The search includes chats updated before this timestamp.
+        email:
+          title: Email
+          type: string
+          format: email
+          description: Email address of the member.
+      required:
+        - email
+    ChatMessagesQueryRequest:
+      title: Parameters to search for messages in user's MSTeams team
+      type: object
+      properties:
+        topic:
+          title: Topic
+          type: string
+          description: Searches for chats with topics containing the specified keyword, allowing partial matches for flexibility.
+        chatType:
+          title: chatType
+          type: string
+          description: Searches for chats with type matching the specified chat type. The possible values are 'group' or 'oneOnOne'.
+        memberEmails:
+          title: Member Emails
+          type: string
+          description: Members email addresses concatenated together with commas in between. The search will return chats with members having this specified emails.
+          example: "test@test.com,test1@test1.com,test2@test2.com"
+        lastUpdatedBeginTime:
+          title: Last Updated Begin Time
+          type: string         
+          description: Specifies the exact starting point in last updated time for the chat search. The search will return chats updated strictly after this specified time.
+        lastUpdatedEndTime:
+          title: Last Updated End Time
+          type: string         
+          description: Defines the end boundary for the chat search. The search includes chats updated before this timestamp.
+        from:
+          title: From
+          type: string
+          description: A string value representing the sender's email address. The search returns team messages only from this specified sender.
+        lastModifiedBeginTime:
+          title: Last Updated Begin Time
+          type: string         
+          description: Specifies the exact starting point in last updated time for the chat message search. The search will return chat messages updated strictly after this specified time.
+        lastModifiedEndTime:
+          title: Last Updated End Time
+          type: string         
+          description: Defines the end boundary for the chat message search. The search includes chat messages updated before this timestamp.
+    ChatMessagesQueryResponse:
+      type: object
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: "#/components/schemas/MessageResponse"
+          description: The list of MSTeams teams.
+    MessageResponse:
+      type: object
+      properties:
+        from:
+          title: From
+          type: string
+          description: A string value representing the sender's email address.
+        content:
+          title: Content
+          type: string
+          description: Content of the chat message.
+        lastModified:
+          title: Last Updated
+          type: string         
+          description: The timestamp when the message was last modified.
+    ChatMessagesSendRequest:
+      title: Parameters to send messages to MSTeams chats
+      type: object
+      properties:
+        topic:
+          title: Topic
+          type: string
+          description: Searches for chats with topics containing the specified keyword, allowing partial matches for flexibility.
+        chatType:
+          title: chatType
+          type: string
+          description: Searches for chats with type matching the specified chat type. The possible values are 'group' or 'oneOnOne'.
+        memberEmails:
+          title: Member Emails
+          type: string
+          description: Members email addresses concatenated together with commas in between. The search will return chats with members having this specified emails.
+          example: "test@test.com,test1@test1.com,test2@test2.com"
+        lastUpdatedBeginTime:
+          title: Last Updated Begin Time
+          type: string         
+          description: Specifies the exact starting point in last updated time for the chat search. The search will return chats updated strictly after this specified time.
+        lastUpdatedEndTime:
+          title: Last Updated End Time
+          type: string         
+          description: Defines the end boundary for the chat search. The search includes chats updated before this timestamp.
+        content:
+          title: Content
+          type: string
+          description: Content of the chat message.
+      required:
+        - content
+    ChatMessagesUpdateRequest:
+      title: Parameters to update or modify messages in a MSTeams chat
+      type: object
+      properties:
+        topic:
+          title: Topic
+          type: string
+          description: Searches for chats with topics containing the specified keyword, allowing partial matches for flexibility.
+        chatType:
+          title: chatType
+          type: string
+          description: Searches for chats with type matching the specified chat type. The possible values are 'group' or 'oneOnOne'.
+        memberEmails:
+          title: Member Emails
+          type: string
+          description: Members email addresses concatenated together with commas in between. The search will return chats with members having this specified emails.
+          example: "test@test.com,test1@test1.com,test2@test2.com"
+        lastUpdatedBeginTime:
+          title: Last Updated Begin Time
+          type: string         
+          description: Specifies the exact starting point in last updated time for the chat search. The search will return chats updated strictly after this specified time.
+        lastUpdatedEndTime:
+          title: Last Updated End Time
+          type: string         
+          description: Defines the end boundary for the chat search. The search includes chats updated before this timestamp.
+        lastModifiedBeginTime:
+          title: Last Updated Begin Time
+          type: string         
+          description: Specifies the exact starting point in last updated time for the chat message search. The search will return chat messages updated strictly after this specified time.
+        lastModifiedEndTime:
+          title: Last Updated End Time
+          type: string         
+          description: Defines the end boundary for the chat message search. The search includes chat messages updated before this timestamp.
+        content:
+          title: Content
+          type: string
+          description: Content of the chat message.
+    ChatMessagesRemoveRequest:
+      title: Parameters to remove messages in a MSTeams team
+      type: object
+      properties:
+        topic:
+          title: Topic
+          type: string
+          description: Searches for chats with topics containing the specified keyword, allowing partial matches for flexibility.
+        chatType:
+          title: chatType
+          type: string
+          description: Searches for chats with type matching the specified chat type. The possible values are 'group' or 'oneOnOne'.
+        memberEmails:
+          title: Member Emails
+          type: string
+          description: Members email addresses concatenated together with commas in between. The search will return chats with members having this specified emails.
+          example: "test@test.com,test1@test1.com,test2@test2.com"
+        lastUpdatedBeginTime:
+          title: Last Updated Begin Time
+          type: string         
+          description: Specifies the exact starting point in last updated time for the chat search. The search will return chats updated strictly after this specified time.
+        lastUpdatedEndTime:
+          title: Last Updated End Time
+          type: string         
+          description: Defines the end boundary for the chat search. The search includes chats updated before this timestamp.
+        lastModifiedBeginTime:
+          title: Last Updated Begin Time
+          type: string         
+          description: Specifies the exact starting point in last updated time for the chat message search. The search will return chat messages updated strictly after this specified time.
+        lastModifiedEndTime:
+          title: Last Updated End Time
+          type: string         
+          description: Defines the end boundary for the chat message search. The search includes chat messages updated before this timestamp.
+    TeamsQueryRequest:
+      title: Parameters to search for teams in user's MSTeams
+      type: object
+      properties:
+        displayName:
+          title: Display Name
+          type: string
+          description: Searches for teams with display name containing the specified keyword, allowing partial matches for flexibility.
+        description:
+          title: Description
+          type: string
+          description: Searches for teams with description containing the specified keyword, allowing partial matches for flexibility.
+        memberEmails:
+          title: Member Emails
+          type: string
+          description: Members email addresses concatenated together with commas in between. The search will return teams with members having this specified emails.
+          example: "test@test.com,test1@test1.com,test2@test2.com"
+    TeamsQueryResponse:
+      type: object
+      properties:
+        teams:
+          type: array
+          items:
+            $ref: "#/components/schemas/TeamResponse"
+          description: The list of MSTeams teams.
+    TeamResponse:
+      type: object
+      properties:
+        displayName:
+          title: Display Name
+          type: string
+          description: Searches for teams with display name containing the specified keyword, allowing partial matches for flexibility.
+        description:
+          title: Description
+          type: string
+          description: Searches for teams with description containing the specified keyword, allowing partial matches for flexibility.
+        memberEmails:
+          title: Member Emails
+          type: string
+          description: Members email addresses concatenated together with commas in between.
+          example: "test@test.com,test1@test1.com,test2@test2.com"
+        webUrl:
+          title: Web URL
+          type: string
+          description: The URL of the team in MSTeams.
+    TeamCreateRequest:
+      title: Parameters to create a MSTeams team
+      type: object
+      properties:
+        displayName:
+          title: Display Name
+          type: string
+          description: Display name of the team.
+        description:
+          title: Description
+          type: string
+          description: Description of the team.
+        memberEmails:
+          title: Member Emails
+          type: string
+          description: Members email addresses concatenated together with commas in between.
+          example: "test@test.com,test1@test1.com,test2@test2.com"
+      required:
+        - displayName
+        - memberEmails
+    TeamsUpdateRequest:
+      title: Parameters to update or modify MSTeams teams
+      type: object
+      properties:
+        displayName:
+          title: Display Name
+          type: string
+          description: Searches for teams with display name containing the specified keyword, allowing partial matches for flexibility.
+        description:
+          title: Description
+          type: string
+          description: Searches for teams with description containing the specified keyword, allowing partial matches for flexibility.
+        memberEmails:
+          title: Member Emails
+          type: string
+          description: Members email addresses concatenated together with commas in between. The search will return teams with members having this specified emails.
+          example: "test@test.com,test1@test1.com,test2@test2.com"
+        updatedDisplayName:
+          title: Display Name
+          type: string
+          description: Display name of the team.
+        updatedDescription:
+          title: Description
+          type: string
+          description: Description of the team.
+    TeamsRemoveRequest:
+      title: Parameters to remove MSTeams teams
+      type: object
+      properties:
+        displayName:
+          title: Display Name
+          type: string
+          description: Searches for teams with display name containing the specified keyword, allowing partial matches for flexibility.
+        description:
+          title: Description
+          type: string
+          description: Searches for teams with description containing the specified keyword, allowing partial matches for flexibility.
+        memberEmails:
+          title: Member Emails
+          type: string
+          description: Members email addresses concatenated together with commas in between. The search will return teams with members having this specified emails.
+          example: "test@test.com,test1@test1.com,test2@test2.com"
+    TeamMembersQueryRequest:
+      title: Parameters to search for team members in user's MSTeams specific teams
+      type: object
+      properties:
+        displayName:
+          title: Display Name
+          type: string
+          description: Searches for teams with display name containing the specified keyword, allowing partial matches for flexibility.
+        description:
+          title: Description
+          type: string
+          description: Searches for teams with description containing the specified keyword, allowing partial matches for flexibility.
+        memberEmails:
+          title: Member Emails
+          type: string
+          description: Members email addresses concatenated together with commas in between. The search will return teams with members having this specified emails.
+          example: "test@test.com,test1@test1.com,test2@test2.com"
+        memberDisplayName:
+          title: Member Display Name
+          type: string
+          description: Searches for team members with display name containing the specified keyword, allowing partial matches for flexibility.
+        role:
+          title: Role
+          type: string
+          description: Searched for team members with roles containing the specified role.
+      required:
+        - id
+    TeamMembersQueryResponse:
+      type: object
+      properties:
+        members:
+          type: array
+          items:
+            $ref: "#/components/schemas/MemberResponse"
+          description: The list of MSTeams team members.
+    TeamMemberAddRequest:
+      title: Parameters to add a member to MSTeams teams
+      type: object
+      properties:
+        displayName:
+          title: Display Name
+          type: string
+          description: Searches for teams with display name containing the specified keyword, allowing partial matches for flexibility.
+        description:
+          title: Description
+          type: string
+          description: Searches for teams with description containing the specified keyword, allowing partial matches for flexibility.
+        memberEmails:
+          title: Member Emails
+          type: string
+          description: Members email addresses concatenated together with commas in between. The search will return teams with members having this specified emails.
+          example: "test@test.com,test1@test1.com,test2@test2.com"
+        email:
+          title: Email
+          type: string
+          format: email
+          description: Email address of the member.
+      required:
+        - email
+    TeamMemberRemoveRequest:
+      title: Parameters to remove a member from MSTeams teams
+      type: object
+      properties:
+        displayName:
+          title: Display Name
+          type: string
+          description: Searches for teams with display name containing the specified keyword, allowing partial matches for flexibility.
+        description:
+          title: Description
+          type: string
+          description: Searches for teams with description containing the specified keyword, allowing partial matches for flexibility.
+        memberEmails:
+          title: Member Emails
+          type: string
+          description: Members email addresses concatenated together with commas in between. The search will return teams with members having this specified emails.
+          example: "test@test.com,test1@test1.com,test2@test2.com"
+        email:
+          title: Email
+          type: string
+          format: email
+          description: Email address of the member.
+      required:
+        - email
