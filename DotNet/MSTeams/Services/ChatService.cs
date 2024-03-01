@@ -3,7 +3,6 @@ using MSTeams.DTOs;
 using MSTeams.Helpers;
 using MSTeams.Interfaces;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -20,7 +19,7 @@ namespace MSTeams.Services
             _apiHelper = apiHelper;
         }
 
-        private string QueryChatsUrlQuery(ChatsQueryRequest request)
+        private async Task<MSGraphChats> QueryChatsRawData(ChatsQueryRequest request, string token)
         {
             string query = "$filter=";
 
@@ -40,20 +39,6 @@ namespace MSTeams.Services
                 query += $"chatType eq \'{request.ChatType}\'";
             }
 
-            if (!string.IsNullOrEmpty(request.MemberEmails))
-            {
-                string[] emails = request.MemberEmails.Replace(" ", "").Split(',');
-
-                foreach (string email in emails)
-                {
-                    if (query != "$filter=")
-                    {
-                        query += " and ";
-                    }
-                    query += $"members/any(member:member/email eq \'{request.MemberEmails}\')";
-                }
-            }
-
             if (!string.IsNullOrEmpty(request.LastUpdatedBeginTime))
             {
                 DateTime BeginDT = DateTime.Parse(request.LastUpdatedBeginTime);
@@ -71,16 +56,32 @@ namespace MSTeams.Services
                 query += " and ";
             }
             query += $"lastUpdatedDateTime ge {lastUpdatedBeginTime} and lastUpdatedDateTime le {lastUpdatedEndTime}";
-            return "chats?$expand=members&" + query;
+            query = "chats?$expand=members&" + query;
+
+            MSGraphChats chats = await _apiHelper.Get<MSGraphChats>(query, token);
+
+            if (!string.IsNullOrEmpty(request.MemberEmails))
+            {
+                string[] emails = request.MemberEmails.Replace(" ", "").Split(',');
+                chats.Value = chats.Value.Where(chat =>
+                {
+                    bool hasAllEmails = true;
+                    string memberEmails = string.Join(",", chat.Members.Select(member => member.Email));
+                    foreach (string email in emails)
+                    {
+                        hasAllEmails = hasAllEmails && memberEmails.Contains(email);
+                    }
+                    return hasAllEmails;
+                }).ToList();
+            }
+            return chats;
         }
 
         public async Task<List<ChatResponse>> QueryChats(ChatsQueryRequest request, string token)
         {
-            string urlQuery = QueryChatsUrlQuery(request);
-
             try
             {
-                MSGraphChats chats = await _apiHelper.Get<MSGraphChats>(urlQuery, token);
+                MSGraphChats chats = await QueryChatsRawData(request, token);
                 if (chats == null || chats.Value == null)
                     return new List<ChatResponse>();
 
@@ -88,7 +89,7 @@ namespace MSTeams.Services
                 {
                     Topic = chat.Topic,
                     ChatType = chat.ChatType,
-                    MemberEmails = chat.Members != null && !chat.Members.Any() ? string.Join(",", chat.Members.Select(member => member.Email)) : "",
+                    MemberEmails = chat.Members != null && chat.Members.Any() ? string.Join(",", chat.Members.Select(member => member.Email)) : "",
                     LastUpdated = chat.LastUpdatedDateTime,
                     WebUrl = chat.WebUrl
                 }).ToList();
@@ -149,18 +150,16 @@ namespace MSTeams.Services
             if (string.IsNullOrEmpty(request.UpdatedTopic))
                 return false;
 
-            string urlQueryForQueryChats = QueryChatsUrlQuery(new ChatsQueryRequest
-            {
-                Topic = request.Topic,
-                ChatType = request.ChatType,
-                MemberEmails = request.MemberEmails,
-                LastUpdatedBeginTime = request.LastUpdatedBeginTime,
-                LastUpdatedEndTime = request.LastUpdatedEndTime
-            });
-
             try
             {
-                MSGraphChats chats = await _apiHelper.Get<MSGraphChats>(urlQueryForQueryChats, token);
+                MSGraphChats chats = await QueryChatsRawData(new ChatsQueryRequest
+                {
+                    Topic = request.Topic,
+                    ChatType = request.ChatType,
+                    MemberEmails = request.MemberEmails,
+                    LastUpdatedBeginTime = request.LastUpdatedBeginTime,
+                    LastUpdatedEndTime = request.LastUpdatedEndTime
+                }, token);
                 if (chats == null || chats.Value == null)
                     return false;
 
@@ -187,18 +186,16 @@ namespace MSTeams.Services
 
         public async Task<List<MemberResponse>> QueryChatMembers(ChatMembersQueryRequest request, string token)
         {
-            string urlQueryForQueryChats = QueryChatsUrlQuery(new ChatsQueryRequest
-            {
-                Topic = request.Topic,
-                ChatType = request.ChatType,
-                MemberEmails = request.MemberEmails,
-                LastUpdatedBeginTime = request.LastUpdatedBeginTime,
-                LastUpdatedEndTime = request.LastUpdatedEndTime
-            });
-
             try
             {
-                MSGraphChats chats = await _apiHelper.Get<MSGraphChats>(urlQueryForQueryChats, token);
+                MSGraphChats chats = await QueryChatsRawData(new ChatsQueryRequest
+                {
+                    Topic = request.Topic,
+                    ChatType = request.ChatType,
+                    MemberEmails = request.MemberEmails,
+                    LastUpdatedBeginTime = request.LastUpdatedBeginTime,
+                    LastUpdatedEndTime = request.LastUpdatedEndTime
+                }, token);
                 if (chats == null || chats.Value == null)
                     return new List<MemberResponse>();
 
@@ -233,18 +230,16 @@ namespace MSTeams.Services
             if (string.IsNullOrEmpty(request.Email))
                 return false;
 
-            string urlQueryForQueryChats = QueryChatsUrlQuery(new ChatsQueryRequest
-            {
-                Topic = request.Topic,
-                ChatType = request.ChatType,
-                MemberEmails = request.MemberEmails,
-                LastUpdatedBeginTime = request.LastUpdatedBeginTime,
-                LastUpdatedEndTime = request.LastUpdatedEndTime
-            });
-
             try
             {
-                MSGraphChats chats = await _apiHelper.Get<MSGraphChats>(urlQueryForQueryChats, token);
+                MSGraphChats chats = await QueryChatsRawData(new ChatsQueryRequest
+                {
+                    Topic = request.Topic,
+                    ChatType = request.ChatType,
+                    MemberEmails = request.MemberEmails,
+                    LastUpdatedBeginTime = request.LastUpdatedBeginTime,
+                    LastUpdatedEndTime = request.LastUpdatedEndTime
+                }, token);
                 if (chats == null || chats.Value == null)
                     return false;
 
@@ -280,18 +275,16 @@ namespace MSTeams.Services
             if (string.IsNullOrEmpty(request.Email))
                 return false;
 
-            string urlQueryForQueryChats = QueryChatsUrlQuery(new ChatsQueryRequest
-            {
-                Topic = request.Topic,
-                ChatType = request.ChatType,
-                MemberEmails = request.MemberEmails,
-                LastUpdatedBeginTime = request.LastUpdatedBeginTime,
-                LastUpdatedEndTime = request.LastUpdatedEndTime
-            });
-
             try
             {
-                MSGraphChats chats = await _apiHelper.Get<MSGraphChats>(urlQueryForQueryChats, token);
+                MSGraphChats chats = await QueryChatsRawData(new ChatsQueryRequest
+                {
+                    Topic = request.Topic,
+                    ChatType = request.ChatType,
+                    MemberEmails = request.MemberEmails,
+                    LastUpdatedBeginTime = request.LastUpdatedBeginTime,
+                    LastUpdatedEndTime = request.LastUpdatedEndTime
+                }, token);
                 if (chats == null || chats.Value == null)
                     return false;
 
@@ -314,18 +307,16 @@ namespace MSTeams.Services
 
         public async Task<List<MessageResponse>> QueryChatMessages(ChatMessagesQueryRequest request, string token)
         {
-            string urlQueryForQueryChats = QueryChatsUrlQuery(new ChatsQueryRequest
-            {
-                Topic = request.Topic,
-                ChatType = request.ChatType,
-                MemberEmails = request.MemberEmails,
-                LastUpdatedBeginTime = request.LastUpdatedBeginTime,
-                LastUpdatedEndTime = request.LastUpdatedEndTime
-            });
-
             try
             {
-                MSGraphChats chats = await _apiHelper.Get<MSGraphChats>(urlQueryForQueryChats, token);
+                MSGraphChats chats = await QueryChatsRawData(new ChatsQueryRequest
+                {
+                    Topic = request.Topic,
+                    ChatType = request.ChatType,
+                    MemberEmails = request.MemberEmails,
+                    LastUpdatedBeginTime = request.LastUpdatedBeginTime,
+                    LastUpdatedEndTime = request.LastUpdatedEndTime
+                }, token);
                 if (chats == null || chats.Value == null)
                     return new List<MessageResponse>();
 
@@ -375,18 +366,16 @@ namespace MSTeams.Services
             if (string.IsNullOrEmpty(request.Content))
                 return false;
 
-            string urlQueryForQueryChats = QueryChatsUrlQuery(new ChatsQueryRequest
-            {
-                Topic = request.Topic,
-                ChatType = request.ChatType,
-                MemberEmails = request.MemberEmails,
-                LastUpdatedBeginTime = request.LastUpdatedBeginTime,
-                LastUpdatedEndTime = request.LastUpdatedEndTime
-            });
-
             try
             {
-                MSGraphChats chats = await _apiHelper.Get<MSGraphChats>(urlQueryForQueryChats, token);
+                MSGraphChats chats = await QueryChatsRawData(new ChatsQueryRequest
+                {
+                    Topic = request.Topic,
+                    ChatType = request.ChatType,
+                    MemberEmails = request.MemberEmails,
+                    LastUpdatedBeginTime = request.LastUpdatedBeginTime,
+                    LastUpdatedEndTime = request.LastUpdatedEndTime
+                }, token);
                 if (chats == null || chats.Value == null)
                     return false;
 
@@ -419,18 +408,16 @@ namespace MSTeams.Services
             if (string.IsNullOrEmpty(request.Content))
                return false;
 
-            string urlQueryForQueryChats = QueryChatsUrlQuery(new ChatsQueryRequest
-            {
-                Topic = request.Topic,
-                ChatType = request.ChatType,
-                MemberEmails = request.MemberEmails,
-                LastUpdatedBeginTime = request.LastUpdatedBeginTime,
-                LastUpdatedEndTime = request.LastUpdatedEndTime
-            });
-
             try
             {
-                MSGraphChats chats = await _apiHelper.Get<MSGraphChats>(urlQueryForQueryChats, token);
+                MSGraphChats chats = await QueryChatsRawData(new ChatsQueryRequest
+                {
+                    Topic = request.Topic,
+                    ChatType = request.ChatType,
+                    MemberEmails = request.MemberEmails,
+                    LastUpdatedBeginTime = request.LastUpdatedBeginTime,
+                    LastUpdatedEndTime = request.LastUpdatedEndTime
+                }, token);
                 if (chats == null || chats.Value == null)
                     return false;
 
@@ -488,18 +475,16 @@ namespace MSTeams.Services
 
         public async Task<bool> RemoveChatMessages(ChatMessageRemoveRequest request, string token)
         {
-            string urlQueryForQueryChats = QueryChatsUrlQuery(new ChatsQueryRequest
-            {
-                Topic = request.Topic,
-                ChatType = request.ChatType,
-                MemberEmails = request.MemberEmails,
-                LastUpdatedBeginTime = request.LastUpdatedBeginTime,
-                LastUpdatedEndTime = request.LastUpdatedEndTime
-            });
-
             try
             {
-                MSGraphChats chats = await _apiHelper.Get<MSGraphChats>(urlQueryForQueryChats, token);
+                MSGraphChats chats = await QueryChatsRawData(new ChatsQueryRequest
+                {
+                    Topic = request.Topic,
+                    ChatType = request.ChatType,
+                    MemberEmails = request.MemberEmails,
+                    LastUpdatedBeginTime = request.LastUpdatedBeginTime,
+                    LastUpdatedEndTime = request.LastUpdatedEndTime
+                }, token);
                 if (chats == null || chats.Value == null)
                     return false;
 
