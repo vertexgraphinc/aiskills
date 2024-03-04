@@ -7,7 +7,7 @@
   "auth": {
     "type": "oauth",
     "client_url": "skill/oauth/auth",
-    "scope": "chat:write,channels:history,reminders:write,dnd:write,users.profile:write,search:read",
+    "scope": "channels:history,channels:read,chat:write,dnd:write,groups:read,im:read,mpim:read,reminders:read,reminders:write,search:read,users.profile:write,users:read",
     "authorization_url": "skill/oauth/token",
     "authorization_content_type": "application/json"
   },

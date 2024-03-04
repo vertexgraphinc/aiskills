@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Text.Json;
 using Slack.Constants;
+using Newtonsoft.Json.Linq;
 namespace Slack.Controllers
 {
     [ApiController,Route("[controller]")]
@@ -91,10 +92,14 @@ namespace Slack.Controllers
                 };
             }
 
+            JObject authedUser = JObject.Parse(resp.Json.ToString())["authed_user"] as JObject;
+
             return new OAuthToken
             {
-                AccessToken = resp.Json.GetProperty("authed_user").GetProperty("access_token").GetString(),
-                Scope = resp.Json.GetProperty("authed_user").GetProperty("scope").GetString()
+                AccessToken = authedUser["access_token"].ToString(),
+                RefreshToken = authedUser["refresh_token"]?.ToString(),
+                Scope = authedUser["scope"].ToString(),
+                ExpiresIn = authedUser["expires_in"] != null ? authedUser["expires_in"].ToString() : int.MaxValue.ToString()
             };
         }
 

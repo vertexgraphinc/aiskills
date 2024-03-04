@@ -13,7 +13,7 @@ paths:
   $skillapproot/messages/send:
     post:
       title: Send a new message
-      operationId: SendMessage
+      operationId: SendMessageToChannel
       summary: Send a new message to a channel
       responses:
         "200":
