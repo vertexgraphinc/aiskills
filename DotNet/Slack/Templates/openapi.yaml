@@ -9,12 +9,44 @@ servers:
 ### ENDPOINTS==================================================================
 ### ===========================================================================   
 paths:                
-### /messages/send---------------------------------------------------- 
-  $skillapproot/messages/send:
+### /messages/send/send_to_channel---------------------------------------------------- 
+  $skillapproot/messages/send_to_channel:
     post:
-      title: Send a new message
+      title: Send a new message to a channel
       operationId: SendMessageToChannel
       summary: Send a new message to a channel
+      responses:
+        "200":
+          description: OK  
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'    
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'  
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+      requestBody:
+        description: Request body to create a new event
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendMessageRequest'
+### /messages/send/send_to_channel---------------------------------------------------- 
+  $skillapproot/messages/send_to_user:
+    post:
+      title: Send a new message to a user
+      operationId: SendMessageToUser
+      summary: Send a new message to a user
       responses:
         "200":
           description: OK  
@@ -45,7 +77,7 @@ paths:
   $skillapproot/messages/list/channel:
     post:
       title: Get messages from channel
-      operationId: ListChannelMessages
+      operationId: GetChannelMessages
       summary: Get messages from channel
       responses:
         "200":
@@ -75,37 +107,37 @@ paths:
               $ref: '#/components/schemas/ListChannelMsgsRequest'
               
 ### /messages/list---------------------------------------------------- 
-  # $skillapproot/messages/list/all:
-  #   post:
-  #     title: Get messages from all channels
-  #     operationId: ListAllMessages
-  #     summary: Get messages from all channels
-  #     responses:
-  #       "200":
-  #         description: OK  
-  #         content:        
-  #           application/json:
-  #             schema:
-  #               $ref: '#/components/schemas/ListAllMsgsResponse'    
-  #       "500":
-  #         description: Server error
-  #         content:
-  #           application/json:
-  #             schema:
-  #               $ref: '#/components/schemas/ListAllMsgsResponse'  
-  #       "401":
-  #         description: Unauthorized
-  #         content:
-  #           application/json:
-  #             schema:
-  #               $ref: '#/components/schemas/ListAllMsgsResponse'
-  #     requestBody:
-  #       description: Request body for getting messages from all channel
-  #       required: true
-  #       content:
-  #         application/json:
-  #           schema:
-  #             $ref: '#/components/schemas/ListAllMsgsRequest'
+  $skillapproot/messages/list/all:
+    post:
+      title: Get messages from mulitple channels depending on the type
+      operationId: GetMultipleChannelMessages
+      summary: Get messages from mulitple channels depending on the type (public/private channels, groups, DM's)
+      responses:
+        "200":
+          description: OK  
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListAllMsgsResponse'    
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListAllMsgsResponse'  
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListAllMsgsResponse'
+      requestBody:
+        description: Request body for getting messages from all channel
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListAllMsgsRequest'
 ### /reminders/add---------------------------------------------------- 
   $skillapproot/reminders/add:
     post:
@@ -137,7 +169,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AddReminderRequest'
+              $ref: '#/components/schemas/ReminderRequest'
               
 ### /reminders/complete---------------------------------------------------- 
   # $skillapproot/reminders/complete:
@@ -203,41 +235,9 @@ paths:
   #       content:
   #         application/json:
   #           schema:
-  #             $ref: '#/components/schemas/UpdateReminderRequest'
+  #             $ref: '#/components/schemas/ReminderRequest'
               
-### /reminders/info---------------------------------------------------- 
-  # $skillapproot/reminders/info:
-  #   post:
-  #     title: Get reminder information
-  #     operationId: GetReminderInfo
-  #     summary: Get information about a reminder
-  #     responses:
-  #       "200":
-  #         description: OK  
-  #         content:        
-  #           application/json:
-  #             schema:
-  #               $ref: '#/components/schemas/ReminderInfoResponse'    
-  #       "500":
-  #         description: Server error
-  #         content:
-  #           application/json:
-  #             schema:
-  #               $ref: '#/components/schemas/ReminderInfoResponse'  
-  #       "401":
-  #         description: Unauthorized
-  #         content:
-  #           application/json:
-  #             schema:
-  #               $ref: '#/components/schemas/ReminderInfoResponse'
-  #     requestBody:
-  #       description: Request body to get information about a reminder
-  #       required: true
-  #       content:
-  #         application/json:
-  #           schema:
-  #             $ref: '#/components/schemas/ReminderInfoRequest'
-              
+           
 ### /reminders/list---------------------------------------------------- 
   # $skillapproot/reminders/list:
   #   post:
@@ -304,103 +304,103 @@ paths:
               $ref: '#/components/schemas/SetDndRequest'
               
 ### /user/status---------------------------------------------------- 
-  # $skillapproot/user/status:
-  #   post:
-  #     title: Set User Custom Status
-  #     operationId: SetUserCustomStatus
-  #     summary: Set a user's custom status
-  #     responses:
-  #       "200":
-  #         description: OK  
-  #         content:        
-  #           application/json:
-  #             schema:
-  #               $ref: '#/components/schemas/ServerResponse'    
-  #       "500":
-  #         description: Server error
-  #         content:
-  #           application/json:
-  #             schema:
-  #               $ref: '#/components/schemas/ServerResponse'  
-  #       "401":
-  #         description: Unauthorized
-  #         content:
-  #           application/json:
-  #             schema:
-  #               $ref: '#/components/schemas/ServerResponse'
-  #     requestBody:
-  #       description: Request body to set a user's custom status
-  #       required: true
-  #       content:
-  #         application/json:
-  #           schema:
-  #             $ref: '#/components/schemas/SetUserStatusRequest'
+  $skillapproot/user/status:
+    post:
+      title: Set User Custom Status
+      operationId: SetUserCustomStatus
+      summary: Set a user's custom status
+      responses:
+        "200":
+          description: OK  
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'    
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'  
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+      requestBody:
+        description: Request body to set a user's custom status
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetUserStatusRequest'
 
 ### /search/files---------------------------------------------------- 
-  # $skillapproot/search/files:
-  #   post:
-  #     title: Search for files
-  #     operationId: SearchFiles
-  #     summary: Searches for files matching a query
-  #     responses:
-  #       "200":
-  #         description: OK  
-  #         content:        
-  #           application/json:
-  #             schema:
-  #               $ref: '#/components/schemas/SearchFilesResponse'    
-  #       "500":
-  #         description: Server error
-  #         content:
-  #           application/json:
-  #             schema:
-  #               $ref: '#/components/schemas/SearchFilesResponse'  
-  #       "401":
-  #         description: Unauthorized
-  #         content:
-  #           application/json:
-  #             schema:
-  #               $ref: '#/components/schemas/SearchFilesResponse'
-  #     requestBody:
-  #       description: Request body for searching files
-  #       required: true
-  #       content:
-  #         application/json:
-  #           schema:
-  #             $ref: '#/components/schemas/SearchFilesRequest'
+  $skillapproot/search/files:
+    post:
+      title: Search for files
+      operationId: SearchFiles
+      summary: Searches for files matching a query
+      responses:
+        "200":
+          description: OK  
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchFilesResponse'    
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchFilesResponse'  
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchFilesResponse'
+      requestBody:
+        description: Request body for searching files
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchFilesRequest'
               
 ### /search/messages---------------------------------------------------- 
-  # $skillapproot/search/messages:
-  #   post:
-  #     title: Search for messages
-  #     operationId: SearchMessages
-  #     summary: Searches for messages matching a query
-  #     responses:
-  #       "200":
-  #         description: OK  
-  #         content:        
-  #           application/json:
-  #             schema:
-  #               $ref: '#/components/schemas/SearchMessagesResponse'    
-  #       "500":
-  #         description: Server error
-  #         content:
-  #           application/json:
-  #             schema:
-  #               $ref: '#/components/schemas/SearchMessagesResponse'  
-  #       "401":
-  #         description: Unauthorized
-  #         content:
-  #           application/json:
-  #             schema:
-  #               $ref: '#/components/schemas/SearchMessagesResponse'
-  #     requestBody:
-  #       description: Request body for searching messages
-  #       required: true
-  #       content:
-  #         application/json:
-  #           schema:
-  #             $ref: '#/components/schemas/SearchMessagesRequest'
+  $skillapproot/search/messages:
+    post:
+      title: Search for messages
+      operationId: SearchMessages
+      summary: Searches for messages matching a query
+      responses:
+        "200":
+          description: OK  
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchMessagesResponse'    
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchMessagesResponse'  
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchMessagesResponse'
+      requestBody:
+        description: Request body for searching messages
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchMessagesRequest'
 
 ### ===========================================================================
 ### COMPONENTS=================================================================
@@ -416,7 +416,7 @@ components:
       properties:
         channel:
           type: string
-          description: Name of the channel/conversation.
+          description: Name of the channel/user.
         text:
           type: string
           description: Message text.
@@ -428,6 +428,14 @@ components:
         channel:
           type: string
           description: Name of the channel/conversation.
+          required: true
+        is_direct_message:
+          type: boolean
+          description: True if the user is requesting to get direct messages for a user
+          required: true
+        limit:
+          type: integer
+          description: Limit on how many messages to retrieve per channel.
         oldest:
           type: string
           format: date-time
@@ -440,11 +448,20 @@ components:
           title: Time Min
           description: |
             Lower bound for messages sent time to filter by.
+        
 ### ListAllMsgsRequest==================================
     ListAllMsgsRequest:
       title: Parameters for Listing all messages operation.
       type: object
       properties:
+        types:
+          type: string
+          description: Types of channels.
+          default: all
+          enum: [public_channel, private_channel, groups, dm, all]
+        limit:
+          type: integer
+          description: Limit on how many messages to retrieve per channel.
         oldest:
           type: string
           format: date-time
@@ -458,9 +475,9 @@ components:
           description: |
             Lower bound for messages sent time to filter by.
             
-### AddReminderRequest============================
-    AddReminderRequest:
-      title: Parameters for Create Reminder operations.
+### ReminderRequest============================
+    ReminderRequest:
+      title: Parameters for Reminder operations.
       type: object
       properties:
         text:
@@ -473,27 +490,26 @@ components:
           description: The time the reminder should happen
 ### UpdateReminderRequest============================
     UpdateReminderRequest:
-      title: Parameters for Updating Reminder operations.
+      title: Parameters for Updating Reminder operation.
       type: object
       properties:
-        id:
+        currentText:
           type: string
-          title: Reminder Id
-          description: The id of the reminder
-### ReminderInfoRequest============================
-    ReminderInfoRequest:
-      title: Parameters for Get Reminder operations.
-      type: object
-      properties:
-        reminderText:
+          title: Current Reminder text
+          description: The current content of the reminder 
+        currentTime:
           type: string
-          title: Reminder Id
-          description: The id of the reminder    
-        time:
+          title: Current Reminder time
+          description: The current time the reminder should happen
+        updatedText:
           type: string
-          title: Reminder time
-          description: The time the reminder should happen
-          
+          title: Updated Reminder text
+          description: The updated content of the reminder 
+        updateTime:
+          type: string
+          title: Updated Reminder time
+          description: The updated time the reminder should happen
+            
 ### ListRemindersRequest============================
     ListRemindersRequest:
       title: Parameters for List Reminder operations.
@@ -592,6 +608,54 @@ components:
           description: The type of message.
         ts:
           type: string
-          description: The timestamp of the message.      
+          description: The timestamp of the message.  
+    SearchMessagesResponse:
+      type: object
+      messages:
+        type: object
+        properties:
+          matches:
+            type: array
+            items:
+              type: object
+              properties:
+                channel:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                type:
+                  type: string
+                username:
+                  type: string
+                ts:
+                  type: string
+                text:
+                  type: string
+                permalink:
+                  type: string
+    SearchFilesResponse:
+      type: object
+      files:
+        type: object
+        properties:
+          matches:
+            type: array
+            items:
+              type: object
+              properties:
+                timestamp:
+                  type: integer      
+                name:
+                  type: string
+                user:
+                  type: string
+                size:
+                  type: integer
+                url_private_download:
+                  type: string
+                permalink:
+                  type: string 
+             
 
 ### ++++++++++++++++++++++++++++++++++++++++++++++++++++ 

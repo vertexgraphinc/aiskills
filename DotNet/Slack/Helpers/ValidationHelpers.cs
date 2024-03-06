@@ -29,9 +29,9 @@ namespace Slack.Helpers
             return str.Replace("\r", " ").Replace("\n", " ").Replace("\"", "''").Replace("<", " ").Replace(">", " ");
         }
 
-        public static string ParseUnixToDate(double unixTimestamp)
+        public static string ParseUnixToDate(double unixTimestamp, int timeZoneOffset)
         {
-            DateTimeOffset dateTimeOffset = DateTimeOffset.FromUnixTimeSeconds((long)unixTimestamp);
+            DateTimeOffset dateTimeOffset = DateTimeOffset.FromUnixTimeSeconds((long)unixTimestamp + timeZoneOffset);
             return dateTimeOffset.ToString("MMM dd 'at' h:mmtt");
         }
 
@@ -41,7 +41,7 @@ namespace Slack.Helpers
             {
                 return null;
             }
-            DateTimeOffset dateTimeOffset = DateTimeOffset.ParseExact(dateString, "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture);
+            DateTimeOffset dateTimeOffset = DateTimeOffset.Parse(dateString);
 
             return dateTimeOffset.ToUnixTimeSeconds().ToString();
         }

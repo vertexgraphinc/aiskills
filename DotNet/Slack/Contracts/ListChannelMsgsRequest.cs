@@ -9,6 +9,12 @@ namespace Slack.Contracts
         [JsonProperty("channel"), JsonPropertyName("channel")]
         public string Channel { get; set; }
 
+        [JsonProperty("is_direct_message"), JsonPropertyName("is_direct_message")]
+        public string IsDM { get; set; }
+
+        [JsonProperty("limit"), JsonPropertyName("limit")]
+        public int Limit { get; set; }
+
         [JsonProperty("latest"), JsonPropertyName("latest")]
         public string Latest { get; set; }
 

@@ -14,19 +14,13 @@ namespace Slack.Helpers
     {
 
         private Dictionary<string, string> userMap = new Dictionary<string, string>();
+        private int? userTimeZoneOffset = null;
 
         public async Task<ServerResponse> SendMessage(SendMessageRequest Para)
         {
-            var channelId = await FindChannelIdByName(Para.ChannelName);
             var response = new ServerResponse();
 
-            var message = new Message
-            {
-                Channel = channelId,
-                Text = Para.Text,
-            };
-
-            var result = await Post<ApiResult>($"/chat.postMessage", JsonConvert.SerializeObject(message, Formatting.None,
+            var result = await Post<ApiResult>($"/chat.postMessage", JsonConvert.SerializeObject(Para, Formatting.None,
                 new JsonSerializerSettings
                 {
                     NullValueHandling = NullValueHandling.Ignore
@@ -42,6 +36,86 @@ namespace Slack.Helpers
             }
 
             return response;
+        }
+
+        public async Task<ServerResponse> SetUserStatus(SetUserStatusRequest Para)
+        {
+            var response = new ServerResponse();
+
+            var status = new SlackProfileData
+            {
+                Profile = new ProfileData
+                {
+                    StatusText = Para.StatusText,
+                    StatusEmoji = Para.StatusEmoji,
+                    StatusExpiration = ParseDateToUnix(Para.StatusExpiration),
+                }
+            };
+
+            var result = await Post<ApiResult>($"/users.profile.set", JsonConvert.SerializeObject(status, Formatting.None,
+                new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore
+                }));
+
+            if (result.Ok == true)
+            {
+                response.Message = "Custom Profile Set";
+            }
+            else
+            {
+                Response.StatusCode = 500;
+                response.Message = result.Error;
+            }
+
+            return response;
+        }
+
+
+        public async Task<SearchMessagesResponse> QueryMessages(SearchRequest Para)
+        {
+            var result = await Get<SearchMessagesResponse>($"/search.messages?query={Para.Query}&count=10");
+
+            if (result.Ok == true)
+            {
+                result.Message = "Successfully retrieved results";
+                foreach ( var message in result.Messages.Matches ) {
+                    if(message.Type == "im")
+                    {
+                        message.Channel.Name = await GetUser(message.Channel.Name);
+                    }
+                    message.Timestamp = ParseUnixToDate(double.Parse(message.Timestamp), await GetUserTimeZoneOffset());
+                }
+            }
+            else
+            {
+                Response.StatusCode = 500;
+                result.Message = result.Error;
+            }
+
+            return result;
+
+        }
+
+        public async Task<SearchFilesResponse> QueryFiles(SearchRequest Para)
+        {
+            var result = await Get<SearchFilesResponse>($"/search.files?query={Para.Query}&count=10");
+
+            if (result.Ok == true)
+            {
+                result.Message = "Successfully retrieved results";
+                foreach (var file in result.Files.Matches)
+                {
+                    file.Timestamp = ParseUnixToDate(double.Parse(file.Timestamp), await GetUserTimeZoneOffset());
+                }
+            }
+            else
+            {
+                Response.StatusCode = 500;
+                result.Message = result.Error;
+            }
+
+            return result;
 
         }
 
@@ -72,42 +146,26 @@ namespace Slack.Helpers
 
         }
 
-        public async Task<ServerResponse> AddReminder(AddReminderRequest Para)
-        {
-            System.Diagnostics.Debug.WriteLine("[vertex][Messages][AddReminder]");
-            var response = new ServerResponse();
-
-            var result = await Post<ApiResult>($"/reminders.add", JsonConvert.SerializeObject(Para, Formatting.None,
-                new JsonSerializerSettings
-                {
-                    NullValueHandling = NullValueHandling.Ignore
-                }));
-
-            if (result.Ok == true)
-            {
-                response.Message = "Reminder successfully added "; 
-            }
-            else
-            {
-                Response.StatusCode = 500;
-                response.Message = result.Error;
-            }
-
-            return response;
-
-        }
-
-        public async Task<ListChannelMsgsResponse> GetChannelMessages(ListChannelMsgsRequest Para)
+        public async Task<ListChannelMsgsResponse> GetChannelMessagesByName(ListChannelMsgsRequest Para)
         {
 
             var response = new ListChannelMsgsResponse
             {
                 Channel = Para.Channel
             };
-
-            Para.Channel = await FindChannelIdByName(Para.Channel);
+            
+            if (Para.IsDM.ToLower() == "true")
+            {
+                Para.Channel = await FindUserDMByName(Para.Channel);
+            }
+            else
+            {
+                Para.Channel = await FindChannelIdByName(Para.Channel);
+            }
 
             Para.Oldest = ParseDateToUnix(Para.Oldest);
+            Para.Latest = ParseDateToUnix(Para.Latest);
+            
 
             var result = await Post<HistoryResponse>($"/conversations.history", JsonConvert.SerializeObject(Para, Formatting.None,
                 new JsonSerializerSettings
@@ -122,7 +180,7 @@ namespace Slack.Helpers
                 
                 foreach(var message in result.Messages)
                 {
-                    message.Timestamp = ParseUnixToDate(double.Parse(message.Timestamp));
+                    message.Timestamp = ParseUnixToDate(double.Parse(message.Timestamp), await GetUserTimeZoneOffset());
                     message.User = await GetUser(message.User);
                 }
                 response.Messages= result.Messages;
@@ -138,13 +196,144 @@ namespace Slack.Helpers
 
         }
 
+
+        public async Task<ListChannelMsgsResponse> GetChannelMessagesById(ListChannelMsgsRequest Para)
+        {
+
+            var response = new ListChannelMsgsResponse
+            {
+                Channel = Para.Channel
+            };
+            
+
+            var result = await Post<HistoryResponse>($"/conversations.history", JsonConvert.SerializeObject(Para, Formatting.None,
+                new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore
+                }));
+
+            if (result.Ok == true)
+            {
+
+                foreach (var message in result.Messages)
+                {
+                    message.Timestamp = ParseUnixToDate(double.Parse(message.Timestamp), await GetUserTimeZoneOffset());
+                    message.User = await GetUser(message.User);
+                }
+                response.Messages = result.Messages;
+                response.Message = "Returned " + result.Messages.Count + " messages";
+
+            }
+            else
+            {
+                response.Messages = null;
+            }
+
+            return response;
+
+        }
+
+
+
+
+
+        public async Task<ListAllMsgsResponse> GetAllChannels(ListAllMsgsRequest Para)
+        {
+
+            var response = new ListAllMsgsResponse
+            {
+                Channels = new List<ListChannelMsgsResponse>()
+            };
+           
+
+            string type = Para.Types;
+            if(type == "all") type = "public_channel,private_channel,mpim,im";
+            if (type == "dm") type = "im";
+            if (type == "groups") type = "mpim";
+
+            var result = await Get<ChannelsResponse>($"/conversations.list?types={type}");
+
+
+
+            if (result.Ok == true)
+            {
+                Para.Oldest = ParseDateToUnix(Para.Oldest);
+                Para.Latest = ParseDateToUnix(Para.Latest);
+
+                foreach (var channel in result.Channels)
+                {
+                    var request = new ListChannelMsgsRequest
+                    {
+                        Oldest = Para.Oldest,
+                        Latest = Para.Latest,
+                        Channel = channel.Id,
+                        Limit = Para.Limit == 0 ? 5 : Para.Limit
+                    };
+                    
+                    var channelMessages = await GetChannelMessagesById(request);
+                    channelMessages.Channel = channel.Name;
+                    if (channel.IsDM == true) channelMessages.Channel = "DM's with " + await GetUser(channel.UserId);
+                    
+                    if (channelMessages.Messages != null) response.Channels.Add(channelMessages);
+                }
+
+                response.Message = "Successfully retrieved messages for " + response.Channels.Count + " channels";
+            }
+            else
+            {
+                Response.StatusCode = 500;
+                response.Message = result.Error;
+            }
+
+            return response;
+
+        }
+
         public async Task<string> FindChannelIdByName(string channelName)
         {
             
-            var response = await Get<ChannelsResponse>($"/conversations.list");
+            var response = await Get<ChannelsResponse>($"/conversations.list?types=public_channel,private_channel");
             var channel = response?.Channels.FirstOrDefault(c => c.Name == channelName);
 
             return channel?.Id;
+        }
+
+        public async Task<string> FindUserIdByName(string username)
+        {
+
+            var response = await Get<UserListResponse>($"/users.list");
+            var user = response?.Members?.FirstOrDefault(u => (u.Name.ToLower() == username.ToLower()
+                || u.RealName.ToLower() == username.ToLower()));
+
+            return user?.Id;
+        }
+
+        public async Task<string> FindUserDMByName(string username)
+        {
+            var id = await FindUserIdByName(username);
+            if(id == null) return null;
+
+            var response = await Get<ChannelsResponse>($"/conversations.list?types=im");
+            var channel = response?.Channels.FirstOrDefault(c => c.UserId == id);
+
+            return channel?.Id;
+        }
+
+        public async Task<int> GetUserTimeZoneOffset()
+        {
+            if (userTimeZoneOffset == null)
+            {
+                var response = await Get<SlackUserData>($"/openid.connect.userInfo");
+                if (response.Ok == false) return 0;
+
+                var userData = await Get<UserInfoResponse>($"/users.info?user={response.UserId}");
+                if (userData.Ok == false) return 0;
+
+                userTimeZoneOffset = userData.User.TimeZoneOffset;
+            }
+
+            return (int)userTimeZoneOffset;
+
         }
 
         public async Task<string> GetUser(string userId)
