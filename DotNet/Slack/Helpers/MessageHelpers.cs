@@ -237,21 +237,23 @@ namespace Slack.Helpers
 
 
 
-        public async Task<ListAllMsgsResponse> GetAllChannels(ListAllMsgsRequest Para)
+        public async Task<ListAllMsgsResponse> GetAllChannels(ListAllMsgsRequest Para, string types)
         {
 
             var response = new ListAllMsgsResponse
             {
                 Channels = new List<ListChannelMsgsResponse>()
             };
-           
 
-            string type = Para.Types;
-            if(type == "all") type = "public_channel,private_channel,mpim,im";
+
+            if (types == "all") types = "public_channel,private_channel,mpim,im";
+
+
+            /*string type = Para.Types;
             if (type == "dm") type = "im";
-            if (type == "groups") type = "mpim";
+            if (type == "groups") type = "mpim";*/
 
-            var result = await Get<ChannelsResponse>($"/conversations.list?types={type}");
+            var result = await Get<ChannelsResponse>($"/conversations.list?types={types}");
 
 
 

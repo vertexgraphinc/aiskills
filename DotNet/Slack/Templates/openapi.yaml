@@ -76,9 +76,9 @@ paths:
 ### /messages/list---------------------------------------------------- 
   $skillapproot/messages/list/channel:
     post:
-      title: Get messages from channel
+      title: Get messages from one specific channel
       operationId: GetChannelMessages
-      summary: Get messages from channel
+      summary: Get messages from one specific channel
       responses:
         "200":
           description: OK  
@@ -106,12 +106,108 @@ paths:
             schema:
               $ref: '#/components/schemas/ListChannelMsgsRequest'
               
-### /messages/list---------------------------------------------------- 
+### /messages/list/all---------------------------------------------------- 
   $skillapproot/messages/list/all:
     post:
-      title: Get messages from mulitple channels depending on the type
-      operationId: GetMultipleChannelMessages
-      summary: Get messages from mulitple channels depending on the type (public/private channels, groups, DM's)
+      title: Get messages from every conversation/channel
+      operationId: GetAllMessages
+      summary: Get messages from every conversation/channel
+      responses:
+        "200":
+          description: OK  
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListAllMsgsResponse'    
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListAllMsgsResponse'  
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListAllMsgsResponse'
+      requestBody:
+        description: Request body for getting messages from all channel
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListAllMsgsRequest'
+### /messages/list/all_dms---------------------------------------------------- 
+  $skillapproot/messages/list/all_dms:
+    post:
+      title: Get messages from every direct message channel
+      operationId: GetAllDirectMessages
+      summary: Get messages from every direct message channel
+      responses:
+        "200":
+          description: OK  
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListAllMsgsResponse'    
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListAllMsgsResponse'  
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListAllMsgsResponse'
+      requestBody:
+        description: Request body for getting messages from all channel
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListAllMsgsRequest'
+### /messages/list/all_group---------------------------------------------------- 
+  $skillapproot/messages/list/all_group:
+    post:
+      title: Get messages from every group chat channel
+      operationId: GetAllGroupMessages
+      summary: Get messages from every group chat channel
+      responses:
+        "200":
+          description: OK  
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListAllMsgsResponse'    
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListAllMsgsResponse'  
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListAllMsgsResponse'
+      requestBody:
+        description: Request body for getting messages from all channel
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListAllMsgsRequest'
+### /messages/list/all_channel---------------------------------------------------- 
+  $skillapproot/messages/list/all_channel:
+    post:
+      title: Get messages from every public and private channel
+      operationId: GetAllChannelMessages
+      summary: Get messages from every public and private channel
       responses:
         "200":
           description: OK  
@@ -170,106 +266,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ReminderRequest'
-              
-### /reminders/complete---------------------------------------------------- 
-  # $skillapproot/reminders/complete:
-  #   post:
-  #     title: Complete a reminder
-  #     operationId: CompleteReminder
-  #     summary: Mark a reminder as complete
-  #     responses:
-  #       "200":
-  #         description: OK  
-  #         content:        
-  #           application/json:
-  #             schema:
-  #               $ref: '#/components/schemas/ServerResponse'    
-  #       "500":
-  #         description: Server error
-  #         content:
-  #           application/json:
-  #             schema:
-  #               $ref: '#/components/schemas/ServerResponse'  
-  #       "401":
-  #         description: Unauthorized
-  #         content:
-  #           application/json:
-  #             schema:
-  #               $ref: '#/components/schemas/ServerResponse'
-  #     requestBody:
-  #       description: Request body to mark a reminder as complete
-  #       required: true
-  #       content:
-  #         application/json:
-  #           schema:
-  #             $ref: '#/components/schemas/UpdateReminderRequest'
-              
-### /reminders/delete---------------------------------------------------- 
-  # $skillapproot/reminders/delete:
-  #   post:
-  #     title: Delete a reminder
-  #     operationId: DeleteReminder
-  #     summary: Delete a reminder
-  #     responses:
-  #       "200":
-  #         description: OK  
-  #         content:        
-  #           application/json:
-  #             schema:
-  #               $ref: '#/components/schemas/ServerResponse'    
-  #       "500":
-  #         description: Server error
-  #         content:
-  #           application/json:
-  #             schema:
-  #               $ref: '#/components/schemas/ServerResponse'  
-  #       "401":
-  #         description: Unauthorized
-  #         content:
-  #           application/json:
-  #             schema:
-  #               $ref: '#/components/schemas/ServerResponse'
-  #     requestBody:
-  #       description: Request body to delete a reminder
-  #       required: true
-  #       content:
-  #         application/json:
-  #           schema:
-  #             $ref: '#/components/schemas/ReminderRequest'
-              
-           
-### /reminders/list---------------------------------------------------- 
-  # $skillapproot/reminders/list:
-  #   post:
-  #     title: List reminders
-  #     operationId: ListReminders
-  #     summary: List all reminders
-  #     responses:
-  #       "200":
-  #         description: OK  
-  #         content:        
-  #           application/json:
-  #             schema:
-  #               $ref: '#/components/schemas/ListRemindersResponse'    
-  #       "500":
-  #         description: Server error
-  #         content:
-  #           application/json:
-  #             schema:
-  #               $ref: '#/components/schemas/ListRemindersResponse'  
-  #       "401":
-  #         description: Unauthorized
-  #         content:
-  #           application/json:
-  #             schema:
-  #               $ref: '#/components/schemas/ListRemindersResponse'
-  #     requestBody:
-  #       description: Request body to list all reminders
-  #       required: true
-  #       content:
-  #         application/json:
-  #           schema:
-  #             $ref: '#/components/schemas/ListRemindersRequest'
 ### /dnd/setSnooze---------------------------------------------------- 
   $skillapproot/user/dnd:
     post:
@@ -454,14 +450,10 @@ components:
       title: Parameters for Listing all messages operation.
       type: object
       properties:
-        types:
-          type: string
-          description: Types of channels.
-          default: all
-          enum: [public_channel, private_channel, groups, dm, all]
         limit:
           type: integer
           description: Limit on how many messages to retrieve per channel.
+          default: 5
         oldest:
           type: string
           format: date-time

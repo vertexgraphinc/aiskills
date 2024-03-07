@@ -17,11 +17,8 @@ namespace Slack.Controllers
         [HttpGet("test"), HttpGet("~/skill/{controller}/test")]
         public string Test()
         {
-            //if the skill is installed as a web application called "Slack" in IIS, then both URLs will work:
-            //https://example.com/Slack/oauth/test
-            //https://example.com/Slack/skill/oauth/test
             System.Diagnostics.Debug.WriteLine("[vertex][Messages]Test");
-            return "hello world from oauth.";
+            return "Messages controller test.";
         }
 
         #region Send Message to Channel
@@ -55,7 +52,6 @@ namespace Slack.Controllers
             return response;
         }
         #endregion
-
 
         #region Send Message to User
         [HttpPost("send_to_user"), HttpPost("~/skill/{controller}/send_to_user")]
@@ -127,7 +123,6 @@ namespace Slack.Controllers
             return response;
         }
         #endregion
-
 
         #region List Channel Messages
         [HttpPost("list/channel"), HttpPost("~/skill/{controller}/list/channel")]
@@ -227,6 +222,7 @@ namespace Slack.Controllers
             return response;
         }
         #endregion
+
         #region List All Messages
         [HttpPost("list/all"), HttpPost("~/skill/{controller}/list/all")]
         public async Task<ListAllMsgsResponse> ListAllMessages(ListAllMsgsRequest request)
@@ -245,7 +241,7 @@ namespace Slack.Controllers
 
             try
             {
-                response = await GetAllChannels(request);
+                response = await GetAllChannels(request, "all");
             }
             catch (Exception ex)
             {
@@ -260,6 +256,104 @@ namespace Slack.Controllers
         }
         #endregion
 
+        #region List All Direct Messages
+        [HttpPost("list/all_dms"), HttpPost("~/skill/{controller}/list/all_dms")]
+        public async Task<ListAllMsgsResponse> ListAllDirectMessages(ListAllMsgsRequest request)
+        {
+            System.Diagnostics.Debug.WriteLine("[vertex][Messages][ListAllDirectMessages]");
+            var response = new ListAllMsgsResponse();
+            Response.StatusCode = 200;
+
+            string Token = GetSessionToken();
+            if (!Has(Token))
+            {
+                Response.StatusCode = 401;
+                response.Message = "Unauthorized.";
+                return response;
+            }
+
+            try
+            {
+                response = await GetAllChannels(request, "im");
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = 500;
+                response.Message = ex.Message;
+                return response;
+            }
+
+            System.Diagnostics.Debug.WriteLine("[vertex][Messages][ListAllDirectMessages] Response:" + JsonConvert.SerializeObject(response));
+
+            return response;
+        }
+        #endregion
+
+        #region List All Group Messages
+        [HttpPost("list/all_group"), HttpPost("~/skill/{controller}/list/all_group")]
+        public async Task<ListAllMsgsResponse> ListAllGroupMessages(ListAllMsgsRequest request)
+        {
+            System.Diagnostics.Debug.WriteLine("[vertex][Messages][ListAllGroupMessages]");
+            var response = new ListAllMsgsResponse();
+            Response.StatusCode = 200;
+
+            string Token = GetSessionToken();
+            if (!Has(Token))
+            {
+                Response.StatusCode = 401;
+                response.Message = "Unauthorized.";
+                return response;
+            }
+
+            try
+            {
+                response = await GetAllChannels(request, "mpim");
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = 500;
+                response.Message = ex.Message;
+                return response;
+            }
+
+            System.Diagnostics.Debug.WriteLine("[vertex][Messages][ListAllGroupMessages] Response:" + JsonConvert.SerializeObject(response));
+
+            return response;
+        }
+        #endregion
+
+        #region List All Channel Messages
+        [HttpPost("list/all_channel"), HttpPost("~/skill/{controller}/list/all_channel")]
+        public async Task<ListAllMsgsResponse> ListAllChannelMessages(ListAllMsgsRequest request)
+        {
+            System.Diagnostics.Debug.WriteLine("[vertex][Messages][ListAllChannelMessages]");
+            var response = new ListAllMsgsResponse();
+            Response.StatusCode = 200;
+
+            string Token = GetSessionToken();
+            if (!Has(Token))
+            {
+                Response.StatusCode = 401;
+                response.Message = "Unauthorized.";
+                return response;
+            }
+
+            try
+            {
+                response = await GetAllChannels(request, "public_channel,private_channel");
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = 500;
+                response.Message = ex.Message;
+                return response;
+            }
+
+            System.Diagnostics.Debug.WriteLine("[vertex][Messages][ListAllChannelMessages] Response:" + JsonConvert.SerializeObject(response));
+
+            return response;
+        }
+        #endregion
 
     }
 }

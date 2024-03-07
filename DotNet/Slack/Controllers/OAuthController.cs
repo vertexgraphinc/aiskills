@@ -31,7 +31,7 @@ namespace Slack.Controllers
                 queryString["user_scope"] = queryString["scope"];
                 queryString.Remove("scope");
             }
-            Response.Redirect($"https://slack.com/oauth/v2/authorize?{queryString}");
+            Response.Redirect($"{APIConstants.ApiBaseURL}?{queryString}");
         }
 
         [HttpPost("token"),HttpPost("~/skill/{controller}/token")]
