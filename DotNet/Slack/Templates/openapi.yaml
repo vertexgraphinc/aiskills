@@ -35,13 +35,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/ServerResponse'
       requestBody:
-        description: Request body to create a new event
+        description: Request body to send a message to a channel
         required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/SendMessageRequest'
-### /messages/send/send_to_channel---------------------------------------------------- 
+### /messages/send/send_to_user---------------------------------------------------- 
   $skillapproot/messages/send_to_user:
     post:
       title: Send a new message to a user
@@ -67,12 +67,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/ServerResponse'
       requestBody:
-        description: Request body to create a new event
+        description: Request body for sending message to user
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SendMessageRequest'
+              $ref: '#/components/schemas/SendMessageToUserRequest'
 ### /messages/list---------------------------------------------------- 
   $skillapproot/messages/list/channel:
     post:
@@ -132,7 +132,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ListAllMsgsResponse'
       requestBody:
-        description: Request body for getting messages from all channel
+        description: Request body for getting messages from all conversations
         required: true
         content:
           application/json:
@@ -164,7 +164,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ListAllMsgsResponse'
       requestBody:
-        description: Request body for getting messages from all channel
+        description: Request body for getting messages from all dm's
         required: true
         content:
           application/json:
@@ -196,7 +196,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ListAllMsgsResponse'
       requestBody:
-        description: Request body for getting messages from all channel
+        description: Request body for getting messages from all group chats
         required: true
         content:
           application/json:
@@ -228,7 +228,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ListAllMsgsResponse'
       requestBody:
-        description: Request body for getting messages from all channel
+        description: Request body for getting messages from all channels
         required: true
         content:
           application/json:
@@ -267,7 +267,7 @@ paths:
             schema:
               $ref: '#/components/schemas/ReminderRequest'
 ### /dnd/setSnooze---------------------------------------------------- 
-  $skillapproot/user/dnd:
+  $skillapproot/messages/dnd:
     post:
       title: Set Do Not Disturb mode
       operationId: SetDnd
@@ -300,7 +300,7 @@ paths:
               $ref: '#/components/schemas/SetDndRequest'
               
 ### /user/status---------------------------------------------------- 
-  $skillapproot/user/status:
+  $skillapproot/messages/status:
     post:
       title: Set User Custom Status
       operationId: SetUserCustomStatus
@@ -332,41 +332,8 @@ paths:
             schema:
               $ref: '#/components/schemas/SetUserStatusRequest'
 
-### /search/files---------------------------------------------------- 
-  $skillapproot/search/files:
-    post:
-      title: Search for files
-      operationId: SearchFiles
-      summary: Searches for files matching a query
-      responses:
-        "200":
-          description: OK  
-          content:        
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SearchFilesResponse'    
-        "500":
-          description: Server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SearchFilesResponse'  
-        "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SearchFilesResponse'
-      requestBody:
-        description: Request body for searching files
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SearchFilesRequest'
-              
-### /search/messages---------------------------------------------------- 
-  $skillapproot/search/messages:
+### /messages/search---------------------------------------------------- 
+  $skillapproot/messages/search:
     post:
       title: Search for messages
       operationId: SearchMessages
@@ -396,7 +363,40 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SearchMessagesRequest'
+              $ref: '#/components/schemas/SearchRequest'
+              
+### /search/messages---------------------------------------------------- 
+  $skillapproot/messages/search_files:
+    post:
+      title: Search for files
+      operationId: SearchFiles
+      summary: Searches for files matching a query
+      responses:
+        "200":
+          description: OK  
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchFilesResponse'    
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchFilesResponse'  
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchFilesResponse'
+      requestBody:
+        description: Request body for searching files
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchRequest'
 
 ### ===========================================================================
 ### COMPONENTS=================================================================
@@ -412,7 +412,17 @@ components:
       properties:
         channel:
           type: string
-          description: Name of the channel/user.
+          description: Name of the channel.
+        text:
+          type: string
+          description: Message text.
+    SendMessageToUserRequest:
+      title: Parameters for Send Message to user operation.
+      type: object
+      properties:
+        user_fullname:
+          type: string
+          description: Full name of the user.
         text:
           type: string
           description: Message text.
@@ -431,7 +441,7 @@ components:
           required: true
         limit:
           type: integer
-          description: Limit on how many messages to retrieve per channel.
+          description: Limit on how many messages to retrieve per channel (default is 5).
         oldest:
           type: string
           format: date-time
@@ -476,10 +486,10 @@ components:
           type: string
           title: Reminder text
           description: The content of the reminder 
-        time:
+        time_statement:
           type: string
-          title: Reminder time
-          description: The time the reminder should happen
+          title: Reminder time statement
+          description: Statement of what time the reminder should take place. Ex. Tomorrow at 5pm, 10am on Wednesday
 ### UpdateReminderRequest============================
     UpdateReminderRequest:
       title: Parameters for Updating Reminder operation.
@@ -538,29 +548,22 @@ components:
           type: string
           description: The displayed emoji for the status
         statusExpiration:
-          type: integer
-          description: The Unix timestamp of when the status will expire
+          type: string
+          format: date-time
+          description: The date and time of when the status will expire
         statusText:
           type: string
           maxLength: 100
           description: The displayed text of the status
          
 ### SearchFilesRequest==================================
-    SearchFilesRequest:
-      title: Parameters for Search file operations.
+    SearchRequest:
+      title: Parameters for Search operations.
       type: object
       properties:
         query:
           type: string    
           description: Search query.     
-### SearchMessagesRequest==================================
-    SearchMessagesRequest:
-      title: Parameters for Search message operations.
-      type: object
-      properties:
-        query:
-          type: string    
-          description: Search query.  
 ### ++++++++++++++++++++++++++++++++++++++++++++++++++++   
 ### RESPONSE COMPONENTS+++++++++++++++++++++++++++++++++   
 ### ServerResponse++++++++++++++++++++++++++++++++++++++      

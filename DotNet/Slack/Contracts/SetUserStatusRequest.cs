@@ -5,13 +5,13 @@ namespace Slack.Contracts
 {
     public class SetUserStatusRequest
     {
-        [JsonProperty("status_emoji"), JsonPropertyName("status_emoji")]
+        [JsonProperty("statusEmoji"), JsonPropertyName("statusEmoji")]
         public string StatusEmoji { get; set; }
 
-        [JsonProperty("status_expiration"), JsonPropertyName("status_expiration")]
+        [JsonProperty("statusExpiration"), JsonPropertyName("statusExpiration")]
         public string StatusExpiration { get; set; }
 
-        [JsonProperty("status_text"), JsonPropertyName("status_text")]
+        [JsonProperty("statusText"), JsonPropertyName("statusText")]
         public string StatusText { get; set; }
     }
 }

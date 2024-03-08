@@ -133,6 +133,16 @@ namespace Slack.Contracts
         public int TimeZoneOffset { get; set; }
     }
 
+    public class SlackAddReminder
+    {
+        [JsonProperty("text"), JsonPropertyName("text")]
+        public string Text { get; set; }
+
+        [JsonProperty("time"), JsonPropertyName("time")]
+        public string Time { get; set; }
+
+    }
+
     public class Message
     {
 

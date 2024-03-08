@@ -55,12 +55,13 @@ namespace Slack.Controllers
 
         #region Send Message to User
         [HttpPost("send_to_user"), HttpPost("~/skill/{controller}/send_to_user")]
-        public async Task<ServerResponse> SendMessageToUser(SendMessageRequest Para)
+        public async Task<ServerResponse> SendMessageToUser(SendMessageToUserRequest Para)
         {
-            System.Diagnostics.Debug.WriteLine("[vertex][Messages][SendMessage]");
+            System.Diagnostics.Debug.WriteLine("[vertex][Messages][SendMessageToUser]");
             var response = new ServerResponse();
             Response.StatusCode = 200;
 
+            var userReq = new SendMessageRequest { Channel = Para.UserFullName, Text = Para.Text };
             string Token = GetSessionToken();
             if (!Has(Token))
             {
@@ -70,14 +71,14 @@ namespace Slack.Controllers
             }
             try
             {
-                Para.Channel = await FindUserIdByName(Para.Channel);
-                if(Para.Channel == null)
+                userReq.Channel = await FindUserIdByName(userReq.Channel);
+                if(userReq.Channel == null)
                 {
                     Response.StatusCode = 500;
                     response.Message = "Username not found.";
                     return response;
                 }
-                response = await SendMessage(Para);
+                response = await SendMessage(userReq);
             }
             catch (Exception ex)
             {
@@ -86,13 +87,13 @@ namespace Slack.Controllers
                 return response;
             }
 
-            System.Diagnostics.Debug.WriteLine("[vertex][Messages][SendMessage]response:" + JsonConvert.SerializeObject(response));
+            System.Diagnostics.Debug.WriteLine("[vertex][Messages][SendMessageToUser]response:" + JsonConvert.SerializeObject(response));
 
             return response;
         }
         #endregion
 
-        #region Send Message
+        #region Set Dnd
         [HttpPost("dnd"), HttpPost("~/skill/{controller}/dnd")]
         public async Task<ServerResponse> SetDnd(SetDndRequest Para)
         {
@@ -185,6 +186,40 @@ namespace Slack.Controllers
             }
 
             System.Diagnostics.Debug.WriteLine("[vertex][Messages][SearchMessages] Response:" + JsonConvert.SerializeObject(response));
+
+            return response;
+        }
+        #endregion
+
+
+        #region Search Files
+        [HttpPost("search_files"), HttpPost("~/skill/{controller}/search_files")]
+        public async Task<SearchFilesResponse> SearchFiles(SearchRequest request)
+        {
+            System.Diagnostics.Debug.WriteLine("[vertex][Messages][SearchFiles]");
+            var response = new SearchFilesResponse();
+            Response.StatusCode = 200;
+
+            string Token = GetSessionToken();
+            if (!Has(Token))
+            {
+                Response.StatusCode = 401;
+                response.Message = "Unauthorized.";
+                return response;
+            }
+
+            try
+            {
+                response = await QueryFiles(request);
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = 500;
+                response.Message = ex.Message;
+                return response;
+            }
+
+            System.Diagnostics.Debug.WriteLine("[vertex][Messages][SearchFiles] Response:" + JsonConvert.SerializeObject(response));
 
             return response;
         }

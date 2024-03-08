@@ -60,7 +60,7 @@ namespace Slack.Helpers
 
             if (result.Ok == true)
             {
-                response.Message = "Custom Profile Set";
+                response.Message = "Custom profile successfully set";
             }
             else
             {
@@ -106,6 +106,7 @@ namespace Slack.Helpers
                 result.Message = "Successfully retrieved results";
                 foreach (var file in result.Files.Matches)
                 {
+                    file.User = await GetUser(file.User);
                     file.Timestamp = ParseUnixToDate(double.Parse(file.Timestamp), await GetUserTimeZoneOffset());
                 }
             }
@@ -154,7 +155,7 @@ namespace Slack.Helpers
                 Channel = Para.Channel
             };
             
-            if (Para.IsDM.ToLower() == "true")
+            if (Para.IsDM != null && Para.IsDM.ToLower() == "true")
             {
                 Para.Channel = await FindUserDMByName(Para.Channel);
             }
@@ -162,6 +163,8 @@ namespace Slack.Helpers
             {
                 Para.Channel = await FindChannelIdByName(Para.Channel);
             }
+
+            if(Para.Limit == 0) Para.Limit = 10; 
 
             Para.Oldest = ParseDateToUnix(Para.Oldest);
             Para.Latest = ParseDateToUnix(Para.Latest);
@@ -248,14 +251,7 @@ namespace Slack.Helpers
 
             if (types == "all") types = "public_channel,private_channel,mpim,im";
 
-
-            /*string type = Para.Types;
-            if (type == "dm") type = "im";
-            if (type == "groups") type = "mpim";*/
-
             var result = await Get<ChannelsResponse>($"/conversations.list?types={types}");
-
-
 
             if (result.Ok == true)
             {

@@ -17,7 +17,13 @@ namespace Slack.Helpers
             System.Diagnostics.Debug.WriteLine("[vertex][Messages][AddReminder]");
             var response = new ServerResponse();
 
-            var result = await Post<ApiResult>($"/reminders.add", JsonConvert.SerializeObject(Para, Formatting.None,
+            var req = new SlackAddReminder
+            {
+                Text = Para.Text,
+                Time = Para.Time,
+            };
+
+            var result = await Post<ApiResult>($"/reminders.add", JsonConvert.SerializeObject(req, Formatting.None,
                 new JsonSerializerSettings
                 {
                     NullValueHandling = NullValueHandling.Ignore
