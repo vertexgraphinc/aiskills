@@ -20,7 +20,7 @@ namespace MSTeams.Services
 
         public async Task<List<TeamResponse>> QueryTeams(TeamsQueryRequest request, string token)
         {
-            string searchQuery = $"joinedTeams";
+            string searchQuery = $"me/joinedTeams";
 
             try
             {
@@ -28,9 +28,9 @@ namespace MSTeams.Services
                 if (teams == null || teams.Value == null)
                     return new List<TeamResponse>();
 
-                return (await Task.WhenAll(teams.Value.Where(team =>
-                    (string.IsNullOrEmpty(request.DisplayName) || team.DisplayName == request.DisplayName) &&
-                    (string.IsNullOrEmpty(request.Description) || team.Description == request.Description)
+                var tasks = teams.Value.Where(team =>
+                    (string.IsNullOrEmpty(request.DisplayName) || team.DisplayName.Contains(request.DisplayName)) &&
+                    (string.IsNullOrEmpty(request.Description) || team.Description.Contains(request.Description))
                 ).Select(async team =>
                 {
                     string memberQuery = $"teams/{team.Id}/members";
@@ -39,10 +39,15 @@ namespace MSTeams.Services
                     {
                         Description = team.Description,
                         DisplayName = team.DisplayName,
-                        MemberEmails = string.Join(",", members.Value.Select(member => member.Email)),
+                        MemberEmails = string.Join(",", (members != null && members.Value != null) ? members.Value.Select(member => member.Email) : new List<string>()),
                         WebUrl = team.WebUrl
                     };
-                }))).Where(team =>
+                });
+                var results = await Task.WhenAll(tasks);
+                if (results == null || !results.Any())
+                    return new List<TeamResponse>();
+
+                return results.Where(team =>
                 {
                     if (string.IsNullOrEmpty(request.MemberEmails))
                         return true;
@@ -67,40 +72,48 @@ namespace MSTeams.Services
             if (string.IsNullOrEmpty(request.DisplayName) || string.IsNullOrEmpty(request.MemberEmails))
                 return false;
 
-            MSGraphUserEntity creator = await _apiHelper.Get<MSGraphUserEntity>("", token);
-
-            string query = $"teams";
-            MSGraphCreateTeamBody body = new MSGraphCreateTeamBody
-            {
-                TemplateODataBind = "https://graph.microsoft.com/v1.0/teamsTemplates('standard')",
-                Description = request.Description,
-                DisplayName = request.DisplayName,
-                Members = request.MemberEmails.Split(",").Select(email => new MSGraphMember
-                {
-                    ODataType = "#microsoft.graph.aadUserConversationMember",
-                    Email = email,
-                    VisibleHistoryStartDateTime = "0001-01-01T00:00:00Z",
-                    Roles = new List<string>
-                    {
-                        "guest"
-                    }
-                }).Append(new MSGraphMember
-                {
-                    ODataType = "#microsoft.graph.aadUserConversationMember",
-                    Id = creator.Id,
-                    DisplayName = creator.DisplayName,
-                    Email = string.IsNullOrEmpty(creator.Mail) ? creator.UserPrincipalName : creator.Mail,
-                    VisibleHistoryStartDateTime = "0001-01-01T00:00:00Z",
-                    Roles = new List<string>
-                    {
-                        "owner"
-                    }
-                }).ToList()
-            };
-
             try
             {
-                return await _apiHelper.Post<bool>(query, body, token);
+                MSGraphUserEntity creator = await _apiHelper.Get<MSGraphUserEntity>("me", token);
+                if (string.IsNullOrEmpty(creator.Id))
+                    return false;
+
+                string query = $"teams";
+                MSGraphCreateTeamBody body = new MSGraphCreateTeamBody
+                {
+                    TemplateODataBind = "https://graph.microsoft.com/v1.0/teamsTemplates('standard')",
+                    Description = request.Description,
+                    DisplayName = request.DisplayName,
+                    Members = new List<MemberRequestBody> { new MemberRequestBody
+                    {
+                        ODataType = "#microsoft.graph.aadUserConversationMember",
+                        Roles = new List<string>
+                        {
+                            "owner"
+                        },
+                        UserODataBind = "https://graph.microsoft.com/v1.0/users(" + $"\'{creator.Id}\')"
+                    }}
+                };
+                string teamCreated = await _apiHelper.Post<string>(query, body, token);
+                if (string.IsNullOrEmpty(teamCreated))
+                    return false;
+
+                string teamId = teamCreated.Replace("/teams(\'", "").Replace("\')", "");
+                var tasks = request.MemberEmails.Replace(" ", "").Split(",").Select(async email => {
+                    string addMemberQuery = $"teams/{teamId}/members";
+                    MemberRequestBody body = new MemberRequestBody
+                    {
+                        ODataType = "#microsoft.graph.aadUserConversationMember",
+                        Roles = new List<string>(),
+                        UserODataBind = "https://graph.microsoft.com/v1.0/users(" + $"\'{email}\')"
+                    };
+                    return await _apiHelper.Post<bool>(addMemberQuery, body, token);
+                });
+                var results = await Task.WhenAll(tasks);
+                if (results == null || !results.Any() || !results.All(result => result == true))
+                    return false;
+
+                return true;
             }
             catch (HttpRequestException e)
             {
@@ -113,7 +126,7 @@ namespace MSTeams.Services
             if (string.IsNullOrEmpty(request.UpdatedDisplayName) && string.IsNullOrEmpty(request.UpdatedDescription))
                 return false;
 
-            string searchQuery = $"joinedTeams";
+            string searchQuery = $"me/joinedTeams";
 
             try
             {
@@ -122,8 +135,8 @@ namespace MSTeams.Services
                     return false;
 
                 List<MSGraphTeam> filteredTeams = teams.Value.Where(team =>
-                    (string.IsNullOrEmpty(request.DisplayName) || team.DisplayName == request.DisplayName) &&
-                    (string.IsNullOrEmpty(request.Description) || team.Description == request.Description)
+                    (string.IsNullOrEmpty(request.DisplayName) || team.DisplayName.Contains(request.DisplayName)) &&
+                    (string.IsNullOrEmpty(request.Description) || team.Description.Contains(request.Description))
                 ).ToList();
                 if (!filteredTeams.Any())
                     return false;
@@ -133,7 +146,7 @@ namespace MSTeams.Services
                 {
                     string memberQuery = $"teams/{team.Id}/members";
                     MSGraphMembers members = await _apiHelper.Get<MSGraphMembers>(memberQuery, token);
-                    string memberEmails = string.Join(",", members.Value.Select(member => member.Email));
+                    string memberEmails = string.Join(",", (members != null && members.Value != null) ? members.Value.Select(member => member.Email) : new List<string>());
 
                     bool allEmailsContained = true;
                     if (!string.IsNullOrEmpty(request.MemberEmails))
@@ -156,16 +169,16 @@ namespace MSTeams.Services
                         {
                             object body = new
                             {
-                                DisplayName = request.UpdatedDisplayName,
-                                Description = request.UpdatedDescription
+                                displayName = request.UpdatedDisplayName,
+                                description = request.UpdatedDescription
                             };
                             tasks.Add(_apiHelper.Patch(updateQuery, body, token));
-                        } 
+                        }
                         else if (!string.IsNullOrEmpty(request.UpdatedDisplayName))
                         {
                             object body = new
                             {
-                                DisplayName = request.UpdatedDisplayName
+                                displayName = request.UpdatedDisplayName
                             };
                             tasks.Add(_apiHelper.Patch(updateQuery, body, token));
                         }
@@ -173,7 +186,7 @@ namespace MSTeams.Services
                         {
                             object body = new
                             {
-                                Description = request.UpdatedDescription
+                                description = request.UpdatedDescription
                             };
                             tasks.Add(_apiHelper.Patch(updateQuery, body, token));
                         }
@@ -193,7 +206,7 @@ namespace MSTeams.Services
 
         public async Task<bool> ArchiveTeams(TeamRemoveRequest request, string token)
         {
-            string searchQuery = $"joinedTeams";
+            string searchQuery = $"me/joinedTeams";
 
             try
             {
@@ -202,8 +215,8 @@ namespace MSTeams.Services
                     return false;
 
                 List<MSGraphTeam> filteredTeams = teams.Value.Where(team =>
-                    (string.IsNullOrEmpty(request.DisplayName) || team.DisplayName == request.DisplayName) &&
-                    (string.IsNullOrEmpty(request.Description) || team.Description == request.Description)
+                    (string.IsNullOrEmpty(request.DisplayName) || team.DisplayName.Contains(request.DisplayName)) &&
+                    (string.IsNullOrEmpty(request.Description) || team.Description.Contains(request.Description))
                 ).ToList();
                 if (!filteredTeams.Any())
                     return false;
@@ -213,7 +226,7 @@ namespace MSTeams.Services
                 {
                     string memberQuery = $"teams/{team.Id}/members";
                     MSGraphMembers members = await _apiHelper.Get<MSGraphMembers>(memberQuery, token);
-                    string memberEmails = string.Join(",", members.Value.Select(member => member.Email));
+                    string memberEmails = string.Join(",", (members != null && members.Value != null) ? members.Value.Select(member => member.Email) : new List<string>());
 
                     bool allEmailsContained = true;
                     if (!string.IsNullOrEmpty(request.MemberEmails))
@@ -249,7 +262,7 @@ namespace MSTeams.Services
 
         public async Task<List<MemberResponse>> QueryTeamMembers(TeamMembersQueryRequest request, string token)
         {
-            string searchQuery = $"joinedTeams";
+            string searchQuery = $"me/joinedTeams";
 
             try
             {
@@ -258,18 +271,18 @@ namespace MSTeams.Services
                     return new List<MemberResponse>();
 
                 List<MSGraphTeam> filteredTeams = teams.Value.Where(team =>
-                   (string.IsNullOrEmpty(request.DisplayName) || team.DisplayName == request.DisplayName) &&
-                   (string.IsNullOrEmpty(request.Description) || team.Description == request.Description)
+                   (string.IsNullOrEmpty(request.DisplayName) || team.DisplayName.Contains(request.DisplayName)) &&
+                   (string.IsNullOrEmpty(request.Description) || team.Description.Contains(request.Description))
                 ).ToList();
                 if (!filteredTeams.Any())
                     return new List<MemberResponse>();
 
-                List<Task<MSGraphMembers>> tasks = new List<Task<MSGraphMembers>>();
+                List<MSGraphMembers> results = new List<MSGraphMembers>();
                 foreach (MSGraphTeam team in filteredTeams)
                 {
                     string memberQuery = $"teams/{team.Id}/members";
                     MSGraphMembers members = await _apiHelper.Get<MSGraphMembers>(memberQuery, token);
-                    string memberEmails = string.Join(",", members.Value.Select(member => member.Email));
+                    string memberEmails = string.Join(",", (members != null && members.Value != null) ? members.Value.Select(member => member.Email) : new List<string>());
 
                     bool allEmailsContained = true;
                     if (!string.IsNullOrEmpty(request.MemberEmails))
@@ -287,11 +300,10 @@ namespace MSTeams.Services
 
                     if (allEmailsContained)
                     {
-                        string searchMemberQuery = $"teams/{team.Id}/members";
-                        tasks.Add(_apiHelper.Get<MSGraphMembers>(searchMemberQuery, token));
+                        members.GroupTopic = team.DisplayName;
+                        results.Add(members);
                     }
                 }
-                var results = await Task.WhenAll(tasks);
                 if (results == null || !results.Any())
                     return new List<MemberResponse>();
 
@@ -300,6 +312,7 @@ namespace MSTeams.Services
                     Email = member.Email,
                     DisplayName = member.DisplayName,
                     Roles = member.Roles,
+                    GroupTopic = result.GroupTopic,
                     VisibleHistoryStart = member.VisibleHistoryStartDateTime
                 })).ToList();
             }
@@ -314,7 +327,7 @@ namespace MSTeams.Services
             if (string.IsNullOrEmpty(request.Email))
                 return false;
 
-            string searchQuery = $"joinedTeams";
+            string searchQuery = $"me/joinedTeams";
 
             try
             {
@@ -323,8 +336,8 @@ namespace MSTeams.Services
                     return false;
 
                 List<MSGraphTeam> filteredTeams = teams.Value.Where(team =>
-                   (string.IsNullOrEmpty(request.DisplayName) || team.DisplayName == request.DisplayName) &&
-                   (string.IsNullOrEmpty(request.Description) || team.Description == request.Description)
+                   (string.IsNullOrEmpty(request.DisplayName) || team.DisplayName.Contains(request.DisplayName)) &&
+                   (string.IsNullOrEmpty(request.Description) || team.Description.Contains(request.Description))
                 ).ToList();
                 if (!filteredTeams.Any())
                     return false;
@@ -334,7 +347,7 @@ namespace MSTeams.Services
                 {
                     string memberQuery = $"teams/{team.Id}/members";
                     MSGraphMembers members = await _apiHelper.Get<MSGraphMembers>(memberQuery, token);
-                    string memberEmails = string.Join(",", members.Value.Select(member => member.Email));
+                    string memberEmails = string.Join(",", (members != null && members.Value != null) ? members.Value.Select(member => member.Email) : new List<string>());
 
                     bool allEmailsContained = true;
                     if (!string.IsNullOrEmpty(request.MemberEmails))
@@ -353,15 +366,11 @@ namespace MSTeams.Services
                     if (allEmailsContained)
                     {
                         string addMemberQuery = $"teams/{team.Id}/members";
-                        MSGraphMember body = new MSGraphMember
+                        MemberRequestBody body = new MemberRequestBody
                         {
                             ODataType = "#microsoft.graph.aadUserConversationMember",
-                            Email = request.Email,
-                            VisibleHistoryStartDateTime = "0001-01-01T00:00:00Z",
-                            Roles = new List<string>
-                            {
-                                "guest"
-                            }
+                            Roles = new List<string>(),
+                            UserODataBind = "https://graph.microsoft.com/v1.0/users(" + $"\'{request.Email}\')"
                         };
                         tasks.Add(_apiHelper.Post<bool>(addMemberQuery, body, token));
                     }
@@ -383,7 +392,7 @@ namespace MSTeams.Services
             if (string.IsNullOrEmpty(request.Email))
                 return false;
 
-            string searchQuery = $"joinedTeams";
+            string searchQuery = $"me/joinedTeams";
 
             try
             {
@@ -392,8 +401,8 @@ namespace MSTeams.Services
                     return false;
 
                 List<MSGraphTeam> filteredTeams = teams.Value.Where(team =>
-                   (string.IsNullOrEmpty(request.DisplayName) || team.DisplayName == request.DisplayName) &&
-                   (string.IsNullOrEmpty(request.Description) || team.Description == request.Description)
+                   (string.IsNullOrEmpty(request.DisplayName) || team.DisplayName.Contains(request.DisplayName)) &&
+                   (string.IsNullOrEmpty(request.Description) || team.Description.Contains(request.Description))
                 ).ToList();
                 if (!filteredTeams.Any())
                     return false;
@@ -403,7 +412,7 @@ namespace MSTeams.Services
                 {
                     string memberQuery = $"teams/{team.Id}/members";
                     MSGraphMembers members = await _apiHelper.Get<MSGraphMembers>(memberQuery, token);
-                    string memberEmails = string.Join(",", members.Value.Select(member => member.Email));
+                    string memberEmails = string.Join(",", (members != null && members.Value != null) ? members.Value.Select(member => member.Email) : new List<string>());
 
                     bool allEmailsContained = true;
                     if (!string.IsNullOrEmpty(request.MemberEmails))
