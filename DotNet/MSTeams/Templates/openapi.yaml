@@ -546,6 +546,10 @@ components:
           description: Roles of the member in the group.
           items:
             type: string
+        groupTopic:
+          title: Group Topic
+          type: string
+          description: The topic of the chat or the display name of the team the member is in
         visibleHistoryStart:
           title: Visible History Start
           type: string
@@ -662,6 +666,10 @@ components:
     MessageResponse:
       type: object
       properties:
+        groupTopic:
+          title: Group Topic
+          type: string
+          description: The topic of the chat or the display name of the team the message is in
         from:
           title: From
           type: string
@@ -670,6 +678,10 @@ components:
           title: Content
           type: string
           description: Content of the chat message.
+        created:
+          title: Created
+          type: string         
+          description: The timestamp when the message was created.
         lastModified:
           title: Last Updated
           type: string         
