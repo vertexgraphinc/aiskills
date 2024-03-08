@@ -18,6 +18,10 @@ namespace MSTeams.Contracts
         [JsonPropertyName("roles")]
         public List<string> Roles { get; set; }
 
+        [JsonProperty("groupTopic")]
+        [JsonPropertyName("groupTopic")]
+        public string GroupTopic { get; set; }
+
         [JsonProperty("visibleHistoryStart")]
         [JsonPropertyName("visibleHistoryStart")]
         public string VisibleHistoryStart { get; set; }
