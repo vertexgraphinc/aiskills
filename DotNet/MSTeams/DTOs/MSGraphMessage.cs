@@ -45,6 +45,10 @@ namespace MSTeams.DTOs
         [JsonProperty("lastModifiedDateTime")]
         public string LastModifiedDateTime { get; set; }
 
+        [JsonPropertyName("deletedDateTime")]
+        [JsonProperty("deletedDateTime")]
+        public string DeletedDateTime { get; set; }
+
         [JsonPropertyName("from")]
         [JsonProperty("from")]
         public From From { get; set; }

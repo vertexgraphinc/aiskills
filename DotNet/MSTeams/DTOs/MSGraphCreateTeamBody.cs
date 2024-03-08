@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using MSTeams.Contracts;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
@@ -20,6 +21,6 @@ namespace MSTeams.DTOs
 
         [JsonPropertyName("members")]
         [JsonProperty("members")]
-        public List<MSGraphMember> Members { get; set; }
+        public List<MemberRequestBody> Members { get; set; }
     }
 }
