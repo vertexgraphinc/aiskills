@@ -36,11 +36,13 @@ namespace Slack
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
-
+            //app.UseHttpsRedirection();
+            app.UseCors(
+                options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()
+            );
             app.UseRouting();
 
-            app.UseAuthorization();
+            //app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
