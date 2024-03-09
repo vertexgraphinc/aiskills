@@ -73,7 +73,7 @@ paths:
   $skillapproot/chats/members/query:
     post:
       summary: Query MSTeams Chat Members
-      description: Search for chat members in a specific chat
+      description: Search for members in chats
       operationId: QueryChatMembers
       requestBody:
         required: true
@@ -453,7 +453,6 @@ components:
           description: Members email addresses concatenated together with commas in between.
           example: "test@test.com,test1@test1.com,test2@test2.com"
       required:
-        - chatType
         - memberEmails
     ChatsUpdateRequest:
       title: Parameters to update or modify a MSTeams chat
@@ -583,7 +582,7 @@ components:
           title: Email
           type: string
           format: email
-          description: Email address of the member.
+          description: Email address of the member that is being added.
       required:
         - email
     ChatMemberRemoveRequest:
@@ -615,7 +614,7 @@ components:
           title: Email
           type: string
           format: email
-          description: Email address of the member.
+          description: Email address of the member that is being removed.
       required:
         - email
     ChatMessagesQueryRequest:
@@ -714,7 +713,7 @@ components:
         content:
           title: Content
           type: string
-          description: Content of the chat message.
+          description: Content of the chat message that is being sent.
       required:
         - content
     ChatMessagesUpdateRequest:
@@ -753,7 +752,9 @@ components:
         content:
           title: Content
           type: string
-          description: Content of the chat message.
+          description: Content of the chat message that is being updated.
+      required:
+        - content
     ChatMessagesRemoveRequest:
       title: Parameters to remove messages in a MSTeams team
       type: object
@@ -850,7 +851,6 @@ components:
           description: Members email addresses concatenated together with commas in between.
           example: "test@test.com,test1@test1.com,test2@test2.com"
       required:
-        - displayName
         - memberEmails
     TeamsUpdateRequest:
       title: Parameters to update or modify MSTeams teams
@@ -872,11 +872,11 @@ components:
         updatedDisplayName:
           title: Display Name
           type: string
-          description: Display name of the team.
+          description: New display name of the team.
         updatedDescription:
           title: Description
           type: string
-          description: Description of the team.
+          description: New description of the team.
     TeamsRemoveRequest:
       title: Parameters to remove MSTeams teams
       type: object
@@ -919,8 +919,6 @@ components:
           title: Role
           type: string
           description: Searched for team members with roles containing the specified role.
-      required:
-        - id
     TeamMembersQueryResponse:
       type: object
       properties:
@@ -950,7 +948,7 @@ components:
           title: Email
           type: string
           format: email
-          description: Email address of the member.
+          description: Email address of the member that is being added.
       required:
         - email
     TeamMemberRemoveRequest:
@@ -974,6 +972,6 @@ components:
           title: Email
           type: string
           format: email
-          description: Email address of the member.
+          description: Email address of the member that is being removed.
       required:
         - email
