@@ -69,7 +69,7 @@ namespace MSTeams.Services
 
         public async Task<bool> CreateTeam(TeamCreateRequest request, string token)
         {
-            if (string.IsNullOrEmpty(request.DisplayName) || string.IsNullOrEmpty(request.MemberEmails))
+            if (string.IsNullOrEmpty(request.MemberEmails))
                 return false;
 
             try
@@ -82,7 +82,7 @@ namespace MSTeams.Services
                 MSGraphCreateTeamBody body = new MSGraphCreateTeamBody
                 {
                     TemplateODataBind = "https://graph.microsoft.com/v1.0/teamsTemplates('standard')",
-                    Description = request.Description,
+                    Description = !string.IsNullOrEmpty(request.DisplayName) ? request.Description : "New Team",
                     DisplayName = request.DisplayName,
                     Members = new List<MemberRequestBody> { new MemberRequestBody
                     {

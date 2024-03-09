@@ -102,7 +102,7 @@ namespace MSTeams.Services
 
         public async Task<bool> CreateChat(ChatCreateRequest request, string token)
         {
-            if (string.IsNullOrEmpty(request.ChatType) || string.IsNullOrEmpty(request.MemberEmails))
+            if (string.IsNullOrEmpty(request.MemberEmails))
                 return false;
 
             try
@@ -133,7 +133,7 @@ namespace MSTeams.Services
                 object body = new
                 {
                     topic = request.Topic,
-                    chatType = request.ChatType,
+                    chatType = !string.IsNullOrEmpty(request.ChatType) ? request.ChatType : "group",
                     members
                 };
 
