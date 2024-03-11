@@ -18,7 +18,7 @@ namespace MSTeams.Controllers
             _teamService = teamService;
         }
 
-        [HttpPost("query"), HttpPost("~/skill/{controller}/query")]
+        [HttpPost("query")]
         public async Task<TeamsQueryResponse> QueryTeams(TeamsQueryRequest request)
         {
             TeamsQueryResponse resp = new TeamsQueryResponse
@@ -38,7 +38,7 @@ namespace MSTeams.Controllers
             return resp;
         }
 
-        [HttpPost("create"), HttpPost("~/skill/{controller}/create")]
+        [HttpPost("create")]
         public async Task<IActionResult> CreateTeam(TeamCreateRequest request)
         {
             string authorizationHeader = Request.Headers["Authorization"].FirstOrDefault();
@@ -60,7 +60,7 @@ namespace MSTeams.Controllers
             }
         }
 
-        [HttpPost("update"), HttpPost("~/skill/{controller}/update")]
+        [HttpPost("update")]
         public async Task<IActionResult> UpdateTeams(TeamUpdateRequest request)
         {
             string authorizationHeader = Request.Headers["Authorization"].FirstOrDefault();
@@ -82,7 +82,7 @@ namespace MSTeams.Controllers
             }
         }
 
-        [HttpPost("remove"), HttpPost("~/skill/{controller}/remove")]
+        [HttpPost("remove")]
         public async Task<IActionResult> RemoveTeams(TeamRemoveRequest request)
         {
             string authorizationHeader = Request.Headers["Authorization"].FirstOrDefault();
@@ -104,7 +104,7 @@ namespace MSTeams.Controllers
             }
         }
 
-        [HttpPost("queryMembers"), HttpPost("~/skill/{controller}/members/query")]
+        [HttpPost("members/query")]
         public async Task<TeamMembersQueryResponse> QueryTeamMembers(TeamMembersQueryRequest request)
         {
             TeamMembersQueryResponse resp = new TeamMembersQueryResponse
@@ -124,7 +124,7 @@ namespace MSTeams.Controllers
             return resp;
         }
 
-        [HttpPost("addMember"), HttpPost("~/skill/{controller}/members/add")]
+        [HttpPost("members/add")]
         public async Task<IActionResult> AddTeamMember(TeamMemberAddRequest request)
         {
             string authorizationHeader = Request.Headers["Authorization"].FirstOrDefault();
@@ -146,7 +146,7 @@ namespace MSTeams.Controllers
             }
         }
 
-        [HttpPost("removeMember"), HttpPost("~/skill/{controller}/members/remove")]
+        [HttpPost("members/remove")]
         public async Task<IActionResult> RemoveTeamMember(TeamMemberRemoveRequest request)
         {
             string authorizationHeader = Request.Headers["Authorization"].FirstOrDefault();

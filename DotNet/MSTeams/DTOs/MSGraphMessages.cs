@@ -18,6 +18,10 @@ namespace MSTeams.DTOs
         [JsonProperty("@odata.nextLink")]
         public string ODataNextLink { get; set; }
 
+        [JsonPropertyName("groupTopic")]
+        [JsonProperty("groupTopic")]
+        public string GroupTopic { get; set; }
+
         [JsonPropertyName("value")]
         [JsonProperty("value")]
         public List<MSGraphMessage> Value { get; set; }

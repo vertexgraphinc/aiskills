@@ -2,6 +2,7 @@
 using MSTeams.Contracts;
 using MSTeams.Helpers;
 using MSTeams.Interfaces;
+using Newtonsoft.Json;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -18,7 +19,7 @@ namespace MSTeams.Controllers
             _chatService = chatService;
         }
 
-        [HttpPost("query"), HttpPost("~/skill/{controller}/query")]
+        [HttpPost("query")]
         public async Task<ChatsQueryResponse> QueryChats(ChatsQueryRequest request)
         {
             ChatsQueryResponse resp = new ChatsQueryResponse
@@ -35,10 +36,12 @@ namespace MSTeams.Controllers
             }
 
             resp.Chats = await _chatService.QueryChats(request, token);
+
+            System.Diagnostics.Debug.WriteLine("[MSTeams][QueryChat]:" + JsonConvert.SerializeObject(resp.Chats));
             return resp;
         }
 
-        [HttpPost("create"), HttpPost("~/skill/{controller}/create")]
+        [HttpPost("create")]
         public async Task<IActionResult> CreateChat(ChatCreateRequest request)
         {
             string authorizationHeader = Request.Headers["Authorization"].FirstOrDefault();
@@ -60,7 +63,7 @@ namespace MSTeams.Controllers
             }
         }
 
-        [HttpPost("update"), HttpPost("~/skill/{controller}/update")]
+        [HttpPost("update")]
         public async Task<IActionResult> UpdateChats(ChatUpdateRequest request)
         {
             string authorizationHeader = Request.Headers["Authorization"].FirstOrDefault();
@@ -82,7 +85,7 @@ namespace MSTeams.Controllers
             }
         }
 
-        [HttpPost("queryMembers"), HttpPost("~/skill/{controller}/members/query")]
+        [HttpPost("members/query")]
         public async Task<ChatMembersQueryResponse> QueryChatMembers(ChatMembersQueryRequest request)
         {
             ChatMembersQueryResponse resp = new ChatMembersQueryResponse
@@ -99,10 +102,11 @@ namespace MSTeams.Controllers
             }
 
             resp.Members = await _chatService.QueryChatMembers(request, token);
+            System.Diagnostics.Debug.WriteLine("[MSTeams][QueryChatMember]:" + JsonConvert.SerializeObject(resp.Members));
             return resp;
         }
 
-        [HttpPost("addMember"), HttpPost("~/skill/{controller}/members/add")]
+        [HttpPost("members/add")]
         public async Task<IActionResult> AddChatMember(ChatMemberAddRequest request)
         {
             string authorizationHeader = Request.Headers["Authorization"].FirstOrDefault();
@@ -124,7 +128,7 @@ namespace MSTeams.Controllers
             }
         }
 
-        [HttpPost("removeMember"), HttpPost("~/skill/{controller}/members/remove")]
+        [HttpPost("members/remove")]
         public async Task<IActionResult> RemoveChatMember(ChatMemberRemoveRequest request)
         {
             string authorizationHeader = Request.Headers["Authorization"].FirstOrDefault();
@@ -146,7 +150,7 @@ namespace MSTeams.Controllers
             }
         }
 
-        [HttpPost("queryMessages"), HttpPost("~/skill/{controller}/messages/query")]
+        [HttpPost("messages/query")]
         public async Task<ChatMessagesQueryResponse> QueryChatMessages(ChatMessagesQueryRequest request)
         {
             ChatMessagesQueryResponse resp = new ChatMessagesQueryResponse
@@ -166,7 +170,7 @@ namespace MSTeams.Controllers
             return resp;
         }
 
-        [HttpPost("sendMessages"), HttpPost("~/skill/{controller}/messages/send")]
+        [HttpPost("messages/send")]
         public async Task<IActionResult> SendChatMessages(ChatMessageSendRequest request)
         {
             string authorizationHeader = Request.Headers["Authorization"].FirstOrDefault();
@@ -188,7 +192,7 @@ namespace MSTeams.Controllers
             }
         }
 
-        [HttpPost("updateMessages"), HttpPost("~/skill/{controller}/messages/update")]
+        [HttpPost("messages/update")]
         public async Task<IActionResult> UpdateChatMessages(ChatMessageUpdateRequest request)
         {
             string authorizationHeader = Request.Headers["Authorization"].FirstOrDefault();
@@ -210,7 +214,7 @@ namespace MSTeams.Controllers
             }
         }
 
-        [HttpPost("removeMessages"), HttpPost("~/skill/{controller}/messages/remove")]
+        [HttpPost("messages/remove")]
         public async Task<IActionResult> RemoveChatMessages(ChatMessageRemoveRequest request)
         {
             string authorizationHeader = Request.Headers["Authorization"].FirstOrDefault();

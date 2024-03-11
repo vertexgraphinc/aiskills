@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace MSTeams.Helpers
 {
@@ -53,7 +54,13 @@ namespace MSTeams.Helpers
             {
                 if (httpResponse.IsSuccessStatusCode)
                 {
-                    if (httpResponse.StatusCode == HttpStatusCode.Accepted)
+                    if (typeof(T) == typeof(string))
+                    {
+                        return (T)(object)httpResponse.Content.Headers.ContentLocation.ToString();
+                    }
+
+                    List<HttpStatusCode> successStatusCodes = new List<HttpStatusCode> { HttpStatusCode.Accepted, HttpStatusCode.Created, HttpStatusCode.NoContent };
+                    if (successStatusCodes.Contains(httpResponse.StatusCode))
                     {
                         return typeof(T) == typeof(bool) ? (T)(object)true : default(T);
                     }
@@ -83,14 +90,6 @@ namespace MSTeams.Helpers
         {
             if (!url.StartsWith(APIConstants.GraphApiBaseURL))
             {
-                //if (!url.StartsWith("users"))
-                //{
-                //    url = APIConstants.GraphApiBaseURL + url;
-                //} 
-                //else
-                //{
-                //    url = APIConstants.GraphApiBaseURL.Remove(APIConstants.GraphApiBaseURL.LastIndexOf("me/")) + url;
-                //}
                 url = APIConstants.GraphApiBaseURL + url;
             }
 

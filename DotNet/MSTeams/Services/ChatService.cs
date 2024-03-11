@@ -56,7 +56,7 @@ namespace MSTeams.Services
                 query += " and ";
             }
             query += $"lastUpdatedDateTime ge {lastUpdatedBeginTime} and lastUpdatedDateTime le {lastUpdatedEndTime}";
-            query = "chats?$expand=members&" + query;
+            query = "me/chats?$expand=members&" + query;
 
             MSGraphChats chats = await _apiHelper.Get<MSGraphChats>(query, token);
 
@@ -102,39 +102,39 @@ namespace MSTeams.Services
 
         public async Task<bool> CreateChat(ChatCreateRequest request, string token)
         {
-            if (string.IsNullOrEmpty(request.ChatType) || string.IsNullOrEmpty(request.MemberEmails))
+            if (string.IsNullOrEmpty(request.MemberEmails))
                 return false;
 
             try
             {
-                MSGraphUserEntity creator = await _apiHelper.Get<MSGraphUserEntity>("", token);
+                MSGraphUserEntity creator = await _apiHelper.Get<MSGraphUserEntity>("me", token);
+                if (string.IsNullOrEmpty(creator.Id))
+                    return false;
+
+                List<MemberRequestBody> members = request.MemberEmails.Replace(" ", "").Split(",").Select(email => new MemberRequestBody
+                {
+                    ODataType = "#microsoft.graph.aadUserConversationMember",
+                    Roles = new List<string>
+                    {
+                        "owner"
+                    },
+                    UserODataBind = "https://graph.microsoft.com/v1.0/users(" + $"\'{email}\')"
+                }).Append(new MemberRequestBody
+                {
+                    ODataType = "#microsoft.graph.aadUserConversationMember",
+                    Roles = new List<string>
+                    {
+                        "owner"
+                    },
+                    UserODataBind = "https://graph.microsoft.com/v1.0/users(" + $"\'{creator.Id}\')"
+                }).ToList();
 
                 string urlQuery = $"chats";
                 object body = new
                 {
                     topic = request.Topic,
-                    chatType = request.ChatType,
-                    members = request.MemberEmails.Split(",").Select(email => new MSGraphMember
-                    {
-                        ODataType = "#microsoft.graph.aadUserConversationMember",
-                        Email = email,
-                        VisibleHistoryStartDateTime = "0001-01-01T00:00:00Z",
-                        Roles = new List<string>
-                        {
-                            "guest"
-                        }
-                    }).Append(new MSGraphMember
-                    {
-                        ODataType = "#microsoft.graph.aadUserConversationMember",
-                        Id = creator.Id,
-                        DisplayName = creator.DisplayName,
-                        Email = string.IsNullOrEmpty(creator.Mail) ? creator.UserPrincipalName : creator.Mail,
-                        VisibleHistoryStartDateTime = "0001-01-01T00:00:00Z",
-                        Roles = new List<string>
-                        {
-                            "owner"
-                        }
-                    }).ToList()
+                    chatType = !string.IsNullOrEmpty(request.ChatType) ? request.ChatType : "group",
+                    members
                 };
 
                 return await _apiHelper.Post<bool>(urlQuery, body, token);
@@ -163,7 +163,7 @@ namespace MSTeams.Services
                 if (chats == null || chats.Value == null)
                     return false;
 
-                var tasks = chats.Value.Select(async chat =>
+                var tasks = chats.Value.Where(chat => chat.ChatType == "group").Select(async chat =>
                 {
                     string urlQuery = $"chats/{chat.Id}";
                     object body = new
@@ -199,16 +199,7 @@ namespace MSTeams.Services
                 if (chats == null || chats.Value == null)
                     return new List<MemberResponse>();
 
-                var tasks = chats.Value.Select(async chat =>
-                {
-                    string urlQuery = $"chats/{chat.Id}/members";
-                    return await _apiHelper.Get<MSGraphMembers>(urlQuery, token);
-                });
-                var results = await Task.WhenAll(tasks);
-                if (results == null || !results.Any())
-                    return new List<MemberResponse>();
-
-                return results.SelectMany(result => result.Value.Where(member => 
+                return chats.Value.SelectMany(chat => chat.Members.Where(member => 
                     (string.IsNullOrEmpty(request.DisplayName) || member.DisplayName == request.DisplayName) && 
                     (string.IsNullOrEmpty(request.role) || member.Roles.Any(role => role == request.role))
                 ).Select(member => new MemberResponse
@@ -216,6 +207,7 @@ namespace MSTeams.Services
                     Email = member.Email,
                     DisplayName = member.DisplayName,
                     Roles = member.Roles,
+                    GroupTopic = chat.Topic,
                     VisibleHistoryStart = member.VisibleHistoryStartDateTime
                 })).ToList();
             }
@@ -243,18 +235,18 @@ namespace MSTeams.Services
                 if (chats == null || chats.Value == null)
                     return false;
 
-                var tasks = chats.Value.Select(async chat =>
+                var tasks = chats.Value.Where(chat => chat.ChatType == "group").Select(async chat =>
                 {
                     string urlQuery = $"chats/{chat.Id}/members";
-                    MSGraphMember body = new MSGraphMember
+                    MemberRequestBody body = new MemberRequestBody
                     {
                         ODataType = "#microsoft.graph.aadUserConversationMember",
-                        Email = request.Email,
-                        VisibleHistoryStartDateTime = "0001-01-01T00:00:00Z",
                         Roles = new List<string>
                         {
-                            "guest"
-                        }
+                            "owner"
+                        },
+                        UserODataBind = "https://graph.microsoft.com/v1.0/users(" + $"\'{request.Email}\')",
+                        VisibleHistoryStartDateTime = "0001-01-01T00:00:00Z"
                     };
                     return await _apiHelper.Post<bool>(urlQuery, body, token);
                 });
@@ -288,9 +280,9 @@ namespace MSTeams.Services
                 if (chats == null || chats.Value == null)
                     return false;
 
-                var tasks = chats.Value.SelectMany(chat => chat.Members.Where(member => member.Email == request.Email).Select(async member =>
+                var tasks = chats.Value.Where(chat => chat.ChatType == "group").SelectMany(chat => chat.Members.Where(member => member.Email == request.Email).Select(async member =>
                 {
-                    string urlQuery = $"chats/{chat.Id}/members/{member.UserId}";
+                    string urlQuery = $"chats/{chat.Id}/members/{member.Id}";
                     return await _apiHelper.Delete(urlQuery, token);
                 }));
                 var results = await Task.WhenAll(tasks);
@@ -322,36 +314,40 @@ namespace MSTeams.Services
 
                 string query = "$filter=";
 
-                string lastModifiedBeginTime = UtilityHelper.FormatDateTimeUtc(DateTime.Now.AddDays(-7));
+                string lastModifiedBeginTime = UtilityHelper.FormatDateTimeUtc(DateTime.Now.AddDays(-1));
                 string lastModifiedEndTime = UtilityHelper.FormatDateTimeUtc(DateTime.Now);
                 if (!string.IsNullOrEmpty(request.LastModifiedBeginTime))
                 {
-                    DateTime BeginDT = DateTime.Parse(request.LastUpdatedBeginTime);
+                    DateTime BeginDT = DateTime.Parse(request.LastModifiedBeginTime);
                     lastModifiedBeginTime = UtilityHelper.FormatDateTimeUtc(BeginDT);
                 }
                 if (!string.IsNullOrEmpty(request.LastModifiedEndTime))
                 {
-                    DateTime EndDT = DateTime.Parse(request.LastUpdatedEndTime);
+                    DateTime EndDT = DateTime.Parse(request.LastModifiedEndTime);
                     lastModifiedEndTime = UtilityHelper.FormatDateTimeUtc(EndDT);
                 }
-                query += $"lastModifiedDateTime ge {lastModifiedBeginTime} and lastModifiedDateTime le {lastModifiedEndTime}";
+                query += $"lastModifiedDateTime gt {lastModifiedBeginTime} and lastModifiedDateTime lt {lastModifiedEndTime}";
 
                 var tasks = chats.Value.Select(async chat =>
                 {
-                    string urlQuery = $"chats/{chat.Id}/messages";
-                    return await _apiHelper.Get<MSGraphMessages>(urlQuery, token);
+                    string urlQuery = $"me/chats/{chat.Id}/messages?" + query;
+                    MSGraphMessages messages = await _apiHelper.Get<MSGraphMessages>(urlQuery, token);
+                    messages.GroupTopic = chat.Topic;
+                    return messages;
                 });
                 var results = await Task.WhenAll(tasks);
                 if (results == null || !results.Any())
                     return new List<MessageResponse>();
 
-                return results.SelectMany(result => result.Value.Where(message => 
+                return results.SelectMany(result => result.Value.Where(message => message.DeletedDateTime == null && message.From != null && message.From.User != null && (!string.IsNullOrEmpty(message.From.User.Email) || !string.IsNullOrEmpty(message.From.User.DisplayName))).Where(message => 
                     string.IsNullOrEmpty(request.From) || 
-                    (message.From != null && (message.From.User != null && (!string.IsNullOrEmpty(message.From.User.DisplayName) ? message.From.User.DisplayName == request.From : message.From.User.Email == request.From)))
+                    (message.From != null && message.From.User != null && (!string.IsNullOrEmpty(message.From.User.Email) ? message.From.User.Email == request.From : (!string.IsNullOrEmpty(message.From.User.DisplayName) && message.From.User.DisplayName == request.From)))
                 ).Select(message => new MessageResponse
                 {
-                    From = message.From != null ? (message.From.User != null ? (!string.IsNullOrEmpty(message.From.User.DisplayName) ? message.From.User.DisplayName : message.From.User.Email) : "") : "",
+                    GroupTopic = result.GroupTopic,
+                    From = message.From != null && message.From.User != null ? !string.IsNullOrEmpty(message.From.User.Email) ? message.From.User.Email : (!string.IsNullOrEmpty(message.From.User.DisplayName) ? message.From.User.DisplayName : "") : "",
                     Content = message.Body != null ? message.Body.Content : "",
+                    Created = message.CreatedDateTime,
                     LastModified = message.LastModifiedDateTime
                 })).ToList();
             }
@@ -423,30 +419,32 @@ namespace MSTeams.Services
 
                 string query = "$filter=";
 
-                string lastModifiedBeginTime = UtilityHelper.FormatDateTimeUtc(DateTime.Now.AddDays(-7));
+                string lastModifiedBeginTime = UtilityHelper.FormatDateTimeUtc(DateTime.Now.AddDays(-1));
                 string lastModifiedEndTime = UtilityHelper.FormatDateTimeUtc(DateTime.Now);
                 if (!string.IsNullOrEmpty(request.LastModifiedBeginTime))
                 {
-                    DateTime BeginDT = DateTime.Parse(request.LastUpdatedBeginTime);
+                    DateTime BeginDT = DateTime.Parse(request.LastModifiedBeginTime);
                     lastModifiedBeginTime = UtilityHelper.FormatDateTimeUtc(BeginDT);
                 }
                 if (!string.IsNullOrEmpty(request.LastModifiedEndTime))
                 {
-                    DateTime EndDT = DateTime.Parse(request.LastUpdatedEndTime);
+                    DateTime EndDT = DateTime.Parse(request.LastModifiedEndTime);
                     lastModifiedEndTime = UtilityHelper.FormatDateTimeUtc(EndDT);
                 }
-                query += $"lastModifiedDateTime ge {lastModifiedBeginTime} and lastModifiedDateTime le {lastModifiedEndTime}";
+                query += $"lastModifiedDateTime gt {lastModifiedBeginTime} and lastModifiedDateTime lt {lastModifiedEndTime}";
 
                 var tasks1 = chats.Value.Select(async chat =>
                 {
-                    string urlQuery = $"chats/{chat.Id}/messages";
-                    return await _apiHelper.Get<MSGraphMessages>(urlQuery, token);
+                    string urlQuery = $"chats/{chat.Id}/messages?" + query;
+                    MSGraphMessages messages = await _apiHelper.Get<MSGraphMessages>(urlQuery, token);
+                    messages.GroupTopic = chat.Topic;
+                    return messages;
                 });
                 var results1 = await Task.WhenAll(tasks1);
                 if (results1 == null || !results1.Any())
                     return false;
 
-                MSGraphUserEntity user = await _apiHelper.Get<MSGraphUserEntity>("", token);
+                MSGraphUserEntity user = await _apiHelper.Get<MSGraphUserEntity>("me", token);
                 object body = new
                 {
                     body = new
@@ -454,8 +452,8 @@ namespace MSTeams.Services
                         content = request.Content
                     }
                 };
-                var tasks2 = results1.SelectMany(result => result.Value.Where(message =>
-                    (message.From != null && (message.From.User != null && (!string.IsNullOrEmpty(message.From.User.DisplayName) ? message.From.User.DisplayName == user.DisplayName : message.From.User.Email == (string.IsNullOrEmpty(user.Mail) ? user.UserPrincipalName : user.Mail))))
+                var tasks2 = results1.SelectMany(result => result.Value.Where(message => message.DeletedDateTime == null && message.From != null && message.From.User != null && (!string.IsNullOrEmpty(message.From.User.Email) || !string.IsNullOrEmpty(message.From.User.DisplayName))).Where(message =>
+                    (message.From != null && message.From.User != null && (!string.IsNullOrEmpty(message.From.User.DisplayName) ? message.From.User.DisplayName == user.DisplayName : message.From.User.Email == (string.IsNullOrEmpty(user.Mail) ? user.UserPrincipalName : user.Mail)))
                 )).Select(async message =>
                 {
                     string urlQuery = $"chats/{message.ChatId}/messages/{message.Id}";
@@ -490,36 +488,38 @@ namespace MSTeams.Services
 
                 string query = "$filter=";
 
-                string lastModifiedBeginTime = UtilityHelper.FormatDateTimeUtc(DateTime.Now.AddDays(-7));
+                string lastModifiedBeginTime = UtilityHelper.FormatDateTimeUtc(DateTime.Now.AddDays(-1));
                 string lastModifiedEndTime = UtilityHelper.FormatDateTimeUtc(DateTime.Now);
                 if (!string.IsNullOrEmpty(request.LastModifiedBeginTime))
                 {
-                    DateTime BeginDT = DateTime.Parse(request.LastUpdatedBeginTime);
+                    DateTime BeginDT = DateTime.Parse(request.LastModifiedBeginTime);
                     lastModifiedBeginTime = UtilityHelper.FormatDateTimeUtc(BeginDT);
                 }
                 if (!string.IsNullOrEmpty(request.LastModifiedEndTime))
                 {
-                    DateTime EndDT = DateTime.Parse(request.LastUpdatedEndTime);
+                    DateTime EndDT = DateTime.Parse(request.LastModifiedEndTime);
                     lastModifiedEndTime = UtilityHelper.FormatDateTimeUtc(EndDT);
                 }
-                query += $"lastModifiedDateTime ge {lastModifiedBeginTime} and lastModifiedDateTime le {lastModifiedEndTime}";
+                query += $"lastModifiedDateTime gt {lastModifiedBeginTime} and lastModifiedDateTime lt {lastModifiedEndTime}";
 
                 var tasks1 = chats.Value.Select(async chat =>
                 {
-                    string urlQuery = $"chats/{chat.Id}/messages";
-                    return await _apiHelper.Get<MSGraphMessages>(urlQuery, token);
+                    string urlQuery = $"chats/{chat.Id}/messages?" + query;
+                    MSGraphMessages messages = await _apiHelper.Get<MSGraphMessages>(urlQuery, token);
+                    messages.GroupTopic = chat.Topic;
+                    return messages;
                 });
                 var results1 = await Task.WhenAll(tasks1);
                 if (results1 == null || !results1.Any())
                     return false;
 
-                MSGraphUserEntity user = await _apiHelper.Get<MSGraphUserEntity>("", token);
-                var tasks2 = results1.SelectMany(result => result.Value.Where(message =>
+                MSGraphUserEntity user = await _apiHelper.Get<MSGraphUserEntity>("me", token);
+                var tasks2 = results1.SelectMany(result => result.Value.Where(message => message.DeletedDateTime == null && message.From != null && message.From.User != null && (!string.IsNullOrEmpty(message.From.User.Email) || !string.IsNullOrEmpty(message.From.User.DisplayName))).Where(message =>
                     (message.From != null && (message.From.User != null && (!string.IsNullOrEmpty(message.From.User.DisplayName) ? message.From.User.DisplayName == user.DisplayName : message.From.User.Email == (string.IsNullOrEmpty(user.Mail) ? user.UserPrincipalName : user.Mail))))
                 )).Select(async message =>
                 {
-                    string urlQuery = $"chats/{message.ChatId}/messages/{message.Id}/softDelete";
-                    return await _apiHelper.Delete(urlQuery, token);
+                    string urlQuery = $"users/{user.Id}/chats/{message.ChatId}/messages/{message.Id}/softDelete";
+                    return await _apiHelper.Post<bool>(urlQuery, null, token);
                 });
                 var results2 = await Task.WhenAll(tasks2);
                 if (results2 == null || !results2.Any() || !results2.All(result => result == true))
