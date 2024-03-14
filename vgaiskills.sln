@@ -9,6 +9,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GCalendar", "DotNet\GCalend
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft", "DotNet\Microsoft\Microsoft.csproj", "{7F15EE9E-4D7F-493C-9E95-15EB24097D5F}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MSTeams", "DotNet\MSTeams\MSTeams.csproj", "{729A4576-CF05-4DC7-914A-28C8F5C9172E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Slack", "DotNet\Slack\Slack.csproj", "{AC8CE34D-FF16-4A36-94D6-99CD0A3CA26D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{7F15EE9E-4D7F-493C-9E95-15EB24097D5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F15EE9E-4D7F-493C-9E95-15EB24097D5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F15EE9E-4D7F-493C-9E95-15EB24097D5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{729A4576-CF05-4DC7-914A-28C8F5C9172E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{729A4576-CF05-4DC7-914A-28C8F5C9172E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{729A4576-CF05-4DC7-914A-28C8F5C9172E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{729A4576-CF05-4DC7-914A-28C8F5C9172E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC8CE34D-FF16-4A36-94D6-99CD0A3CA26D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC8CE34D-FF16-4A36-94D6-99CD0A3CA26D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC8CE34D-FF16-4A36-94D6-99CD0A3CA26D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC8CE34D-FF16-4A36-94D6-99CD0A3CA26D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
