@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace MSTeams.Contracts
 {
-    public class ChatMembersQueryResponse
+    public class ChatMembersQueryResponse : ServerResponse
     {
         [JsonProperty("members")]
         [JsonPropertyName("members")]
