@@ -4,7 +4,7 @@ This skill allows the authenticated user to perform simple tasks on his/her Micr
 
 ## IIS Installation
 
-The skill requires an IIS server with dotnetcore 3.1 (install dotnet-hosting-3.1.32-win.exe or higher on your windows server. The recommended setup is to then create a web application folder under the Default Web Site node which points to the compiled files for this project.
+The skill requires an IIS server with dotnetcore 3.1 (install dotnet-hosting-3.1.32-win.exe or higher on your windows server). The recommended setup is to then create a web application folder under the Default Web Site node which points to the compiled files for this project.
 
 After downloading the source files to a folder on your computer, open the solution (.sln) file with Visual Studio 2022 or higher and compile it. DotNet will automatically create a subfolder under the root/bin folder called:
 [projectfolder]\bin\Release\netcoreapp3.1
