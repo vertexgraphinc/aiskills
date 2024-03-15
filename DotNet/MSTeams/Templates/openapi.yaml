@@ -26,8 +26,16 @@ paths:
                 $ref: '#/components/schemas/ChatsQueryResponse'
         "401":
           description: Unauthorized, requires valid authentication.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatsQueryResponse'
         "500":
           description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatsQueryResponse'
   $skillapproot/chats/create:
     post:
       summary: Create a new MSTeams Chat
@@ -42,12 +50,28 @@ paths:
       responses:
         '201':
           description: Chat created successfully.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '400':
           description: Error in creating the chat, possibly due to invalid input.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '401':
           description: Unauthorized, requires valid authentication.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '500':
           description: Server Error
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
   $skillapproot/chats/update:
     post:
       summary: Update MSTeams Chat Details
@@ -62,14 +86,34 @@ paths:
       responses:
         '200':
           description: Chats updated successfully.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '400':
           description: Error in updating the chats, possibly due to invalid input.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '401':
           description: Unauthorized, requires valid authentication.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '404':
           description: Original chats not found or inaccessible.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '500':
           description: Server Error
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
   $skillapproot/chats/members/query:
     post:
       summary: Query MSTeams Chat Members
@@ -90,8 +134,16 @@ paths:
                 $ref: '#/components/schemas/ChatMembersQueryResponse'
         "401":
           description: Unauthorized, requires valid authentication.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatMembersQueryResponse'
         "500":
           description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatMembersQueryResponse'
   $skillapproot/chats/members/add:
     post:
       summary: Add member to MSTeams Chats
@@ -106,14 +158,34 @@ paths:
       responses:
         '201':
           description: Chat member added successfully.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '400':
           description: Error in adding the chat member, possibly due to invalid input.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '401':
           description: Unauthorized, requires valid authentication.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '404':
           description: Original chats or member not found or inaccessible.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '500':
           description: Server Error
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
   $skillapproot/chats/members/remove:
     post:
       summary: Remove member from MSTeams Chats
@@ -128,14 +200,34 @@ paths:
       responses:
         '200':
           description: Chat member removed successfully.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '400':
           description: Error in removing the chat member, possibly due to invalid input.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '401':
           description: Unauthorized, requires valid authentication.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '404':
           description: Original chats or member not found or inaccessible.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '500':
           description: Server Error
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
   $skillapproot/chats/messages/query:
     post:
       summary: Query MSTeams Chat Messages
@@ -156,8 +248,16 @@ paths:
                 $ref: '#/components/schemas/ChatMessagesQueryResponse'
         "401":
           description: Unauthorized, requires valid authentication.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatMessagesQueryResponse'
         "500":
           description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatMessagesQueryResponse'
   $skillapproot/chats/messages/send:
     post:
       summary: Send messages to MSTeams Chats
@@ -172,14 +272,34 @@ paths:
       responses:
         '201':
           description: Chat messages sent successfully.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '400':
           description: Error in sending the messages in the chats, possibly due to invalid input.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '401':
           description: Unauthorized, requires valid authentication.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '404':
           description: Original chats not found or inaccessible.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '500':
           description: Server Error
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
   $skillapproot/chats/messages/update:
     post:
       summary: Update MSTeams Chat Message Details
@@ -194,14 +314,34 @@ paths:
       responses:
         '200':
           description: Chat messages updated successfully.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '400':
           description: Error in updating the chat messages, possibly due to invalid input.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '401':
           description: Unauthorized, requires valid authentication.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '404':
           description: Original chats or chat messages not found or inaccessible.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '500':
           description: Server Error
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
   $skillapproot/chats/messages/remove:
     post:
       summary: Remove messages in MSTeams Chats
@@ -216,14 +356,34 @@ paths:
       responses:
         '200':
           description: Chat messages removed successfully.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '400':
           description: Error in removing the chat messages, possibly due to invalid input.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '401':
           description: Unauthorized, requires valid authentication.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '404':
           description: Original chats or chat messages not found or inaccessible.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '500':
           description: Server Error
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
   $skillapproot/teams/query:
     post:
       summary: Query MSTeams Teams
@@ -244,8 +404,16 @@ paths:
                 $ref: '#/components/schemas/TeamsQueryResponse'
         "401":
           description: Unauthorized, requires valid authentication.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamsQueryResponse'
         "500":
           description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamsQueryResponse'
   $skillapproot/teams/create:
     post:
       summary: Create a new MSTeams Team
@@ -260,12 +428,28 @@ paths:
       responses:
         '201':
           description: Team created successfully.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '400':
           description: Error in creating the team, possibly due to invalid input.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '401':
           description: Unauthorized, requires valid authentication.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '500':
           description: Server Error
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
   $skillapproot/teams/update:
     post:
       summary: Update MSTeams Team Details
@@ -280,14 +464,34 @@ paths:
       responses:
         '200':
           description: Teams updated successfully.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '400':
           description: Error in updating the teams, possibly due to invalid input.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '401':
           description: Unauthorized, requires valid authentication.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '404':
           description: Original teams not found or inaccessible.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '500':
           description: Server Error
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
   $skillapproot/teams/remove:
     post:
       summary: Remove MSTeams Teams
@@ -302,14 +506,34 @@ paths:
       responses:
         '200':
           description: Teams removed successfully.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '400':
           description: Error in removing the teams, possibly due to invalid input.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '401':
           description: Unauthorized, requires valid authentication.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '404':
           description: Original teams not found or inaccessible.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '500':
           description: Server Error
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
   $skillapproot/teams/members/query:
     post:
       summary: Query MSTeams Team Members
@@ -330,8 +554,16 @@ paths:
                 $ref: '#/components/schemas/TeamMembersQueryResponse'
         "401":
           description: Unauthorized, requires valid authentication.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamMembersQueryResponse'
         "500":
           description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeamMembersQueryResponse'
   $skillapproot/teams/members/add:
     post:
       summary: Add member to MSTeams Teams
@@ -346,14 +578,34 @@ paths:
       responses:
         '201':
           description: Team member added successfully.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '400':
           description: Error in adding the team member, possibly due to invalid input.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '401':
           description: Unauthorized, requires valid authentication.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '404':
           description: Original teams or member not found or inaccessible.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '500':
           description: Server Error
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
   $skillapproot/teams/members/remove:
     post:
       summary: Remove member from MSTeams Teams
@@ -368,16 +620,44 @@ paths:
       responses:
         '200':
           description: Team member removed successfully.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '400':
           description: Error in removing the team member, possibly due to invalid input.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '401':
           description: Unauthorized, requires valid authentication.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '404':
           description: Original teams or member not found or inaccessible.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
         '500':
           description: Server Error
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
 components:
   schemas:
+    ServerResponse:  
+      title: Server Response
+      type: object
+      properties: 
+        message:   
+          title: Message from Server. Used by various operations.
+          type: string    
+          description: A success or error message.
     ChatsQueryRequest:
       title: Parameters to search for chats in user's MSTeams chat list
       type: object
@@ -406,6 +686,10 @@ components:
     ChatsQueryResponse:
       type: object
       properties:
+        message:   
+          title: Message from Server
+          type: string    
+          description: A success or error message. 
         chats:
           type: array
           items:
@@ -521,6 +805,10 @@ components:
     ChatMembersQueryResponse:
       type: object
       properties:
+        message:   
+          title: Message from Server
+          type: string    
+          description: A success or error message. 
         members:
           type: array
           items:
@@ -657,6 +945,10 @@ components:
     ChatMessagesQueryResponse:
       type: object
       properties:
+        message:   
+          title: Message from Server
+          type: string    
+          description: A success or error message. 
         messages:
           type: array
           items:
@@ -808,6 +1100,10 @@ components:
     TeamsQueryResponse:
       type: object
       properties:
+        message:   
+          title: Message from Server
+          type: string    
+          description: A success or error message. 
         teams:
           type: array
           items:
@@ -922,6 +1218,10 @@ components:
     TeamMembersQueryResponse:
       type: object
       properties:
+        message:   
+          title: Message from Server
+          type: string    
+          description: A success or error message. 
         members:
           type: array
           items:
