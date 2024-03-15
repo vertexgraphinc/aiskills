@@ -1,7 +1,10 @@
-﻿using MSTeams.Contracts;
+﻿using Microsoft.AspNetCore.Mvc;
+using MSTeams.Contracts;
 using MSTeams.DTOs;
 using MSTeams.Helpers;
 using MSTeams.Interfaces;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -20,10 +23,12 @@ namespace MSTeams.Services
 
         public async Task<List<TeamResponse>> QueryTeams(TeamsQueryRequest request, string token)
         {
-            string searchQuery = $"me/joinedTeams";
-
             try
             {
+                System.Diagnostics.Debug.WriteLine("[vertex][TeamService][QueryTeams]");
+
+                string searchQuery = $"me/joinedTeams";
+
                 MSGraphTeams teams = await _apiHelper.Get<MSGraphTeams>(searchQuery, token);
                 if (teams == null || teams.Value == null)
                     return new List<TeamResponse>();
@@ -45,9 +50,9 @@ namespace MSTeams.Services
                 });
                 var results = await Task.WhenAll(tasks);
                 if (results == null || !results.Any())
-                    return new List<TeamResponse>();
+                    throw new Exception("Team members not found.");
 
-                return results.Where(team =>
+                List<TeamResponse> teamList = results.Where(team =>
                 {
                     if (string.IsNullOrEmpty(request.MemberEmails))
                         return true;
@@ -60,23 +65,28 @@ namespace MSTeams.Services
                     }
                     return true;
                 }).ToList();
+
+                System.Diagnostics.Debug.WriteLine("[vertex][TeamService][QueryTeams]return:" + JsonConvert.SerializeObject(teamList));
+                return teamList;
             }
-            catch (HttpRequestException e)
+            catch (Exception e)
             {
-                return new List<TeamResponse>();
+                throw new Exception(e.Message);
             }
         }
 
         public async Task<bool> CreateTeam(TeamCreateRequest request, string token)
         {
-            if (string.IsNullOrEmpty(request.MemberEmails))
-                return false;
-
             try
             {
+                System.Diagnostics.Debug.WriteLine("[vertex][TeamService][CreateTeam]");
+
+                if (string.IsNullOrEmpty(request.MemberEmails))
+                    throw new Exception("Member emails are not specified.");
+
                 MSGraphUserEntity creator = await _apiHelper.Get<MSGraphUserEntity>("me", token);
                 if (string.IsNullOrEmpty(creator.Id))
-                    return false;
+                    throw new Exception("Team creator info not found.");
 
                 string query = $"teams";
                 MSGraphCreateTeamBody body = new MSGraphCreateTeamBody
@@ -96,7 +106,7 @@ namespace MSTeams.Services
                 };
                 string teamCreated = await _apiHelper.Post<string>(query, body, token);
                 if (string.IsNullOrEmpty(teamCreated))
-                    return false;
+                    throw new Exception("Team failed to create.");
 
                 string teamId = teamCreated.Replace("/teams(\'", "").Replace("\')", "");
                 var tasks = request.MemberEmails.Replace(" ", "").Split(",").Select(async email => {
@@ -111,41 +121,47 @@ namespace MSTeams.Services
                 });
                 var results = await Task.WhenAll(tasks);
                 if (results == null || !results.Any() || !results.All(result => result == true))
-                    return false;
+                    throw new Exception("One or more team members failed to be added to newly create team.");
 
+                System.Diagnostics.Debug.WriteLine("[vertex][TeamService][CreateTeam]return:" + JsonConvert.SerializeObject(true));
                 return true;
             }
-            catch (HttpRequestException e)
+            catch (Exception e)
             {
-                return false;
+                throw new Exception(e.Message);
             }
         }
 
         public async Task<bool> UpdateTeams(TeamUpdateRequest request, string token)
         {
-            if (string.IsNullOrEmpty(request.UpdatedDisplayName) && string.IsNullOrEmpty(request.UpdatedDescription))
-                return false;
-
-            string searchQuery = $"me/joinedTeams";
-
             try
             {
+                System.Diagnostics.Debug.WriteLine("[vertex][TeamService][UpdateTeams]");
+
+                if (string.IsNullOrEmpty(request.UpdatedDisplayName) && string.IsNullOrEmpty(request.UpdatedDescription))
+                    throw new Exception("New team display name or description are not specified.");
+
+                string searchQuery = $"me/joinedTeams";
+
                 MSGraphTeams teams = await _apiHelper.Get<MSGraphTeams>(searchQuery, token);
                 if (teams == null || teams.Value == null)
-                    return false;
+                    throw new Exception("Teams not found.");
 
                 List<MSGraphTeam> filteredTeams = teams.Value.Where(team =>
                     (string.IsNullOrEmpty(request.DisplayName) || team.DisplayName.Contains(request.DisplayName)) &&
                     (string.IsNullOrEmpty(request.Description) || team.Description.Contains(request.Description))
                 ).ToList();
                 if (!filteredTeams.Any())
-                    return false;
+                    throw new Exception("Teams not found.");
 
                 List<Task<bool>> tasks = new List<Task<bool>>();
                 foreach (MSGraphTeam team in filteredTeams)
                 {
                     string memberQuery = $"teams/{team.Id}/members";
                     MSGraphMembers members = await _apiHelper.Get<MSGraphMembers>(memberQuery, token);
+                    if (members == null || members.Value == null)
+                        throw new Exception("Team members not found.");
+
                     string memberEmails = string.Join(",", (members != null && members.Value != null) ? members.Value.Select(member => member.Email) : new List<string>());
 
                     bool allEmailsContained = true;
@@ -194,38 +210,44 @@ namespace MSTeams.Services
                 }
                 var results = await Task.WhenAll(tasks);
                 if (results == null || !results.Any() || !results.All(result => result == true))
-                    return false;
+                    throw new Exception("One or more teams failed to update.");
 
+                System.Diagnostics.Debug.WriteLine("[vertex][TeamService][UpdateTeams]return:" + JsonConvert.SerializeObject(true));
                 return true;
             }
-            catch (HttpRequestException e)
+            catch (Exception e)
             {
-                return false;
+                throw new Exception(e.Message);
             }
         }
 
         public async Task<bool> ArchiveTeams(TeamRemoveRequest request, string token)
         {
-            string searchQuery = $"me/joinedTeams";
-
             try
             {
+                System.Diagnostics.Debug.WriteLine("[vertex][TeamService][ArchiveTeams]");
+
+                string searchQuery = $"me/joinedTeams";
+
                 MSGraphTeams teams = await _apiHelper.Get<MSGraphTeams>(searchQuery, token);
                 if (teams == null || teams.Value == null)
-                    return false;
+                    throw new Exception("Teams not found.");
 
                 List<MSGraphTeam> filteredTeams = teams.Value.Where(team =>
                     (string.IsNullOrEmpty(request.DisplayName) || team.DisplayName.Contains(request.DisplayName)) &&
                     (string.IsNullOrEmpty(request.Description) || team.Description.Contains(request.Description))
                 ).ToList();
                 if (!filteredTeams.Any())
-                    return false;
+                    throw new Exception("Teams not found.");
 
                 List<Task<bool>> tasks = new List<Task<bool>>();
                 foreach (MSGraphTeam team in filteredTeams)
                 {
                     string memberQuery = $"teams/{team.Id}/members";
                     MSGraphMembers members = await _apiHelper.Get<MSGraphMembers>(memberQuery, token);
+                    if (members == null || members.Value == null)
+                        throw new Exception("Team members not found.");
+
                     string memberEmails = string.Join(",", (members != null && members.Value != null) ? members.Value.Select(member => member.Email) : new List<string>());
 
                     bool allEmailsContained = true;
@@ -250,38 +272,44 @@ namespace MSTeams.Services
                 }
                 var results = await Task.WhenAll(tasks);
                 if (results == null || !results.Any() || !results.All(result => result == true))
-                    return false;
+                    throw new Exception("One or more teams failed to archive.");
 
+                System.Diagnostics.Debug.WriteLine("[vertex][TeamService][ArchiveTeams]return:" + JsonConvert.SerializeObject(true));
                 return true;
             }
-            catch (HttpRequestException e)
+            catch (Exception e)
             {
-                return false;
+                throw new Exception(e.Message);
             }
         }
 
         public async Task<List<MemberResponse>> QueryTeamMembers(TeamMembersQueryRequest request, string token)
         {
-            string searchQuery = $"me/joinedTeams";
-
             try
             {
+                System.Diagnostics.Debug.WriteLine("[vertex][TeamService][QueryTeamMembers]");
+
+                string searchQuery = $"me/joinedTeams";
+
                 MSGraphTeams teams = await _apiHelper.Get<MSGraphTeams>(searchQuery, token);
                 if (teams == null || teams.Value == null)
-                    return new List<MemberResponse>();
+                    throw new Exception("Teams not found.");
 
                 List<MSGraphTeam> filteredTeams = teams.Value.Where(team =>
                    (string.IsNullOrEmpty(request.DisplayName) || team.DisplayName.Contains(request.DisplayName)) &&
                    (string.IsNullOrEmpty(request.Description) || team.Description.Contains(request.Description))
                 ).ToList();
                 if (!filteredTeams.Any())
-                    return new List<MemberResponse>();
+                    throw new Exception("Teams not found.");
 
                 List<MSGraphMembers> results = new List<MSGraphMembers>();
                 foreach (MSGraphTeam team in filteredTeams)
                 {
                     string memberQuery = $"teams/{team.Id}/members";
                     MSGraphMembers members = await _apiHelper.Get<MSGraphMembers>(memberQuery, token);
+                    if (members == null || members.Value == null)
+                        throw new Exception("Team members not found.");
+
                     string memberEmails = string.Join(",", (members != null && members.Value != null) ? members.Value.Select(member => member.Email) : new List<string>());
 
                     bool allEmailsContained = true;
@@ -307,7 +335,7 @@ namespace MSTeams.Services
                 if (results == null || !results.Any())
                     return new List<MemberResponse>();
 
-                return results.SelectMany(result => result.Value.Select(member => new MemberResponse
+                List<MemberResponse> memberList = results.SelectMany(result => result.Value.Select(member => new MemberResponse
                 {
                     Email = member.Email,
                     DisplayName = member.DisplayName,
@@ -315,38 +343,46 @@ namespace MSTeams.Services
                     GroupTopic = result.GroupTopic,
                     VisibleHistoryStart = member.VisibleHistoryStartDateTime
                 })).ToList();
+
+                System.Diagnostics.Debug.WriteLine("[vertex][TeamService][QueryTeamMembers]return:" + JsonConvert.SerializeObject(memberList));
+                return memberList;
             }
-            catch (HttpRequestException e)
+            catch (Exception e)
             {
-                return new List<MemberResponse>();
+                throw new Exception(e.Message);
             }
         }
 
         public async Task<bool> AddTeamMember(TeamMemberAddRequest request, string token)
         {
-            if (string.IsNullOrEmpty(request.Email))
-                return false;
-
-            string searchQuery = $"me/joinedTeams";
-
             try
             {
+                System.Diagnostics.Debug.WriteLine("[vertex][TeamService][AddTeamMember]");
+
+                if (string.IsNullOrEmpty(request.Email))
+                    throw new Exception("New team member email address is not specified.");
+
+                string searchQuery = $"me/joinedTeams";
+
                 MSGraphTeams teams = await _apiHelper.Get<MSGraphTeams>(searchQuery, token);
                 if (teams == null || teams.Value == null)
-                    return false;
+                    throw new Exception("Teams not found.");
 
                 List<MSGraphTeam> filteredTeams = teams.Value.Where(team =>
                    (string.IsNullOrEmpty(request.DisplayName) || team.DisplayName.Contains(request.DisplayName)) &&
                    (string.IsNullOrEmpty(request.Description) || team.Description.Contains(request.Description))
                 ).ToList();
                 if (!filteredTeams.Any())
-                    return false;
+                    throw new Exception("Teams not found.");
 
                 List<Task<bool>> tasks = new List<Task<bool>>();
                 foreach (MSGraphTeam team in filteredTeams)
                 {
                     string memberQuery = $"teams/{team.Id}/members";
                     MSGraphMembers members = await _apiHelper.Get<MSGraphMembers>(memberQuery, token);
+                    if (members == null || members.Value == null)
+                        throw new Exception("Team members not found.");
+
                     string memberEmails = string.Join(",", (members != null && members.Value != null) ? members.Value.Select(member => member.Email) : new List<string>());
 
                     bool allEmailsContained = true;
@@ -377,41 +413,47 @@ namespace MSTeams.Services
                 }
                 var results = await Task.WhenAll(tasks);
                 if (results == null || !results.Any() || !results.All(result => result == true))
-                    return false;
+                    throw new Exception("One or more team members failed to be added.");
 
+                System.Diagnostics.Debug.WriteLine("[vertex][TeamService][AddTeamMember]return:" + JsonConvert.SerializeObject(true));
                 return true;
             }
-            catch (HttpRequestException e)
+            catch (Exception e)
             {
-                return false;
+                throw new Exception(e.Message);
             }
         }
 
         public async Task<bool> RemoveTeamMember(TeamMemberRemoveRequest request, string token)
         {
-            if (string.IsNullOrEmpty(request.Email))
-                return false;
-
-            string searchQuery = $"me/joinedTeams";
-
             try
             {
+                System.Diagnostics.Debug.WriteLine("[vertex][TeamService][RemoveTeamMember]");
+
+                if (string.IsNullOrEmpty(request.Email))
+                    throw new Exception("Team member email address is not specified.");
+
+                string searchQuery = $"me/joinedTeams";
+
                 MSGraphTeams teams = await _apiHelper.Get<MSGraphTeams>(searchQuery, token);
                 if (teams == null || teams.Value == null)
-                    return false;
+                    throw new Exception("Teams not found.");
 
                 List<MSGraphTeam> filteredTeams = teams.Value.Where(team =>
                    (string.IsNullOrEmpty(request.DisplayName) || team.DisplayName.Contains(request.DisplayName)) &&
                    (string.IsNullOrEmpty(request.Description) || team.Description.Contains(request.Description))
                 ).ToList();
                 if (!filteredTeams.Any())
-                    return false;
+                    throw new Exception("Teams not found.");
 
                 List<Task<bool>> tasks = new List<Task<bool>>();
                 foreach (MSGraphTeam team in filteredTeams)
                 {
                     string memberQuery = $"teams/{team.Id}/members";
                     MSGraphMembers members = await _apiHelper.Get<MSGraphMembers>(memberQuery, token);
+                    if (members == null || members.Value == null)
+                        throw new Exception("Team members not found.");
+
                     string memberEmails = string.Join(",", (members != null && members.Value != null) ? members.Value.Select(member => member.Email) : new List<string>());
 
                     bool allEmailsContained = true;
@@ -443,13 +485,14 @@ namespace MSTeams.Services
                 }
                 var results = await Task.WhenAll(tasks);
                 if (results == null || !results.Any() || !results.All(result => result == true))
-                    return false;
+                    throw new Exception("One or more team members failed to remove.");
 
+                System.Diagnostics.Debug.WriteLine("[vertex][TeamService][RemoveTeamMember]return:" + JsonConvert.SerializeObject(true));
                 return true;
             }
-            catch (HttpRequestException e)
+            catch (Exception e)
             {
-                return false;
+                throw new Exception(e.Message);
             }
         }
     }

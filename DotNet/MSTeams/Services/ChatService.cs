@@ -1,7 +1,9 @@
-﻿using MSTeams.Contracts;
+﻿using Microsoft.AspNetCore.Mvc;
+using MSTeams.Contracts;
 using MSTeams.DTOs;
 using MSTeams.Helpers;
 using MSTeams.Interfaces;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +23,8 @@ namespace MSTeams.Services
 
         private async Task<MSGraphChats> QueryChatsRawData(ChatsQueryRequest request, string token)
         {
+            System.Diagnostics.Debug.WriteLine("[vertex][ChatService][QueryChatsRawData]");
+
             string query = "$filter=";
 
             string lastUpdatedBeginTime = UtilityHelper.FormatDateTimeUtc(DateTime.Now.AddDays(-7));
@@ -74,6 +78,8 @@ namespace MSTeams.Services
                     return hasAllEmails;
                 }).ToList();
             }
+
+            System.Diagnostics.Debug.WriteLine("[vertex][ChatService][QueryChatsRawData]return:" + JsonConvert.SerializeObject(chats));
             return chats;
         }
 
@@ -81,11 +87,13 @@ namespace MSTeams.Services
         {
             try
             {
+                System.Diagnostics.Debug.WriteLine("[vertex][ChatService][QueryChat]");
+
                 MSGraphChats chats = await QueryChatsRawData(request, token);
                 if (chats == null || chats.Value == null)
                     return new List<ChatResponse>();
 
-                return chats.Value.Select(chat => new ChatResponse
+                List<ChatResponse> results = chats.Value.Select(chat => new ChatResponse
                 {
                     Topic = chat.Topic,
                     ChatType = chat.ChatType,
@@ -93,23 +101,28 @@ namespace MSTeams.Services
                     LastUpdated = chat.LastUpdatedDateTime,
                     WebUrl = chat.WebUrl
                 }).ToList();
+
+                System.Diagnostics.Debug.WriteLine("[vertex][ChatService][QueryChatsRawData]return:" + JsonConvert.SerializeObject(results));
+                return results;
             }
-            catch (HttpRequestException e)
+            catch (Exception e)
             {
-                return new List<ChatResponse>();
+                throw new Exception(e.Message);
             }
         }
 
         public async Task<bool> CreateChat(ChatCreateRequest request, string token)
         {
-            if (string.IsNullOrEmpty(request.MemberEmails))
-                return false;
-
             try
             {
+                System.Diagnostics.Debug.WriteLine("[vertex][ChatService][CreateChat]");
+
+                if (string.IsNullOrEmpty(request.MemberEmails))
+                    throw new Exception("Member emails are not specified.");
+
                 MSGraphUserEntity creator = await _apiHelper.Get<MSGraphUserEntity>("me", token);
                 if (string.IsNullOrEmpty(creator.Id))
-                    return false;
+                    throw new Exception("Chat creator info not found.");
 
                 List<MemberRequestBody> members = request.MemberEmails.Replace(" ", "").Split(",").Select(email => new MemberRequestBody
                 {
@@ -137,21 +150,26 @@ namespace MSTeams.Services
                     members
                 };
 
-                return await _apiHelper.Post<bool>(urlQuery, body, token);
+                bool result = await _apiHelper.Post<bool>(urlQuery, body, token);
+
+                System.Diagnostics.Debug.WriteLine("[vertex][ChatService][CreateChat]return:" + JsonConvert.SerializeObject(result));
+                return result;
             }
-            catch (HttpRequestException e)
+            catch (Exception e)
             {
-                return false;
+                throw new Exception(e.Message);
             }
         }
 
         public async Task<bool> UpdateChats(ChatUpdateRequest request, string token)
         {
-            if (string.IsNullOrEmpty(request.UpdatedTopic))
-                return false;
-
             try
             {
+                System.Diagnostics.Debug.WriteLine("[vertex][ChatService][UpdateChats]");
+
+                if (string.IsNullOrEmpty(request.UpdatedTopic))
+                    throw new Exception("New chat topic is not specified.");
+
                 MSGraphChats chats = await QueryChatsRawData(new ChatsQueryRequest
                 {
                     Topic = request.Topic,
@@ -161,7 +179,7 @@ namespace MSTeams.Services
                     LastUpdatedEndTime = request.LastUpdatedEndTime
                 }, token);
                 if (chats == null || chats.Value == null)
-                    return false;
+                    throw new Exception("Chats not found.");
 
                 var tasks = chats.Value.Where(chat => chat.ChatType == "group").Select(async chat =>
                 {
@@ -174,13 +192,14 @@ namespace MSTeams.Services
                 });
                 var results = await Task.WhenAll(tasks);
                 if (results == null || !results.Any() || !results.All(result => result == true))
-                    return false;
+                    throw new Exception("One or more chats failed to update.");
 
+                System.Diagnostics.Debug.WriteLine("[vertex][ChatService][UpdateChats]return:" + JsonConvert.SerializeObject(true));
                 return true;
             }
-            catch (HttpRequestException e)
+            catch (Exception e)
             {
-                return false;
+                throw new Exception(e.Message);
             }
         }
 
@@ -188,6 +207,8 @@ namespace MSTeams.Services
         {
             try
             {
+                System.Diagnostics.Debug.WriteLine("[vertex][ChatService][QueryChatMembers]");
+
                 MSGraphChats chats = await QueryChatsRawData(new ChatsQueryRequest
                 {
                     Topic = request.Topic,
@@ -197,9 +218,9 @@ namespace MSTeams.Services
                     LastUpdatedEndTime = request.LastUpdatedEndTime
                 }, token);
                 if (chats == null || chats.Value == null)
-                    return new List<MemberResponse>();
+                    throw new Exception("Chats not found.");
 
-                return chats.Value.SelectMany(chat => chat.Members.Where(member => 
+                List<MemberResponse> results = chats.Value.SelectMany(chat => chat.Members.Where(member => 
                     (string.IsNullOrEmpty(request.DisplayName) || member.DisplayName == request.DisplayName) && 
                     (string.IsNullOrEmpty(request.role) || member.Roles.Any(role => role == request.role))
                 ).Select(member => new MemberResponse
@@ -210,20 +231,25 @@ namespace MSTeams.Services
                     GroupTopic = chat.Topic,
                     VisibleHistoryStart = member.VisibleHistoryStartDateTime
                 })).ToList();
+
+                System.Diagnostics.Debug.WriteLine("[vertex][ChatService][QueryChatMembers]return:" + JsonConvert.SerializeObject(results));
+                return results;
             }
-            catch (HttpRequestException e)
+            catch (Exception e)
             {
-                return new List<MemberResponse>();
+                throw new Exception(e.Message);
             }
         }
 
         public async Task<bool> AddChatMember(ChatMemberAddRequest request, string token)
         {
-            if (string.IsNullOrEmpty(request.Email))
-                return false;
-
             try
             {
+                System.Diagnostics.Debug.WriteLine("[vertex][ChatService][AddChatMember]");
+
+                if (string.IsNullOrEmpty(request.Email))
+                    throw new Exception("Chat member email address is not specified.");
+
                 MSGraphChats chats = await QueryChatsRawData(new ChatsQueryRequest
                 {
                     Topic = request.Topic,
@@ -233,7 +259,7 @@ namespace MSTeams.Services
                     LastUpdatedEndTime = request.LastUpdatedEndTime
                 }, token);
                 if (chats == null || chats.Value == null)
-                    return false;
+                    throw new Exception("Chats not found.");
 
                 var tasks = chats.Value.Where(chat => chat.ChatType == "group").Select(async chat =>
                 {
@@ -252,23 +278,26 @@ namespace MSTeams.Services
                 });
                 var results = await Task.WhenAll(tasks);
                 if (results == null || !results.Any() || !results.All(result => result == true))
-                    return false;
+                    throw new Exception("One or more chat members failed to be added.");
 
+                System.Diagnostics.Debug.WriteLine("[vertex][ChatService][AddChatMember]return:" + JsonConvert.SerializeObject(true));
                 return true;
             }
-            catch (HttpRequestException e)
+            catch (Exception e)
             {
-                return false;
+                throw new Exception(e.Message);
             }
         }
 
         public async Task<bool> RemoveChatMember(ChatMemberRemoveRequest request, string token)
         {
-            if (string.IsNullOrEmpty(request.Email))
-                return false;
-
             try
             {
+                System.Diagnostics.Debug.WriteLine("[vertex][ChatService][RemoveChatMember]");
+
+                if (string.IsNullOrEmpty(request.Email))
+                    throw new Exception("Chat member email address is not specified.");
+
                 MSGraphChats chats = await QueryChatsRawData(new ChatsQueryRequest
                 {
                     Topic = request.Topic,
@@ -278,7 +307,7 @@ namespace MSTeams.Services
                     LastUpdatedEndTime = request.LastUpdatedEndTime
                 }, token);
                 if (chats == null || chats.Value == null)
-                    return false;
+                    throw new Exception("Chats not found.");
 
                 var tasks = chats.Value.Where(chat => chat.ChatType == "group").SelectMany(chat => chat.Members.Where(member => member.Email == request.Email).Select(async member =>
                 {
@@ -287,13 +316,14 @@ namespace MSTeams.Services
                 }));
                 var results = await Task.WhenAll(tasks);
                 if (results == null || !results.Any() || !results.All(result => result == true))
-                    return false;
+                    throw new Exception("One or more chat members failed to be added.");
 
+                System.Diagnostics.Debug.WriteLine("[vertex][ChatService][RemoveChatMember]return:" + JsonConvert.SerializeObject(true));
                 return true;
             }
-            catch (HttpRequestException e)
+            catch (Exception e)
             {
-                return false;
+                throw new Exception(e.Message);
             }
         }
 
@@ -301,6 +331,8 @@ namespace MSTeams.Services
         {
             try
             {
+                System.Diagnostics.Debug.WriteLine("[vertex][ChatService][QueryChatMessages]");
+
                 MSGraphChats chats = await QueryChatsRawData(new ChatsQueryRequest
                 {
                     Topic = request.Topic,
@@ -310,7 +342,7 @@ namespace MSTeams.Services
                     LastUpdatedEndTime = request.LastUpdatedEndTime
                 }, token);
                 if (chats == null || chats.Value == null)
-                    return new List<MessageResponse>();
+                    throw new Exception("Chats not found.");
 
                 string query = "$filter=";
 
@@ -339,7 +371,7 @@ namespace MSTeams.Services
                 if (results == null || !results.Any())
                     return new List<MessageResponse>();
 
-                return results.SelectMany(result => result.Value.Where(message => message.DeletedDateTime == null && message.From != null && message.From.User != null && (!string.IsNullOrEmpty(message.From.User.Email) || !string.IsNullOrEmpty(message.From.User.DisplayName))).Where(message => 
+                List<MessageResponse> messages = results.SelectMany(result => result.Value.Where(message => message.DeletedDateTime == null && message.From != null && message.From.User != null && (!string.IsNullOrEmpty(message.From.User.Email) || !string.IsNullOrEmpty(message.From.User.DisplayName))).Where(message => 
                     string.IsNullOrEmpty(request.From) || 
                     (message.From != null && message.From.User != null && (!string.IsNullOrEmpty(message.From.User.Email) ? message.From.User.Email == request.From : (!string.IsNullOrEmpty(message.From.User.DisplayName) && message.From.User.DisplayName == request.From)))
                 ).Select(message => new MessageResponse
@@ -350,20 +382,25 @@ namespace MSTeams.Services
                     Created = message.CreatedDateTime,
                     LastModified = message.LastModifiedDateTime
                 })).ToList();
+
+                System.Diagnostics.Debug.WriteLine("[vertex][ChatService][QueryChatMessages]return:" + JsonConvert.SerializeObject(messages));
+                return messages;
             }
-            catch (HttpRequestException e)
+            catch (Exception e)
             {
-                return new List<MessageResponse>();
+                throw new Exception(e.Message);
             }
         }
 
         public async Task<bool> SendChatMessages(ChatMessageSendRequest request, string token)
         {
-            if (string.IsNullOrEmpty(request.Content))
-                return false;
-
             try
             {
+                System.Diagnostics.Debug.WriteLine("[vertex][ChatService][SendChatMessages]");
+
+                if (string.IsNullOrEmpty(request.Content))
+                    throw new Exception("Chat message content is not specified.");
+
                 MSGraphChats chats = await QueryChatsRawData(new ChatsQueryRequest
                 {
                     Topic = request.Topic,
@@ -373,7 +410,7 @@ namespace MSTeams.Services
                     LastUpdatedEndTime = request.LastUpdatedEndTime
                 }, token);
                 if (chats == null || chats.Value == null)
-                    return false;
+                    throw new Exception("Chats not found.");
 
                 object body = new
                 {
@@ -389,23 +426,26 @@ namespace MSTeams.Services
                 });
                 var results = await Task.WhenAll(tasks);
                 if (results == null || !results.Any() || !results.All(result => result == true))
-                    return false;
+                    throw new Exception("One or more chat messages failed to send.");
 
+                System.Diagnostics.Debug.WriteLine("[vertex][ChatService][SendChatMessages]return:" + JsonConvert.SerializeObject(true));
                 return true;
             }
-            catch (HttpRequestException e)
+            catch (Exception e)
             {
-                return false;
+                throw new Exception(e.Message);
             }
         }
 
         public async Task<bool> UpdateChatMessages(ChatMessageUpdateRequest request, string token)
         {
-            if (string.IsNullOrEmpty(request.Content))
-               return false;
-
             try
             {
+                System.Diagnostics.Debug.WriteLine("[vertex][ChatService][UpdateChatMessages]");
+
+                if (string.IsNullOrEmpty(request.Content))
+                    throw new Exception("New chat message content is not specified.");
+
                 MSGraphChats chats = await QueryChatsRawData(new ChatsQueryRequest
                 {
                     Topic = request.Topic,
@@ -415,7 +455,7 @@ namespace MSTeams.Services
                     LastUpdatedEndTime = request.LastUpdatedEndTime
                 }, token);
                 if (chats == null || chats.Value == null)
-                    return false;
+                    throw new Exception("Chats not found.");
 
                 string query = "$filter=";
 
@@ -442,7 +482,7 @@ namespace MSTeams.Services
                 });
                 var results1 = await Task.WhenAll(tasks1);
                 if (results1 == null || !results1.Any())
-                    return false;
+                    throw new Exception("Chat messages not found.");
 
                 MSGraphUserEntity user = await _apiHelper.Get<MSGraphUserEntity>("me", token);
                 object body = new
@@ -461,13 +501,14 @@ namespace MSTeams.Services
                 });
                 var results2 = await Task.WhenAll(tasks2);
                 if (results2 == null || !results2.Any() || !results2.All(result => result == true))
-                    return false;
+                    throw new Exception("One or more chat messages failed to update.");
 
+                System.Diagnostics.Debug.WriteLine("[vertex][ChatService][UpdateChatMessages]return:" + JsonConvert.SerializeObject(true));
                 return true;
             }
-            catch (HttpRequestException e)
+            catch (Exception e)
             {
-                return false;
+                throw new Exception(e.Message);
             }
         }
 
@@ -475,6 +516,8 @@ namespace MSTeams.Services
         {
             try
             {
+                System.Diagnostics.Debug.WriteLine("[vertex][ChatService][RemoveChatMessages]");
+
                 MSGraphChats chats = await QueryChatsRawData(new ChatsQueryRequest
                 {
                     Topic = request.Topic,
@@ -484,7 +527,7 @@ namespace MSTeams.Services
                     LastUpdatedEndTime = request.LastUpdatedEndTime
                 }, token);
                 if (chats == null || chats.Value == null)
-                    return false;
+                    throw new Exception("Chats not found.");
 
                 string query = "$filter=";
 
@@ -511,7 +554,7 @@ namespace MSTeams.Services
                 });
                 var results1 = await Task.WhenAll(tasks1);
                 if (results1 == null || !results1.Any())
-                    return false;
+                    throw new Exception("Chat messages not found.");
 
                 MSGraphUserEntity user = await _apiHelper.Get<MSGraphUserEntity>("me", token);
                 var tasks2 = results1.SelectMany(result => result.Value.Where(message => message.DeletedDateTime == null && message.From != null && message.From.User != null && (!string.IsNullOrEmpty(message.From.User.Email) || !string.IsNullOrEmpty(message.From.User.DisplayName))).Where(message =>
@@ -523,13 +566,14 @@ namespace MSTeams.Services
                 });
                 var results2 = await Task.WhenAll(tasks2);
                 if (results2 == null || !results2.Any() || !results2.All(result => result == true))
-                    return false;
+                    throw new Exception("One or more chat messages failed to remove.");
 
+                System.Diagnostics.Debug.WriteLine("[vertex][ChatService][RemoveChatMessages]return:" + JsonConvert.SerializeObject(true));
                 return true;
             }
-            catch (HttpRequestException e)
+            catch (Exception e)
             {
-                return false;
+                throw new Exception(e.Message);
             }
         }
     }
