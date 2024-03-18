@@ -1,0 +1,334 @@
+﻿openapi: 3.1.0
+info:
+  title: MSOutlook Skill
+  description: A VertexGraph skill to access user's Outlook account
+  version: 1.0.0
+servers:
+  - url: $skillhost
+paths:
+  $skillapproot/messages/query:
+    post:
+      summary: Query Outlook Emails
+      description: Search for email messages in the user's Outlook mailbox
+      operationId: QueryEmails
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/QueryEmailsRequest"
+      responses:
+        "200":
+          description: Returns emails that match the query parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryEmailsResponse'
+        "401":
+          description: Unauthorized, requires valid authentication.
+        "500":
+          description: Server Error
+  $skillapproot/messages/get:
+    post:
+      summary: Retrieve Outlook Email Details
+      description: Fetches details of a specific email message using its unique ID.
+      operationId: GetMessage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailIdRequest'
+      responses:
+        '200':
+          description: Successfully retrieved the email details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailResponse'
+        '401':
+          description: Unauthorized access, invalid or missing token.
+        '500':
+          description: Server Error
+  $skillapproot/messages/delete:
+    post:
+      summary: Delete Outlook Email Message
+      description: Deletes a specific email message identified by its unique ID.
+      operationId: DeleteMessage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailIdRequest'
+      responses:
+        '200':
+          description: Email message deleted successfully.
+        '400':
+          description: Error in deleting the email, possibly due to invalid input.
+        '401':
+          description: Unauthorized, requires valid authentication.
+        '404':
+          description: Email message not found.
+        '500':
+          description: Server Error
+  $skillapproot/messages/sendDraft:
+    post:
+      summary: Send Draft Outlook Email message
+      description: Sends a previously created draft email, identified by its unique ID.
+      operationId: SendDraftMessage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailIdRequest'
+      responses:
+        '202':
+          description: Draft Email sent successfully.
+        '400':
+          description: Error in sending the draft email, possibly due to invalid input.
+        '401':
+          description: Unauthorized, requires valid authentication.
+        '404':
+          description: Original draft email not found or inaccessible.
+        '500':
+          description: Server Error
+  $skillapproot/messages/reply:
+    post:
+      summary: Reply to an Outlook Email
+      description: Sends a reply to an email, identified by its unique ID, with an optional comment as the body of the message.
+      operationId: ReplyMessage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailReplyRequest'
+      responses:
+        '200':
+          description: Reply Email sent successfully.
+        '400':
+          description: Error in sending the reply email, possibly due to invalid input.
+        '401':
+          description: Unauthorized, requires valid authentication.
+        '404':
+          description: Original email not found or inaccessible.
+        '500':
+          description: Server Error
+  $skillapproot/messages/replyAll:
+    post:
+      summary: Reply to All Recipients of an Outlook Email
+      description: Sends a reply to all original recipients of an email, identified by its unique ID, with an optional comment as the body of the message.
+      operationId: ReplyAllMessage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailReplyAllRequest'
+      responses:
+        '200':
+          description: Reply Email sent successfully to all recipients.
+        '400':
+          description: Error in sending the reply email, possibly due to invalid input.
+        '401':
+          description: Unauthorized, requires valid authentication.
+        '404':
+          description: Original email not found or inaccessible.
+        '500':
+          description: Server Error
+  $skillapproot/messages/forward:
+    post:
+      summary: Forward an Outlook Email message
+      description: Forwards an email identified by its unique ID to specified recipients with an optional comment as the body of the message.
+      operationId: ForwardMessage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailForwardRequest'
+      responses:
+        '200':
+          description: Email forwarded successfully.
+        '400':
+          description: Error in forwarding the email, possibly due to invalid input.
+        '401':
+          description: Unauthorized, requires valid authentication.
+        '404':
+          description: Original email not found or inaccessible.
+        '500':
+          description: Server Error
+  $skillapproot/messages/sendMail:
+    post:
+      summary: Send an Outlook Email message
+      description: Sends an email message based on provided content and recipient details.
+      operationId: SendMail
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailRequest'
+      responses:
+        '200':
+          description: Email message sent successfully.
+        '400':
+          description: Error in sending the email, possibly due to invalid input.
+        '401':
+          description: Unauthorized, requires valid authentication.
+        '404':
+          description: Recipient email address not found or inaccessible.
+        '500':
+          description: Server Error
+components:
+  schemas:
+    EmailResponse:
+      title: Outlook Email Details
+      type: object
+      properties:
+        id:
+          title: Email ID
+          type: string
+          description: A unique identifier for the email message, used for tracking and referencing purposes.
+        from:
+          title: Sender's Email Address
+          type: string
+          description: The sender's email address.
+        subject:
+          title: Email Subject
+          type: string
+          description: The subject line of the email.
+        body:
+          title: Email Body Preview
+          type: string
+          description: Provides a brief preview of the email's main content, not the full text.
+        received:
+          title: Email Received Timestamp
+          type: string
+          description: The timestamp indicating when the email was received.
+    QueryEmailsResponse:
+      type: object
+      properties:
+        emailMessages:
+          type: array
+          items:
+            $ref: "#/components/schemas/EmailResponse"
+          description: The list of Outlook messages.
+    QueryEmailsRequest:
+      title: Parameters to search for emails in user's Outlook mailbox
+      type: object
+      properties:
+        begin_time:
+          title: Begin Time
+          type: string         
+          description: Specifies the exact starting point in time for the email search. The search will return emails sent strictly after this specified time.
+        end_time:
+          title: End Time
+          type: string         
+          description: Defines the end boundary for the email search. The search includes emails sent before this timestamp.
+        from:
+          title: From
+          type: string
+          description: A string value representing the sender's email address. The search returns emails only from this specified sender.
+        to:
+          title: To
+          type: string
+          description: Identifies the intended recipient's email address. The search narrows down to emails sent to this specific address.
+        subject:
+          title: Subject
+          type: string
+          description: Searches for emails with subjects containing the specified keyword, allowing partial matches for flexibility.
+        importance:
+          title: Importance
+          type: string
+          enum: [low, normal, high]
+          description: Filters emails based on specified importance levels (e.g., 'high', 'normal', 'low'). Only emails matching this level are included.
+        has_attachments:
+          title: Has Attachments
+          type: boolean
+          description: Indicates if emails should have attachments. Setting to 'true' returns only emails with attachments, and 'false' returns emails without attachments. 
+        body:
+          title: Body
+          type: string
+          description: Filters emails containing the specified string within their body content. Useful for searching specific topics or content.
+    EmailRequest:
+      title: Parameters to compose an Outlook email to send
+      type: object
+      required:
+        - toRecipients
+      properties:
+        subject:
+          title: Subject
+          type: string
+          description: Subject line of the email, optional.
+        body:
+          title: Body
+          type: string
+          description: The main content of the email, optional.
+        toRecipients:
+          title: ToRecipients
+          type: string
+          description: List of recipient email addresses.
+        ccRecipients:
+          title: CCRecipients
+          type: string
+          description: List of CC recipient email addresses, optional.
+        bccRecipients:
+          title: BCCRecipients
+          type: string
+          description: List of BCC recipient email addresses, optional.
+    EmailReplyRequest:
+      title: Outlook Email Reply Composition Details
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+          description: Unique identification of an email message.
+        comment:
+          type: string
+          description: An optional comment to include in the body of the reply.
+        toRecipients:
+          title: ToRecipients    
+          type: string
+          description: List of recipient email addresses.
+    EmailReplyAllRequest:
+      title: Outlook Email Reply All Composition Details
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+          description: Unique identification of an email message.       
+        comment:
+          type: string
+          description: An optional comment to include in the body of the reply.
+    EmailForwardRequest:
+      title: Outlook Email Forwarding Parameters
+      type: object
+      required:
+        - toRecipients
+        - id
+      properties:
+        id:
+          type: string
+          description: Unique identification of an email message.       
+        toRecipients:
+          type: string
+          description: List of recipient email addresses to whom the email will be forwarded.
+        comment:
+          type: string
+          description: An optional comment to include in the body of the reply.
+    EmailIdRequest:
+      title: Unique identification of an Outlook email message
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+          description: Unique Id of an email message to be used to get his details, delete, replay and forward.
