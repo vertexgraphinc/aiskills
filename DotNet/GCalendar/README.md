@@ -2,13 +2,32 @@
 
 This skill allows the authenticated user to perform simple tasks on his/her Google Calendar account directly from the VertexGraph chat prompt.
 
+## API Permissions Setup
+
+ - Step 1: Go to the Google Cloud Console at https://console.cloud.google.com/apis/dashboard
+ - Step 2: Sign in with the account that you want to expose to the skill
+ - Step 3: On the left-side navigation, click on the "Enabled APIs & Services"
+![Enabled APIs and Services Screenshot](https://raw.githubusercontent.com/vertexgraphinc/aiskills/main/DotNet/GCalendar/images/Enabled_APIs_and_Services.png)
+
+ - Step 4: Enable the Calendar API
+![Enable the Calendar API Screenshot](https://raw.githubusercontent.com/vertexgraphinc/aiskills/main/DotNet/GCalendar/images/Enable_the_Calendar_API.png)
+ - Step 5: On the left side navigation. Click on Credentials. Create a new OAuth 2.0 Client ID
+![Credentials Screenshot](https://raw.githubusercontent.com/vertexgraphinc/aiskills/main/DotNet/GCalendar/images/Credentials.png)
+
+ - Step 6: On the OAuth 2.0 Client ID details page, under Authorized JavaScript origins, add: https://api.vertexgraph.ai. Under the Authorized redirect URIs, add: https://api.vertexgraph.com/adminapi/assets/oauthcode
+![Credentials URLs Screenshot](https://raw.githubusercontent.com/vertexgraphinc/aiskills/main/DotNet/GCalendar/images/Credentials_URLs.png)
+
 ## IIS Installation
 
-The skill requires an IIS server with dotnetcore 3.1 (install dotnet-hosting-3.1.32-win.exe or higher on your windows server. The recommended setup is to then create a web application folder under the Default Web Site node which points to the compiled files for this project.
+The skill requires a Windows Server with Internet Information Services (IIS) with dotnetcore 3.1 (install dotnet-hosting-3.1.32-win.exe or higher on your windows server. The recommended setup is to create a web application folder under the Default Web Site node which points to the compiled files for this project. Create a separate application pool with the permissions to access the skill's output directory.
+
+![Add Application Screenshot](https://raw.githubusercontent.com/vertexgraphinc/aiskills/main/DotNet/GCalendar/images/IIS_Add_Application.png)
 
 After downloading the source files to a folder on your computer, open the solution (.sln) file with Visual Studio 2022 or higher and compile it. DotNet will automatically create a subfolder under the root/bin folder called:
 [projectfolder]\bin\Release\netcoreapp3.1
 Use this full path as the destination path for your IIS web application folder.
+
+![Application Basic Settings Screenshot](https://raw.githubusercontent.com/vertexgraphinc/aiskills/main/DotNet/GCalendar/images/IIS_Application_Basic_Settings.png)
 
 ## Testing the Setup
 
@@ -42,4 +61,4 @@ Now you can install the custom skill on the vertexgraph.ai interface.
 
 Now that the Google Calendar Skill is properly installed, you can try the following example prompts:
 
- - to be continued
+ - Create a new calendar event
