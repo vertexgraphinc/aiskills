@@ -2,9 +2,22 @@
 
 This skill allows the authenticated user to perform simple tasks on his/her Google Gmail account directly from the VertexGraph chat prompt.
 
+## API Permissions Setup
+
+ - Step 1: Go to the Google Cloud Console at https://console.cloud.google.com/apis/dashboard
+ - Step 2: Sign in with the account that you want to expose to the skill
+ - Step 3: On the left-side navigation, click on the "Enabled APIs & Services"
+	<img src="https://github.com/vertexgraphinc/aiskills/tree/main/DotNet/GMail/images/Enabled_APIs_and_Services.png" alt="Enabled APIs and Services Screenshot" />
+ - Step 4: Enable the Gmail API
+	<img src="https://github.com/vertexgraphinc/aiskills/tree/main/DotNet/GMail/images/Enable_the_Gmail_API.png" alt="Enable the Gmail API Screenshot" />
+ - Step 5: On the left side navigation. Click on Credentials. Create a new OAuth 2.0 Client ID
+	<img src="https://github.com/vertexgraphinc/aiskills/tree/main/DotNet/GMail/images/Credentials.png" alt="Credentials Screenshot" />
+ - Step 6: On the OAuth 2.0 Client ID details page, under Authorized JavaScript origins, add: https://api.vertexgraph.ai. Under the Authorized redirect URIs, add: https://api.vertexgraph.com/adminapi/assets/oauthcode
+	<img src="https://github.com/vertexgraphinc/aiskills/tree/main/DotNet/GMail/images/Credentials_URLs.png" alt="Credentials URLs Screenshot" />
+
 ## IIS Installation
 
-The skill requires an IIS server with dotnetcore 3.1 (install dotnet-hosting-3.1.32-win.exe or higher on your windows server. The recommended setup is to then create a web application folder under the Default Web Site node which points to the compiled files for this project.
+The skill requires a Windows Server with Internet Information Services (IIS) with dotnetcore 3.1 (install dotnet-hosting-3.1.32-win.exe or higher on your windows server. The recommended setup is to create a web application folder under the Default Web Site node which points to the compiled files for this project.
 
 After downloading the source files to a folder on your computer, open the solution (.sln) file with Visual Studio 2022 or higher and compile it. DotNet will automatically create a subfolder under the root/bin folder called:
 [projectfolder]\bin\Release\netcoreapp3.1
