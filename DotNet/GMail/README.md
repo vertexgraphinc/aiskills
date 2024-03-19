@@ -57,7 +57,7 @@ Now you can install the custom skill on the vertexgraph.ai interface.
  - Step 8: From the Skills tab, click on the Assign Skill button on the top-right of the page.
  - Step 9: Search for the skill name, which should be Gmail in this case.
 
-## Testing Prompts
+## Test Prompts
 
 Now that the Gmail Skill is properly installed, you can try the following example prompts:
 
