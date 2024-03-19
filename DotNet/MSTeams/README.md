@@ -1,6 +1,6 @@
-﻿**VertexGraph AI Skill – Microsoft Teams**
+﻿# Microsoft Teams Skill
 
-**Setup Microsoft App Permission:**
+## Setup Microsoft App Permission:
 
 1. Go to <https://entra.microsoft.com>
 2. Login with your Microsoft account credentials.
@@ -62,7 +62,7 @@ Description automatically generated](data:image/![Register an Application Screen
 
 Note: _Multiple applications can use the same app registrations, what matters is that permissions are added and redirect URLs and secrets are known_
 
-**Setting up Skill in VertexGraph**
+## Setting up Skill in VertexGraph
 
 1. Navigate to <https://vertexgraph.ai/portal/>
 2. On the left side tool bar select the second option “AI”
@@ -76,7 +76,7 @@ Note: _Multiple applications can use the same app registrations, what matters is
 4. Get the authorization code and authorize VertexGraph to access your Microsoft account
 5. Once completed assign the new skill to any of your assistants to start using it
 
-**Test Prompts:**
+## Test Prompts:
 
 - Get chats for the past week.
 - Create a chat with <example@example.com> in my MS teams.
