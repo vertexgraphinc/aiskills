@@ -19,7 +19,7 @@ This skill allows the authenticated user to perform simple tasks on his/her Goog
 
 ## IIS Installation
 
-The skill requires a Windows Server with Internet Information Services (IIS) with dotnetcore 3.1 (install dotnet-hosting-3.1.32-win.exe or higher on your windows server. The recommended setup is to create a web application folder under the Default Web Site node which points to the compiled files for this project. Create a separate application pool with the permissions to access the skill's output directory.
+The skill requires a Windows Server with Internet Information Services (IIS) with dotnetcore 3.1 (install dotnet-hosting-3.1.32-win.exe or higher on your windows server). The recommended setup is to create a web application folder under the Default Web Site node which points to the compiled files for this project. Create a separate application pool with the permissions to access the skill's output directory.
 
 ![Add Application Screenshot](https://raw.githubusercontent.com/vertexgraphinc/aiskills/main/DotNet/GCalendar/images/IIS_Add_Application.png)
 

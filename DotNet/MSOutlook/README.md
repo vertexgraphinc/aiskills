@@ -2,50 +2,87 @@
 
 This skill allows the authenticated user to perform simple tasks on his/her Microsoft Outlook account directly from the VertexGraph chat prompt.
 
-## IIS Installation
+## API Permissions Setup:
 
-The skill requires an IIS server with dotnetcore 3.1 (install dotnet-hosting-3.1.32-win.exe or higher on your windows server). The recommended setup is to then create a web application folder under the Default Web Site node which points to the compiled files for this project.
+1. Go to <https://entra.microsoft.com>
+2. Login with your Microsoft account credentials.
+3. Go to **Applications > App registrations.**
 
-After downloading the source files to a folder on your computer, open the solution (.sln) file with Visual Studio 2022 or higher and compile it. DotNet will automatically create a subfolder under the root/bin folder called:
-[projectfolder]\bin\Release\netcoreapp3.1
-Use this full path as the destination path for your IIS web application folder.
+![App Registrations Screenshot](https://raw.githubusercontent.com/vertexgraphinc/aiskills/main/DotNet/MSOutlook/images/App_Registrations.png)
 
-## Testing the Setup
+4. Select **New registrations**. Fill out the desired name for the registration and then choose second or third option in **Supported account types.** You can leave Redirect URI empty.
 
-If the web application is set up correctly, you should be able to access the following URL from your browser:
-http://localhost/webappnamehere
-*Replace webappnamehere with the actual name of your web application. Example: "outlook"*
+![Register an Application Screenshot](https://raw.githubusercontent.com/vertexgraphinc/aiskills/main/DotNet/MSOutlook/images/Register_an_Application.png)
 
-If the setup is correct you should see the contents of the /Templates/ai-plugin.json, which is an embedded resource in the Visual Studio project and is routed using the metatags on the Controllers/SkillController.cs file.
+5. Select **Register** to create a new app registration.
+6. After that is done, navigate back to App registrations in step 3 and click on your newly create application.
+7. Now navigate to **API Permissions** and click **Add a permission**
 
-To ensure that the routing is working as intended, try to access the following URL from your browser:
-http://localhost/webappnamehere or http://localhost/webappnamehere/apidefs
-If the above is set up correctly, you should see the basic application info and available api definitions
+![API permissions Screenshot](https://raw.githubusercontent.com/vertexgraphinc/aiskills/main/DotNet/MSOutlook/images/API_permissions.png)
 
-Once you get the above steps working, you can point an external domain's A Record to your public IPv4 address. Alternatively, you can use a proxy, such as CloudFlare, which makes the process of generating external URLs easier.
+8. Select **Microsoft Graph > Delegated permissions** and then select all necessary permissions in the application (_offline_access, User.Read, Mail.ReadWrite, Mail.Send_). Then click **Add permissions** to complete.
 
-## VertexGraph Installation
+(\*) Note: Some permissions need admin consent so unless you are granted permission by the admin or the account is the admin itself, some permissions will not work.
 
-Now you can install the custom skill on the vertexgraph.ai interface.
+![Request API Permissions Screenshot](https://raw.githubusercontent.com/vertexgraphinc/aiskills/main/DotNet/MSOutlook/images/Request_API_Permissions.png)
 
- - Step 1: From the AI Assistants page, click on the Custom Skills icon on the top-right of the page.
- - Step 2: Click on the New Skill Button on the top-left of the page.
- - Step 3: Choose the Open API Plugin tile.
- - Step 4: Optional: Enter a description and click on the Continue button
- - Step 5: Enter the full external URL of the skill and click on the Continue button. For example: https://myexternalurlhere.example.com/webappnamehere
- - Step 6: Authorize the skill on the OAuth authentication screen and finish the installation.
- - Step 7: Return to the AI Assistants page and click on the manage button on the Default Assistant tile.
- - Step 8: From the Skills tab, click on the Assign Skill button on the top-right of the page.
- - Step 9: Search for the skill name, which should be MSOutlook in this case.
+9. After adding the permissions, navigate to **Authentication** and click **Add a platform**.
+
+![Authentication Screenshot](https://raw.githubusercontent.com/vertexgraphinc/aiskills/main/DotNet/MSOutlook/images/Authentication.png)
+
+10. In **Configure platforms**, select **Web.**
+
+![Configure Platforms Screenshot](https://raw.githubusercontent.com/vertexgraphinc/aiskills/main/DotNet/MSOutlook/images/Configure_Platforms.png)
+
+11. Add <https://api.vertexgraph.com/adminapi/assets/oauthcode> in Redirect URIs in Configure Web. Then select Configure to create the platform.
+
+![Configure Web Screenshot](https://raw.githubusercontent.com/vertexgraphinc/aiskills/main/DotNet/MSOutlook/images/Configure_Web.png)
+
+12. Then a window for Web platform will be created. Add the following URL’s below the first one.
+
+<https://api.vertexgraph.com/adminapi/assets/oauthcode>
+
+<https://login.microsoftonline.com/common/oauth2/v2.0/token>
+
+<http://localhost/msoutlook/auth> (only apply to local setup, public url is different)
+
+<http://localhost/msoutlook/token> (only apply to local setup, public url is different)
+
+![Platform Configurations Screenshot](https://raw.githubusercontent.com/vertexgraphinc/aiskills/main/DotNet/MSOutlook/images/Platform_Configurations.png)
+
+13. Once that is done, navigate **Overview** and click on **Add a certificate or secret** on the right corner.
+
+![Add Certificate or Secret Screenshot](https://raw.githubusercontent.com/vertexgraphinc/aiskills/main/DotNet/MSOutlook/images/Add_Certificate_or_Secret.png)
+
+14. Click on **New client secret**, add a description to the client secret and then click **Add.**
+
+![New Client Secret Screenshot](https://raw.githubusercontent.com/vertexgraphinc/aiskills/main/DotNet/MSOutlook/images/New_Client_Secret.png)
+
+15. Scroll down and you will see your App Credentials, you want to copy your **Client ID** (or Application ID) and **Client Secret** (Client Secret Value)
+
+(\*) Note: _Multiple applications can use the same app registrations, what matters is that permissions are added and redirect URLs and secrets are known_
+
+## Setting up Skill in VertexGraph
+
+1. Navigate to <https://vertexgraph.ai/portal/>
+2. On the left side tool bar select the second option “AI”
+3. Now select the custom skills icon on the top right corner
+
+![AI Assistants Screenshot](https://raw.githubusercontent.com/vertexgraphinc/aiskills/main/DotNet/MSOutlook/images/AI_Assistants.png)
+
+1. Once on the skills section Press “New Custom Skill”
+2. Follow the setup until you reach the section where you must enter the OAuth Client ID and Secret
+3. Copy and paste the client ID and secret from the MSOutlook AI Skill information
+4. Get the authorization code and authorize VertexGraph to access your Microsoft account
+5. Once completed assign the new skill to any of your assistants to start using it
 
 ## Test Prompts
 
 Now that the MSOutlook Skill is properly installed, you can try the following example prompts:
 
- - "Show me all emails from example@example.com within the last 2 days from my Outlook"
- - "Show me my most recent email from example@example.com"
- - "Delete all emails I received from example@example.com from my Outlook"
- - "Reply to email from example@example.com with subject ‘example subject’ with content ‘example reply content.’"
- - "Forward the email from example@example.com with subject 'example subject’ to example2@example.com with additional content ‘forward email content example’"
- - "Send an email to example@example.com saying that ‘example send content’"
- - ...and many more
+ - Show me all emails from example@example.com within the last 2 days from my Outlook
+ - Show me my most recent email from example@example.com
+ - Delete all emails I received from example@example.com from my Outlook
+ - Reply to email from example@example.com with subject ‘example subject’ with content ‘example reply content.’
+ - Forward the email from example@example.com with subject 'example subject’ to example2@example.com with additional content ‘forward email content example’
+ - Send an email to example@example.com saying that ‘example send content’
