@@ -61,4 +61,10 @@ Now you can install the custom skill on the vertexgraph.ai interface.
 
 Now that the Google Calendar Skill is properly installed, you can try the following example prompts:
 
+ - "Give me all events happening within today"
+ - "Create an event called 'testing event' starting at 6pm and ending at 8pm today and add example@example.com as an attendee
+ - "Remove all events from my calendar within next week"
+ - "Get instances of recurring events within the last 2 days"
+ - "Remove my meeting event with example@example.com"
+ - "Remove John Doe from the list of attendees of the event 'event example'"
  - Create a new calendar event
