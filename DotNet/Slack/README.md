@@ -1,6 +1,6 @@
-﻿#Slack Skill#
+﻿# Slack Skill
 
-##Creating Slack App:##
+## Creating Slack App:
 
 1. Go to <https://api.slack.com/apps>
 2. Click on Create New app
@@ -32,7 +32,7 @@
 
 8. Scroll down and you will see your App Credentials, you want to copy your **Client ID** and **Client Secret**
 
-##Setting up Skill in VertexGraph##
+## Setting up Skill in VertexGraph
 
 1. Navigate to <https://vertexgraph.ai/portal/>
 2. On the left side tool bar select the second option “AI”
@@ -46,7 +46,7 @@
 4. Get the authorization code and authorize VertexGraph to access your slack account
 5. Once completed assign the new skill to any of your assistants to start using it
 
-##Test Prompts:##
+## Test Prompts:
 
 - Set a reminder to meet with John at 10am tomorrow
 - Set my status on slack to be “Going on lunch break” till 1pm
