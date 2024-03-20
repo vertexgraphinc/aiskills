@@ -19,7 +19,7 @@ This skill allows the authenticated user to perform simple tasks on his/her Goog
 
 ## Test Prompts
 
-Now that the Google Calendar Skill is properly installed, you can try the following example prompts:
+Please refer to the root README (https://github.com/vertexgraphinc/aiskills/blob/main/DotNet/README.md) for instructions on how to host the custom skill and install it on the VertexGraph.ai website. Once the Google Calendar Skill is properly installed, you can try the following example prompts on the AI Assistant: 
 
  - "Give me all events happening within today"
  - "Create an event called 'testing event' starting at 6pm and ending at 8pm today and add example@example.com as an attendee

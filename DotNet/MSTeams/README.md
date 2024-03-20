@@ -2,7 +2,7 @@
 
 This skill allows the authenticated user to perform simple tasks on his/her Microsoft Teams account directly from the VertexGraph chat prompt.
 
-## API Permissions Setup:
+## API Permissions Setup
 
 1. Go to <https://entra.microsoft.com>
 2. Login with your Microsoft account credentials.
@@ -62,7 +62,9 @@ This skill allows the authenticated user to perform simple tasks on his/her Micr
 
 (\*) Note: _Multiple applications can use the same app registrations, what matters is that permissions are added and redirect URLs and secrets are known_
 
-## Test Prompts:
+## Test Prompts
+
+Please refer to the root README (https://github.com/vertexgraphinc/aiskills/blob/main/DotNet/README.md) for instructions on how to host the custom skill and install it on the VertexGraph.ai website. Once the Microsoft Outlook Skill is properly installed, you can try the following example prompts on the AI Assistant:
 
 - Get chats for the past week.
 - Create a chat with <example@example.com> in my MS teams.

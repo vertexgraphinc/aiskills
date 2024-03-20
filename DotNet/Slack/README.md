@@ -1,6 +1,6 @@
 ﻿# Slack Skill
 
-## Creating Slack App:
+## Creating Slack App
 
 1. Go to <https://api.slack.com/apps>
 2. Click on Create New app
@@ -32,7 +32,9 @@
 
 8. Scroll down and you will see your App Credentials, you want to copy your **Client ID** and **Client Secret**
 
-## Test Prompts:
+## Test Prompts
+
+Please refer to the root README (https://github.com/vertexgraphinc/aiskills/blob/main/DotNet/README.md) for instructions on how to host the custom skill and install it on the VertexGraph.ai website. Once the Slack Skill is properly installed, you can try the following example prompts on the AI Assistant:
 
 - Set a reminder to meet with John at 10am tomorrow
 - Set my status on slack to be “Going on lunch break” till 1pm

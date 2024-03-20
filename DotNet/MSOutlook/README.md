@@ -1,8 +1,8 @@
-﻿# MSOutlook Skill
+﻿# Microsoft Outlook Skill
 
 This skill allows the authenticated user to perform simple tasks on his/her Microsoft Outlook account directly from the VertexGraph chat prompt.
 
-## API Permissions Setup:
+## API Permissions Setup
 
 1. Go to <https://entra.microsoft.com>
 2. Login with your Microsoft account credentials.
@@ -64,7 +64,7 @@ This skill allows the authenticated user to perform simple tasks on his/her Micr
 
 ## Test Prompts
 
-Now that the MSOutlook Skill is properly installed, you can try the following example prompts:
+Please refer to the root README (https://github.com/vertexgraphinc/aiskills/blob/main/DotNet/README.md) for instructions on how to host the custom skill and install it on the VertexGraph.ai website. Once the Microsoft Teams Skill is properly installed, you can try the following example prompts on the AI Assistant:
 
  - Show me all emails from example@example.com within the last 2 days from my Outlook
  - Show me my most recent email from example@example.com

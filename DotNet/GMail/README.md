@@ -20,7 +20,7 @@ This skill allows the authenticated user to perform simple tasks on his/her Goog
 
 ## Test Prompts
 
-Now that the Gmail Skill is properly installed, you can try the following example prompts:
+Please refer to the root README (https://github.com/vertexgraphinc/aiskills/blob/main/DotNet/README.md) for instructions on how to host the custom skill and install it on the VertexGraph.ai website. Once the Google Gmail Skill is properly installed, you can try the following example prompts on the AI Assistant:
 
  - "How many emails have I received from support in the last 2 days?"
  - "Show me the full body of the last email from myfriend@example.com"
