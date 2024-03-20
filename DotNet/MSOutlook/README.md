@@ -62,20 +62,6 @@ This skill allows the authenticated user to perform simple tasks on his/her Micr
 
 (\*) Note: _Multiple applications can use the same app registrations, what matters is that permissions are added and redirect URLs and secrets are known_
 
-## Setting up Skill in VertexGraph
-
-1. Navigate to <https://vertexgraph.ai/portal/>
-2. On the left side tool bar select the second option “AI”
-3. Now select the custom skills icon on the top right corner
-
-![AI Assistants Screenshot](https://raw.githubusercontent.com/vertexgraphinc/aiskills/main/DotNet/MSOutlook/images/AI_Assistants.png)
-
-1. Once on the skills section Press “New Custom Skill”
-2. Follow the setup until you reach the section where you must enter the OAuth Client ID and Secret
-3. Copy and paste the client ID and secret from the MSOutlook AI Skill information
-4. Get the authorization code and authorize VertexGraph to access your Microsoft account
-5. Once completed assign the new skill to any of your assistants to start using it
-
 ## Test Prompts
 
 Now that the MSOutlook Skill is properly installed, you can try the following example prompts:

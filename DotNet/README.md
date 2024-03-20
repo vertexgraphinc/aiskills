@@ -27,15 +27,17 @@ If the above is set up correctly, you should see the available API definitions i
 
 Once you get the above steps working, you can download the Gateway Agent from the VertexGraph.ai website and install it on the same server. The Gateway Agent will allow the skills to be accessible via localhost from the vertexgraph.ai domain.
 
-## VertexGraph Installation
+## Setting up Skill in VertexGraph
 
-Now you can install the custom skill on the vertexgraph.ai interface.
+1. Navigate to [https://vertexgraph.ai/portal/](https://vertexgraph.ai/portal/)
+2. On the left side tool bar select the second option “AI”
+3. Now select the custom skills icon on the top right corner
 
-- Step 1: From the AI Assistants page, click on the Custom Skills icon on the top-right of the page.
-- Step 2: Click on the New Skill Button on the top-left of the page.
-- Step 3: Choose the Open API Plugin tile.
-- Step 4: (Optional) Enter a description and click on the Continue button
-- Step 5: Enter the full external URL of the skill and click on the Continue button. For example: http://localhost/webappnamehere
-- Step 6: Authorize the skill on the OAuth authentication screen and finish the installation.
-- Step 7: At the end of the setup, ensure the new custom skill is associated with your AI assistant.
-- Step 8: After the setup, open the AI assistant and ask some test prompts.
+![AI Assistants Screenshot](https://raw.githubusercontent.com/vertexgraphinc/aiskills/main/DotNet/images/AI_Assistants.png)
+
+1. Once on the skills section Press “New Custom Skill”
+2. Follow the setup until you reach the section where you must enter the OAuth Client ID and Secret
+3. Copy and paste the client ID and secret from the Custom App (read the README.md file for each skill for details on how to set up the custom app with the necessary permissions and OAuth Secret keys)
+4. Get the Authorization Code and authorize VertexGraph to access your app's account
+5. Once completed assign the new skill to any of your assistants to start using it
+6. After the setup, open the AI assistant and ask some test prompts. The README.md file for each skill has some test prompts that you can try.

@@ -32,20 +32,6 @@
 
 8. Scroll down and you will see your App Credentials, you want to copy your **Client ID** and **Client Secret**
 
-## Setting up Skill in VertexGraph
-
-1. Navigate to <https://vertexgraph.ai/portal/>
-2. On the left side tool bar select the second option “AI”
-3. Now select the custom skills icon on the top right corner
-
-![AI Assistants Screenshot](https://raw.githubusercontent.com/vertexgraphinc/aiskills/main/DotNet/Slack/images/AI_Assistants.png)
-
-1. Once on the skills section Press “New Custom Skill”
-2. Follow the setup until you reach the section where you must enter the OAuth Client ID and Secret
-3. Copy and paste the client ID and secret from the Slack AI Skill information
-4. Get the authorization code and authorize VertexGraph to access your slack account
-5. Once completed assign the new skill to any of your assistants to start using it
-
 ## Test Prompts:
 
 - Set a reminder to meet with John at 10am tomorrow
