@@ -90,9 +90,40 @@ namespace GCalendar.Helpers
             System.Diagnostics.Debug.WriteLine("[vertex][UppdateEvent] Time Params: " + Para.TimeZone + Para.UpdatedStartDateTime);
             var response = new ServerResponse();
 
-            var eventToUpdate = await Get<Event>($"/primary/events/{Para.Id}");
+            var req = new GetEventsRequest
+            {
+                Q = Para.CurrentSummary,
+                TimeMin = Para.CurrentStartDateTime,
+                TimeMax = Para.CurrentEndDateTime
+            };
 
-            var attendeeList = new List<Attendee>(eventToUpdate?.Attendees ?? new List<Attendee>());
+            var eventList = await ListEvents(req);
+
+            if(eventList.Count > 1)
+            {
+                System.Diagnostics.Debug.WriteLine("[vertex][UpdateEvent]: More then one event found");
+                response.Message = "More then one event found, provide more specific information";
+                return response;
+            }
+
+            if (eventList.Count == 0)
+            {
+                System.Diagnostics.Debug.WriteLine("[vertex][UpdateEvent]: Event not found");
+                response.Message = "No event was found to update";
+                return response;
+            }
+
+            var eventToUpdate = eventList[0];
+
+            var attendeeStringList = eventToUpdate.AttendeesEmails?.Split(",");
+            var attendeeList = new List<Attendee>();
+            foreach (var email in attendeeStringList)
+            {
+                var newAttendee = new Attendee { Email = email };
+                attendeeList.Add(newAttendee);
+            }
+
+
             if (Has(Para.AttendeesToRemove))
             {
                 string[] emailsToRemove = Para.AttendeesToRemove.Replace(" ", "").Split(',');

@@ -11,6 +11,15 @@ namespace GCalendar.Contracts
         [JsonProperty("timeZone"), JsonPropertyName("timeZone")]
         public string TimeZone { get; set; }
 
+        [JsonProperty("currentSummary"), JsonPropertyName("currentSummary")]
+        public string CurrentSummary { get; set; }
+
+        [JsonProperty("currentStartDateTime"), JsonPropertyName("currentStartDateTime")]
+        public string CurrentStartDateTime { get; set; }
+
+        [JsonProperty("currentEndDateTime"), JsonPropertyName("currentEndDateTime")]
+        public string CurrentEndDateTime { get; set; }
+
         [JsonProperty("updatedSummary"), JsonPropertyName("updatedSummary")]
         public string UpdatedSummary { get; set; }
 

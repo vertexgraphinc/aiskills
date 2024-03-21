@@ -296,9 +296,25 @@ components:
           type: string
           description: The time zone of the event.
           example: "America/Toronto"
+        currentSummary:
+          type: string
+          description: The current summary of the event.
+        currentStartDateTime:
+          type: string
+          description: The current start date and time of the event in UTC time.
+          format: date-time
+          example: "2024-02-16T19:00:00Z"
+        currentEndDateTime:
+          type: string
+          description: The current end date and time of the event in UTC time.
+          format: date-time
+          example: "2024-02-16T19:00:00Z"
         updatedSummary:
           type: string
           description: The updated summary of the event.
+        updatedDescription:
+          type: string
+          description: The updated description of the event.
         updatedStartDateTime:
           type: string
           description: The updated start date and time of the event in UTC time.

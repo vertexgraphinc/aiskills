@@ -16,15 +16,15 @@ namespace MSOutlook.Interfaces
 
         Task<bool> ReplyMessage(string msgId, string recipients, string comment, string token);
 
-        Task<bool> ReplyMultipleMessages(EmailReplyRequest request, string token);
+        Task<bool> ReplyMultipleMessages(EmailReplyRequest request, string msgId, string token);
 
         Task<bool> ReplyAllMessage(string msgId, string comment, string token);
 
-        Task<bool> ReplyAllMultipleMessages(EmailReplyAllRequest request, string token);
+        Task<bool> ReplyAllMultipleMessages(EmailReplyAllRequest request, string msgId, string token);
 
         Task<bool> ForwardMessage(string msgId, string recipients, string comment, string token);
 
-        Task<bool> ForwardMultipleMessages(EmailForwardRequest request, string token);
+        Task<bool> ForwardMultipleMessages(EmailForwardRequest request, string msgId, string token);
 
         Task<bool> SendMail(EmailRequest request, string Token);
 

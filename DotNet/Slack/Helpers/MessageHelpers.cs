@@ -14,7 +14,6 @@ namespace Slack.Helpers
     {
 
         private Dictionary<string, string> userMap = new Dictionary<string, string>();
-        private int? userTimeZoneOffset = null;
 
         public async Task<ServerResponse> SendMessage(SendMessageRequest Para)
         {
@@ -26,10 +25,11 @@ namespace Slack.Helpers
                     NullValueHandling = NullValueHandling.Ignore
                 }));
 
-            if(result.Ok == true) 
+            if (result.Ok == true)
             {
                 response.Message = "Message successfully sent";
-            } else
+            }
+            else
             {
                 Response.StatusCode = 500;
                 response.Message = result.Error;
@@ -79,12 +79,14 @@ namespace Slack.Helpers
             if (result.Ok == true)
             {
                 result.Message = "Successfully retrieved results";
-                foreach ( var message in result.Messages.Matches ) {
-                    if(message.Type == "im")
+                var timeZone = await GetUserTimeZoneOffset();
+                foreach (var message in result.Messages.Matches)
+                {
+                    if (message.Type == "im")
                     {
                         message.Channel.Name = await GetUser(message.Channel.Name);
                     }
-                    message.Timestamp = ParseUnixToDate(double.Parse(message.Timestamp), await GetUserTimeZoneOffset());
+                    message.Timestamp = ParseUnixToDate(double.Parse(message.Timestamp), timeZone);
                 }
             }
             else
@@ -104,10 +106,11 @@ namespace Slack.Helpers
             if (result.Ok == true)
             {
                 result.Message = "Successfully retrieved results";
+                var timeZone = await GetUserTimeZoneOffset();
                 foreach (var file in result.Files.Matches)
                 {
                     file.User = await GetUser(file.User);
-                    file.Timestamp = ParseUnixToDate(double.Parse(file.Timestamp), await GetUserTimeZoneOffset());
+                    file.Timestamp = ParseUnixToDate(double.Parse(file.Timestamp), timeZone);
                 }
             }
             else
@@ -154,7 +157,7 @@ namespace Slack.Helpers
             {
                 Channel = Para.Channel
             };
-            
+
             if (Para.IsDM != null && Para.IsDM.ToLower() == "true")
             {
                 Para.Channel = await FindUserDMByName(Para.Channel);
@@ -164,11 +167,11 @@ namespace Slack.Helpers
                 Para.Channel = await FindChannelIdByName(Para.Channel);
             }
 
-            if(Para.Limit == 0) Para.Limit = 10; 
+            if (Para.Limit == 0) Para.Limit = 10;
 
             Para.Oldest = ParseDateToUnix(Para.Oldest);
             Para.Latest = ParseDateToUnix(Para.Latest);
-            
+
 
             var result = await Post<HistoryResponse>($"/conversations.history", JsonConvert.SerializeObject(Para, Formatting.None,
                 new JsonSerializerSettings
@@ -176,17 +179,17 @@ namespace Slack.Helpers
                     NullValueHandling = NullValueHandling.Ignore
                 }));
 
-            
+
 
             if (result.Ok == true)
             {
-                
-                foreach(var message in result.Messages)
+                var timeZone = await GetUserTimeZoneOffset();
+                foreach (var message in result.Messages)
                 {
-                    message.Timestamp = ParseUnixToDate(double.Parse(message.Timestamp), await GetUserTimeZoneOffset());
+                    message.Timestamp = ParseUnixToDate(double.Parse(message.Timestamp), timeZone);
                     message.User = await GetUser(message.User);
                 }
-                response.Messages= result.Messages;
+                response.Messages = result.Messages;
 
             }
             else
@@ -207,7 +210,7 @@ namespace Slack.Helpers
             {
                 Channel = Para.Channel
             };
-            
+
 
             var result = await Post<HistoryResponse>($"/conversations.history", JsonConvert.SerializeObject(Para, Formatting.None,
                 new JsonSerializerSettings
@@ -217,10 +220,10 @@ namespace Slack.Helpers
 
             if (result.Ok == true)
             {
-
+                var timeZone = await GetUserTimeZoneOffset();
                 foreach (var message in result.Messages)
                 {
-                    message.Timestamp = ParseUnixToDate(double.Parse(message.Timestamp), await GetUserTimeZoneOffset());
+                    message.Timestamp = ParseUnixToDate(double.Parse(message.Timestamp), timeZone);
                     message.User = await GetUser(message.User);
                 }
                 response.Messages = result.Messages;
@@ -267,11 +270,11 @@ namespace Slack.Helpers
                         Channel = channel.Id,
                         Limit = Para.Limit == 0 ? 5 : Para.Limit
                     };
-                    
+
                     var channelMessages = await GetChannelMessagesById(request);
                     channelMessages.Channel = channel.Name;
                     if (channel.IsDM == true) channelMessages.Channel = "DM's with " + await GetUser(channel.UserId);
-                    
+
                     if (channelMessages.Messages != null) response.Channels.Add(channelMessages);
                 }
 
@@ -289,7 +292,7 @@ namespace Slack.Helpers
 
         public async Task<string> FindChannelIdByName(string channelName)
         {
-            
+
             var response = await Get<ChannelsResponse>($"/conversations.list?types=public_channel,private_channel");
             var channel = response?.Channels.FirstOrDefault(c => c.Name == channelName);
 
@@ -309,7 +312,7 @@ namespace Slack.Helpers
         public async Task<string> FindUserDMByName(string username)
         {
             var id = await FindUserIdByName(username);
-            if(id == null) return null;
+            if (id == null) return null;
 
             var response = await Get<ChannelsResponse>($"/conversations.list?types=im");
             var channel = response?.Channels.FirstOrDefault(c => c.UserId == id);
@@ -319,18 +322,14 @@ namespace Slack.Helpers
 
         public async Task<int> GetUserTimeZoneOffset()
         {
-            if (userTimeZoneOffset == null)
-            {
-                var response = await Get<SlackUserData>($"/openid.connect.userInfo");
-                if (response.Ok == false) return 0;
 
-                var userData = await Get<UserInfoResponse>($"/users.info?user={response.UserId}");
-                if (userData.Ok == false) return 0;
+            var response = await Get<SlackUserData>($"/openid.connect.userInfo");
+            if (response.Ok == false) return 0;
 
-                userTimeZoneOffset = userData.User.TimeZoneOffset;
-            }
+            var userData = await Get<UserInfoResponse>($"/users.info?user={response.UserId}");
+            if (userData.Ok == false) return 0;
 
-            return (int)userTimeZoneOffset;
+            return userData.User.TimeZoneOffset;
 
         }
 
@@ -345,10 +344,10 @@ namespace Slack.Helpers
                 }
 
                 return response.User.RealName;
-            } 
-            
+            }
+
             return userMap.GetValueOrDefault(userId);
-            
-        } 
+
+        }
     }
 }

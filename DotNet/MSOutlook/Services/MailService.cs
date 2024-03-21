@@ -213,10 +213,10 @@ namespace MSOutlook.Services
             }
         }
 
-        public async Task<bool> ReplyMultipleMessages(EmailReplyRequest request, string token)
+        public async Task<bool> ReplyMultipleMessages(EmailReplyRequest request, string msgId, string token)
         {
             bool allSuccess = true;
-            var msgs = JsonHelper.GetEmailsResponseJsonObject(request.Id);
+            var msgs = JsonHelper.GetEmailsResponseJsonObject(msgId);
             foreach (var msg in msgs)
             {
                 if (!await ReplyMessage(msg.Id, msg.From, request.Comment, token))
@@ -250,10 +250,10 @@ namespace MSOutlook.Services
             }
         }
 
-        public async Task<bool> ReplyAllMultipleMessages(EmailReplyAllRequest request, string token)
+        public async Task<bool> ReplyAllMultipleMessages(EmailReplyAllRequest request, string msgId, string token)
         {
             bool allSuccess = true;
-            var msgs = JsonHelper.GetEmailsResponseJsonObject(request.Id);
+            var msgs = JsonHelper.GetEmailsResponseJsonObject(msgId);
             foreach (var msg in msgs)
             {
                 if (!await ReplyAllMessage(msg.Id, request.Comment, token))
@@ -293,10 +293,10 @@ namespace MSOutlook.Services
             }
         }
 
-        public async Task<bool> ForwardMultipleMessages(EmailForwardRequest request, string token)
+        public async Task<bool> ForwardMultipleMessages(EmailForwardRequest request, string msgId, string token)
         {
             bool allSuccess = true;
-            var msgs = JsonHelper.GetEmailsResponseJsonObject(request.Id);
+            var msgs = JsonHelper.GetEmailsResponseJsonObject(msgId);
             foreach (var msg in msgs)
             {
                 if (!await ForwardMessage(msg.Id, request.ToRecipients, request.Comment, token))

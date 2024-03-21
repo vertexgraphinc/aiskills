@@ -282,12 +282,23 @@ components:
     EmailReplyRequest:
       title: Outlook Email Reply Composition Details
       type: object
-      required:
-        - id
       properties:
-        id:
+        from:
+          title: From
           type: string
-          description: Unique identification of an email message.
+          description: A string value representing the sender's email address of the email to reply to
+        to:
+          title: To
+          type: string
+          description: Identifies the intended recipient's email address of the email to reply to
+        subject:
+          title: Subject
+          type: string
+          description: Subject of the email to reply to
+        body:
+          title: Body
+          type: string
+          description: Body of the email to reply to (Optional)
         comment:
           type: string
           description: An optional comment to include in the body of the reply.
@@ -298,12 +309,23 @@ components:
     EmailReplyAllRequest:
       title: Outlook Email Reply All Composition Details
       type: object
-      required:
-        - id
       properties:
-        id:
+        from:
+          title: From
           type: string
-          description: Unique identification of an email message.       
+          description: A string value representing the sender's email address of the email to reply to
+        to:
+          title: To
+          type: string
+          description: Identifies the intended recipient's email address of the email to reply to
+        subject:
+          title: Subject
+          type: string
+          description: Subject of the email to reply to
+        body:
+          title: Body
+          type: string
+          description: Body of the email to reply to (Optional)     
         comment:
           type: string
           description: An optional comment to include in the body of the reply.
@@ -312,11 +334,23 @@ components:
       type: object
       required:
         - toRecipients
-        - id
       properties:
-        id:
+        from:
+          title: From
           type: string
-          description: Unique identification of an email message.       
+          description: A string value representing the sender's email address to uniquely identify the email to forward
+        to:
+          title: To
+          type: string
+          description: Identifies the intended recipient's email address to uniquely identify the email to forward
+        subject:
+          title: Subject
+          type: string
+          description: Subject to uniquely identify the email to forward
+        body:
+          title: Body
+          type: string
+          description: Body of the email to forward (Optional)       
         toRecipients:
           type: string
           description: List of recipient email addresses to whom the email will be forwarded.
