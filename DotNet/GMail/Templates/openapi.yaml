@@ -317,7 +317,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/RemoveLabelRequest"
+              $ref: "#/components/schemas/QueryEmailAndRemoveLabelRequest"
         required: true 
 ### /threads/remove_label_from_thread------------------------------------------ 
   $skillapproot/threads/remove_label_from_thread:
