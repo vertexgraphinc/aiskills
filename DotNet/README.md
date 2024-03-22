@@ -12,7 +12,7 @@ Use the full path similar the one above as the destination path for your IIS web
 
 ![Application Basic Settings Screenshot](https://raw.githubusercontent.com/vertexgraphinc/aiskills/main/DotNet/images/IIS_Application_Basic_Settings.png)
 
-Please make sure the IIS application pools and credentials under the web application's basic setting window have the proper NTFS permissions to access the publishing directory. To grant NTFS permissions on a folder to a specific IIS application pool, you can use the following syntax in the NTFS permissions popups to resolve an application pool name: "IIS APPPOOL\\[ApplicationPoolNameHere]" (remove the quotes and replace the [ApplicationPoolNameHere] with the actual name.
+Please make sure the IIS application pools and credentials under the web application's basic setting window have the proper NTFS permissions to access the publishing directory. To grant NTFS permissions on a folder to a specific IIS application pool, you can use the following syntax in the NTFS permissions popups to resolve an application pool name: "IIS APPPOOL\\[ApplicationPoolNameHere]" (remove the quotes and replace the [ApplicationPoolNameHere] with the actual name).
 
 ![NTFS Permissions Screenshot](https://raw.githubusercontent.com/vertexgraphinc/aiskills/main/DotNet/images/NTFS_Permissions.png)
 

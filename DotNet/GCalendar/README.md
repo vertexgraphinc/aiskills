@@ -14,7 +14,32 @@ This skill allows the authenticated user to perform simple tasks on his/her Goog
  - Step 5: On the left side navigation. Click on Credentials. Create a new OAuth 2.0 Client ID
 ![Credentials Screenshot](https://raw.githubusercontent.com/vertexgraphinc/aiskills/main/DotNet/GCalendar/images/Credentials.png)
 
- - Step 6: On the OAuth 2.0 Client ID details page, under Authorized JavaScript origins, add: https://api.vertexgraph.ai. Under the Authorized redirect URIs, add: https://api.vertexgraph.com/adminapi/assets/oauthcode
+ - Step 6: On the OAuth 2.0 Client ID details page, under Authorized JavaScript origins, add the following:
+
+<https://api.vertexgraph.ai>
+
+<https://api.vertexgraph.com>
+
+<https://vertexgraph.ai>
+
+<https://vertexgraph.com>
+
+<https://accounts.google.com>
+
+Under the Authorized redirect URIs, add the following: 
+
+<https://api.vertexgraph.com/adminapi/assets/oauthcode>
+
+<https://accounts.google.com/o/oauth2/token>
+
+<https://accounts.google.com/signin/oauth>
+
+<https://accounts.google.com/o/oauth2/auth>
+
+<https://localhost/gmail/oauth/token> (only apply to local setup, public url is different)
+
+<https://localhost/gmail/oauth/auth> (only apply to local setup, public url is different)
+
 ![Credentials URLs Screenshot](https://raw.githubusercontent.com/vertexgraphinc/aiskills/main/DotNet/GCalendar/images/Credentials_URLs.png)
 
 ## Test Prompts
