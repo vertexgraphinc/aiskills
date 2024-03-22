@@ -23,6 +23,10 @@
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="images\" />
+	</ItemGroup>
+
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
 	  <Exec Command="if not exist &quot;$(SolutionDir)bin&quot; mkdir &quot;$(SolutionDir)bin&quot;&#xD;&#xA;if not exist &quot;$(SolutionDir)bin\slackskills&quot; mkdir &quot;$(SolutionDir)bin\slackskills&quot; &#xD;&#xA;&#xD;&#xA;del &quot;$(SolutionDir)bin\slackskills\*.*&quot;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;xcopy /Y /E /I &quot;$(TargetDir.TrimEnd(&quot;\&quot;))&quot;  &quot;$(SolutionDir)bin\slackskills&quot; &#xD;&#xA;del &quot;$(SolutionDir)bin\slackskills\*.pdb&quot;&#xD;&#xA;" />
 	</Target>
