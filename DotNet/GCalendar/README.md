@@ -42,6 +42,26 @@ Under the Authorized redirect URIs, add the following:
 
 ![Credentials URLs Screenshot](https://raw.githubusercontent.com/vertexgraphinc/aiskills/main/DotNet/GCalendar/images/Credentials_URLs.png)
 
+ - Step 7: After the URIs are added, navigate to OAuth consent screen on the left side navigation and create the consent screen (internal if you are using organization account, external if you are using a general testing account)
+
+![Consent Creation Screenshot](https://raw.githubusercontent.com/vertexgraphinc/aiskills/main/DotNet/GCalendar/images/Consent_Creation.png)
+
+ - Step 8: Fill in app name, user suupport email (your test email), developer contact information as you see fit. For Authorized domains, add the following domains: vertexgraph.ai, vertexgraph.com, and google.com. Then pressed Save and Continue.
+
+![Consent Basic Info Screenshot](https://raw.githubusercontent.com/vertexgraphinc/aiskills/main/DotNet/GCalendar/images/Consent_Basic_Info.png)
+
+ - Step 9: On Scope, click Add or Remove Scopes, then add necessary scopes (_calendar_) to the restricted scopes list. Then click Save and Continue.
+
+![Consent Scope Screenshot](https://raw.githubusercontent.com/vertexgraphinc/aiskills/main/DotNet/GCalendar/images/Consent_Scope.png)
+
+ - Step 10: On Test users, add your current email in there and click Save and Continue.
+
+![Consent Test User Screenshot](https://raw.githubusercontent.com/vertexgraphinc/aiskills/main/DotNet/GCalendar/images/Consent_TestUser.png)
+
+ - Step 11: On Summary, check all your previous options and click Back to Dashboard.
+
+![Consent Summary Screenshot](https://raw.githubusercontent.com/vertexgraphinc/aiskills/main/DotNet/GCalendar/images/Consent_Summary.png)
+
 ## Test Prompts
 
 Please refer to the root README (https://github.com/vertexgraphinc/aiskills/blob/main/DotNet/README.md) for instructions on how to host the custom skill and install it on the VertexGraph.ai website. Once the Google Calendar Skill is properly installed, you can try the following example prompts on the AI Assistant: 
@@ -52,4 +72,4 @@ Please refer to the root README (https://github.com/vertexgraphinc/aiskills/blob
  - "Get instances of recurring events within the last 2 days"
  - "Remove my meeting event with example@example.com"
  - "Remove John Doe from the list of attendees of the event 'event example'"
- - Create a new calendar event
+ - "Create a new calendar event"
