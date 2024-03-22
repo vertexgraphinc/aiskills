@@ -303,8 +303,8 @@ namespace Slack.Helpers
         {
 
             var response = await Get<UserListResponse>($"/users.list");
-            var user = response?.Members?.FirstOrDefault(u => (u.Name.ToLower() == username.ToLower()
-                || u.RealName.ToLower() == username.ToLower()));
+            var user = response?.Members?.FirstOrDefault(u =>  (Has(u.Name) && u.Name.ToLower() == username.ToLower())
+                || (Has(u.RealName) && u.RealName.ToLower() == username.ToLower()));
 
             return user?.Id;
         }
