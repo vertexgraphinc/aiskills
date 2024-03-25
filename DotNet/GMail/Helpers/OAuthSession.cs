@@ -11,7 +11,6 @@ namespace GMail.Helpers
 {
     public class OAuthSession : ValidationHelpers
     {
-        int _defaultMaxResults = 5;
         public string GetSessionToken()
         {
             if (!Request.Headers.ContainsKey("Authorization"))
