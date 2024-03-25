@@ -12,7 +12,7 @@ namespace GMail.Helpers
 {
     public class MessagesHelpers : OAuthSession
     {
-        int _defaultMaxResults = 1000;
+        int _defaultMaxResults = 20;
 
         #region Fetching Data
         public async Task<List<GMailMessage>> ListMessages(SearchFilters Para)
