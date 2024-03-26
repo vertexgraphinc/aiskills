@@ -29,7 +29,6 @@ namespace GMail.Controllers
                 qs = Request.QueryString.ToString();
                 System.Diagnostics.Debug.WriteLine("[vertex][OAuth]Auth:QueryString:" + qs);
             }
-            qs = qs.Replace("&access_type=offline&access_type=offline", "&access_type=offline");
             Response.Redirect($"https://accounts.google.com/o/oauth2/auth{qs}");
         }
 
