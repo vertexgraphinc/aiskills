@@ -23,7 +23,14 @@ namespace GMail.Controllers
         public void Auth()
         {
             System.Diagnostics.Debug.WriteLine("[vertex][OAuth]Auth");
-            Response.Redirect($"https://accounts.google.com/o/oauth2/auth{Request.QueryString}");
+            string qs = "";
+            if (Request.QueryString != null)
+            {
+                qs = Request.QueryString.ToString();
+                System.Diagnostics.Debug.WriteLine("[vertex][OAuth]Auth:QueryString:" + qs);
+            }
+            qs = qs.Replace("&access_type=offline&access_type=offline", "&access_type=offline");
+            Response.Redirect($"https://accounts.google.com/o/oauth2/auth{qs}");
         }
 
         [HttpPost("token"),HttpPost("~/skill/{controller}/token")]
@@ -57,15 +64,9 @@ namespace GMail.Controllers
                 {
                     Address = "https://oauth2.googleapis.com/token",
                     GrantType = "refresh_token",
-
                     ClientId = Para.ClientId,
                     ClientSecret = Para.ClientSecret,
-                    RefreshToken = Para.Code,                    
-                    Parameters =
-                        {
-
-                            { "scope", "https://mail.google.com/" }
-                        }
+                    RefreshToken = Para.Code
                 });
 
             }
@@ -86,15 +87,10 @@ namespace GMail.Controllers
                     ErrorDescription = resp.HttpErrorReason
                 };
             }
-            string refreshToken = resp.RefreshToken;
-            if(resp.RefreshToken == null)
-            {
-                refreshToken = resp.AccessToken;
-            }
             return new OAuthToken
             {
                 AccessToken = resp.AccessToken,
-                RefreshToken = refreshToken,
+                RefreshToken = resp.RefreshToken,
                 ExpiresIn = resp.ExpiresIn.ToString(),
                 Scope = resp.Scope
             };
