@@ -471,7 +471,6 @@ namespace GMail.Controllers
             return response;
         }
 
-        [HttpPost("remove_label"),HttpPost("~/skill/{controller}/remove_label")]
         public async Task<ServerResponse> RemoveLabel(RemoveLabelRequest Para)
         {
             System.Diagnostics.Debug.WriteLine("[vertex][Messages][RemoveLabel]");

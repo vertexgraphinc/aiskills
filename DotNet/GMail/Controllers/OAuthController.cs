@@ -1,6 +1,7 @@
 ﻿using GMail.Contracts;
 using IdentityModel.Client;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -41,6 +42,7 @@ namespace GMail.Controllers
 
             if (Para.GrantType == "authorization_code")
             {
+                System.Diagnostics.Debug.WriteLine("[vertex][OAuth]RedeemToken:Authorizing");
                 resp = await client.RequestAuthorizationCodeTokenAsync(new AuthorizationCodeTokenRequest
                 {
                     Address = "https://oauth2.googleapis.com/token",
@@ -59,6 +61,7 @@ namespace GMail.Controllers
             }
             else
             {
+                System.Diagnostics.Debug.WriteLine("[vertex][OAuth]RedeemToken:Refreshing Token");
                 resp = await client.RequestRefreshTokenAsync(new RefreshTokenRequest
                 {
                     Address = "https://oauth2.googleapis.com/token",
@@ -75,17 +78,30 @@ namespace GMail.Controllers
 
         OAuthToken GetToken(TokenResponse resp)
         {
+            System.Diagnostics.Debug.WriteLine("[vertex][OAuth]GetToken");
             if (resp == null)
                 return null;
 
             if (resp.IsError)
             {
+                try
+                {
+                    System.Diagnostics.Debug.WriteLine("[vertex][OAuth]GetToken:ERROR:" + resp.HttpErrorReason);
+                }
+                catch (Exception) { }
                 return new OAuthToken
                 {
                     Error = resp.Error,
                     ErrorDescription = resp.HttpErrorReason
                 };
             }
+            try
+            {
+                System.Diagnostics.Debug.WriteLine("[vertex][OAuth]GetToken:resp.AccessToken:" + resp.AccessToken);
+                System.Diagnostics.Debug.WriteLine("[vertex][OAuth]GetToken:resp.RefreshToken:" + resp.RefreshToken);
+                System.Diagnostics.Debug.WriteLine("[vertex][OAuth]GetToken:resp.ExpiresIn:" + resp.ExpiresIn.ToString());
+            }
+            catch (Exception) { }
             return new OAuthToken
             {
                 AccessToken = resp.AccessToken,
