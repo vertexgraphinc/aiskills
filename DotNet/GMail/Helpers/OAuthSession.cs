@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace GMail.Helpers
@@ -27,6 +28,36 @@ namespace GMail.Helpers
                 return ps[1];
             return Auth;
         }
+        private string CheckJSONForErrors(byte[] bytes)
+        {
+            //returns the converted bytes to string, or throws an exception with the error message
+            string s = System.Text.Encoding.UTF8.GetString(bytes);
+            if (s.Contains("\"error\"") && s.Contains("\"message\""))
+            {
+                JsonDocument doc = JsonDocument.Parse(s);
+                string rootMessage = null;
+                if (doc.RootElement.TryGetProperty("message", out JsonElement messageElement))
+                {
+                    rootMessage = messageElement.GetString();
+                }
+                if (string.IsNullOrEmpty(rootMessage))
+                {
+                    if (doc.RootElement.TryGetProperty("status", out JsonElement statusElement))
+                    {
+                        rootMessage = statusElement.GetString();
+                    }
+                }
+                if (string.IsNullOrEmpty(rootMessage))
+                {
+                    if (doc.RootElement.TryGetProperty("error", out JsonElement errorElement))
+                    {
+                        rootMessage = "ERROR: " + errorElement.GetString();
+                    }
+                }
+                throw new Exception(rootMessage);
+            }
+            return s;
+        }
         public async Task<T> Get<T>(string Url)
         {
             if (!Url.StartsWith("http"))
@@ -42,16 +73,15 @@ namespace GMail.Helpers
             {
                 using (var httpResponse = await client.SendAsync(request))
                 {
-                    string s = await httpResponse.Content.ReadAsStringAsync();
-                    //s = s.Replace("\r", "").Replace("\n", "");
-
+                    var bytes = await httpResponse.Content.ReadAsByteArrayAsync();
+                    var s = CheckJSONForErrors(bytes);
                     System.Diagnostics.Debug.WriteLine("[vertex][Get<T>]:Url:" + Url);
                     System.Diagnostics.Debug.WriteLine("[vertex][Get<T>]:s:" + Sanitize(s));
 
                     return JsonConvert.DeserializeObject<T>(s);
                 }
             }
-        }     
+        }
         public async Task<T> Post<T>(string Url, string content)
         {
             if (!Url.StartsWith("http"))
@@ -69,7 +99,8 @@ namespace GMail.Helpers
             {
                 using (var httpResponse = await client.SendAsync(request))
                 {
-                    string s = await httpResponse.Content.ReadAsStringAsync();
+                    var bytes = await httpResponse.Content.ReadAsByteArrayAsync();
+                    var s = CheckJSONForErrors(bytes);
                     return JsonConvert.DeserializeObject<T>(s);
                 }
             }

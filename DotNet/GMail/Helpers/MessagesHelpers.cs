@@ -382,7 +382,12 @@ namespace GMail.Helpers
             }
             if (Has(subject))
             {
-                msg.AppendLine("Subject: " + subject);
+                // Convert the string to a byte array in UTF-8
+                byte[] utf8Bytes = Encoding.UTF8.GetBytes(subject);
+                // Convert the UTF-8 byte array to a Base64 string
+                string base64String = Convert.ToBase64String(utf8Bytes);
+                msg.AppendLine("Subject: =?UTF-8?B?" + base64String + "?="); //RFC822 only supports ASCII in subject line. =?UTF-8?B? changes it to RFC 2047 and indicates that the subject is utf8 with base64 encoding 
+                //                       =?charset?encoding?encoded text?=
             }
             msg.AppendLine("Date: " + DateTime.Now.ToString("R")); // RFC822 date format
 
