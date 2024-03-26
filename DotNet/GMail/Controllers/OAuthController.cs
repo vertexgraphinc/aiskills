@@ -1,6 +1,7 @@
 ﻿using GMail.Contracts;
 using IdentityModel.Client;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -83,16 +84,24 @@ namespace GMail.Controllers
 
             if (resp.IsError)
             {
-                System.Diagnostics.Debug.WriteLine("[vertex][OAuth]GetToken:ERROR:" + resp.HttpErrorReason);
+                try
+                {
+                    System.Diagnostics.Debug.WriteLine("[vertex][OAuth]GetToken:ERROR:" + resp.HttpErrorReason);
+                }
+                catch (Exception) { }
                 return new OAuthToken
                 {
                     Error = resp.Error,
                     ErrorDescription = resp.HttpErrorReason
                 };
             }
-            System.Diagnostics.Debug.WriteLine("[vertex][OAuth]GetToken:resp.AccessToken:" + resp.AccessToken);
-            System.Diagnostics.Debug.WriteLine("[vertex][OAuth]GetToken:resp.RefreshToken:" + resp.RefreshToken);
-            System.Diagnostics.Debug.WriteLine("[vertex][OAuth]GetToken:resp.ExpiresIn:" + resp.ExpiresIn.ToString());
+            try
+            {
+                System.Diagnostics.Debug.WriteLine("[vertex][OAuth]GetToken:resp.AccessToken:" + resp.AccessToken);
+                System.Diagnostics.Debug.WriteLine("[vertex][OAuth]GetToken:resp.RefreshToken:" + resp.RefreshToken);
+                System.Diagnostics.Debug.WriteLine("[vertex][OAuth]GetToken:resp.ExpiresIn:" + resp.ExpiresIn.ToString());
+            }
+            catch (Exception) { }
             return new OAuthToken
             {
                 AccessToken = resp.AccessToken,
