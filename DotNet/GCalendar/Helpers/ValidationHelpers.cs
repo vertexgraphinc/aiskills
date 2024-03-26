@@ -140,8 +140,8 @@ namespace GCalendar.Helpers
                 RecurringEventId = item.RecurringEventId,
                 OriginalStartDateTime = Has(item.OriginalStartTime) ? (Has(item.OriginalStartTime.DateTime) ? item.OriginalStartTime.DateTime.ToString() : item.OriginalStartTime.Date.ToString()) : null,
                 OriginalStartTimeZone = Has(item.OriginalStartTime) ? item.OriginalStartTime.TimeZone : null,
-                AttendeesEmails = string.Join(",", item.Attendees.Select(attendee => attendee.Email))
-            };
+                AttendeesEmails = Has(item.Recurrence) ? string.Join(",", item.Attendees.Select(attendee => attendee.Email)) : null
+        };
         }
     }
 }
