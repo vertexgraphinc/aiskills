@@ -195,8 +195,8 @@ paths:
             schema:
               $ref: "#/components/schemas/ReplyEmailRequest"
         required: true 
-### /messages/query_add_label-------------------------------------------------- 
-  $skillapproot/messages/query_add_label:
+### /messages/query_and_add_label-------------------------------------------------- 
+  $skillapproot/messages/query_and_add_label:
     post:
       title: Search and Add a Label to Emails
       operationId: SearchAndAddLabel
@@ -226,8 +226,8 @@ paths:
             schema:
               $ref: "#/components/schemas/QueryEmailAndAddLabelRequest"
         required: true 
-### /messages/query_remove_label----------------------------------------------- 
-  $skillapproot/messages/query_remove_label:
+### /messages/query_and_remove_label----------------------------------------------- 
+  $skillapproot/messages/query_and_remove_label:
     post:
       title: Search and Remove a Label from Emails
       operationId: SearchAndRemoveLabel
@@ -288,37 +288,7 @@ paths:
             schema:
               $ref: "#/components/schemas/AddLabelThreadRequest"
         required: true 
-### /messages/remove_label----------------------------------------------------- 
-  $skillapproot/messages/remove_label:
-    post:
-      title: Remove a Label from an Email
-      operationId: RemoveLabelFromEmail
-      summary: Removes a label from an email message.
-      responses:
-        "200":
-          description: OK  
-          content:        
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerResponse'    
-        "500":
-          description: Server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerResponse'  
-        "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServerResponse'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/QueryEmailAndRemoveLabelRequest"
-        required: true 
+
 ### /threads/remove_label_from_thread------------------------------------------ 
   $skillapproot/threads/remove_label_from_thread:
     post:

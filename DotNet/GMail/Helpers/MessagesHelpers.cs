@@ -821,7 +821,15 @@ namespace GMail.Helpers
                 System.Diagnostics.Debug.WriteLine("[vertex]:CreateLabel:MessagesUnread:" + label.MessagesUnread);
                 System.Diagnostics.Debug.WriteLine("[vertex]:CreateLabel:ThreadsTotal:" + label.ThreadsTotal);
                 System.Diagnostics.Debug.WriteLine("[vertex]:CreateLabel:ThreadsUnread:" + label.ThreadsUnread);
+            }
+            catch (Exception) { }
+            try
+            {
                 System.Diagnostics.Debug.WriteLine("[vertex]:CreateLabel:Color.TextColor:" + label.Color.TextColor);
+            }
+            catch (Exception) { }
+            try
+            {
                 System.Diagnostics.Debug.WriteLine("[vertex]:CreateLabel:Color.BackgroundColor:" + label.Color.BackgroundColor);
             }
             catch (Exception) { }

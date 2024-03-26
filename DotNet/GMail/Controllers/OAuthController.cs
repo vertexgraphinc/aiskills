@@ -41,6 +41,7 @@ namespace GMail.Controllers
 
             if (Para.GrantType == "authorization_code")
             {
+                System.Diagnostics.Debug.WriteLine("[vertex][OAuth]RedeemToken:Authorizing");
                 resp = await client.RequestAuthorizationCodeTokenAsync(new AuthorizationCodeTokenRequest
                 {
                     Address = "https://oauth2.googleapis.com/token",
@@ -59,6 +60,7 @@ namespace GMail.Controllers
             }
             else
             {
+                System.Diagnostics.Debug.WriteLine("[vertex][OAuth]RedeemToken:Refreshing Token");
                 resp = await client.RequestRefreshTokenAsync(new RefreshTokenRequest
                 {
                     Address = "https://oauth2.googleapis.com/token",
@@ -75,17 +77,22 @@ namespace GMail.Controllers
 
         OAuthToken GetToken(TokenResponse resp)
         {
+            System.Diagnostics.Debug.WriteLine("[vertex][OAuth]GetToken");
             if (resp == null)
                 return null;
 
             if (resp.IsError)
             {
+                System.Diagnostics.Debug.WriteLine("[vertex][OAuth]GetToken:ERROR:" + resp.HttpErrorReason);
                 return new OAuthToken
                 {
                     Error = resp.Error,
                     ErrorDescription = resp.HttpErrorReason
                 };
             }
+            System.Diagnostics.Debug.WriteLine("[vertex][OAuth]GetToken:resp.AccessToken:" + resp.AccessToken);
+            System.Diagnostics.Debug.WriteLine("[vertex][OAuth]GetToken:resp.RefreshToken:" + resp.RefreshToken);
+            System.Diagnostics.Debug.WriteLine("[vertex][OAuth]GetToken:resp.ExpiresIn:" + resp.ExpiresIn.ToString());
             return new OAuthToken
             {
                 AccessToken = resp.AccessToken,
