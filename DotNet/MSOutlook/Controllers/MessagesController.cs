@@ -2,7 +2,6 @@
 using MSOutlook.Contracts;
 using MSOutlook.Helpers;
 using MSOutlook.Interfaces;
-using MSOutlook.Services;
 using Newtonsoft.Json;
 using System.Linq;
 using System.Threading.Tasks;
@@ -38,12 +37,18 @@ namespace MSOutlook.Controllers
             }
 
             resp.EmailMessages = await _mailService.ListMessage(request, token);
+            resp.EmailMessages = resp.EmailMessages.Select(message =>
+            {
+                message.Id = null;
+                return message;
+            }).ToList();
+
             System.Diagnostics.Debug.WriteLine("[vertex][Messages][ListMessages] Response:" + JsonConvert.SerializeObject(resp));
             return resp;
         }
 
         [HttpPost("get")]
-        public async Task<EmailResponse> GetMessage(EmailIdRequest request)
+        public async Task<EmailResponse> GetMessage(EmailGetRequest request)
         {
             System.Diagnostics.Debug.WriteLine("[vertex][Messages][GetMessage]");
             string authorizationHeader = Request.Headers["Authorization"].FirstOrDefault();
@@ -54,11 +59,30 @@ namespace MSOutlook.Controllers
                 return null;
             }
 
-            return await _mailService.GetMessage(request, token);
+            var findEmailRequest = new QueryEmailsRequest
+            {
+                From = request.From,
+                To = request.To,
+                Subject = request.Subject,
+                Body = request.Body
+            };
+
+            var emailList = await _mailService.ListMessage(findEmailRequest, token);
+
+            if (emailList.Count == 0 || emailList.Count > 1)
+            {
+                Response.StatusCode = 500;
+                return null;
+            }
+
+            var email = emailList[0];
+
+            System.Diagnostics.Debug.WriteLine("[vertex][Messages][GetMessage] Response:" + JsonConvert.SerializeObject(email));
+            return email;
         }
 
         [HttpPost("delete")]
-        public async Task<IActionResult> DeleteMessage(EmailIdRequest request)
+        public async Task<IActionResult> DeleteMessage(EmailDeleteRequest request)
         {
             System.Diagnostics.Debug.WriteLine("[vertex][Messages][DeleteMessage]");
             string authorizationHeader = Request.Headers["Authorization"].FirstOrDefault();
@@ -69,7 +93,24 @@ namespace MSOutlook.Controllers
                 return null;
             }
 
-            bool isDeleted = await _mailService.DeleteMessage(request, token);
+            var findEmailRequest = new QueryEmailsRequest
+            {
+                From = request.From,
+                To = request.To,
+                Subject = request.Subject,
+                Body = request.Body
+            };
+
+            var emailList = await _mailService.ListMessage(findEmailRequest, token);
+
+            if (emailList.Count == 0 || emailList.Count > 1)
+            {
+                return StatusCode(500, "Email not found, give more specific information");
+            }
+
+            var id = emailList[0].Id;
+
+            bool isDeleted = await _mailService.DeleteMessage(id, token);
 
             System.Diagnostics.Debug.WriteLine("[vertex][Messages][DeleteMessage] Response:" + isDeleted);
 
@@ -80,30 +121,6 @@ namespace MSOutlook.Controllers
             else
             {
                 return BadRequest("Failed to delete message.");
-            }
-        }
-
-        [HttpPost("sendDraft")]
-        public async Task<IActionResult> SendDraftMessage(EmailIdRequest request)
-        {
-            System.Diagnostics.Debug.WriteLine("[vertex][Messages][SendDraftMessage]");
-            string authorizationHeader = Request.Headers["Authorization"].FirstOrDefault();
-            string token = TokenHelper.GetSessionToken(authorizationHeader);
-            if (string.IsNullOrEmpty(token))
-            {
-                Response.StatusCode = 401;
-                return null;
-            }
-
-            bool isSent = await _mailService.SendDraftMessage(request, token);
-            System.Diagnostics.Debug.WriteLine("[vertex][Messages][SendDraftMessage] Response:" + isSent);
-            if (isSent)
-            {
-                return Ok("Message sent successfully.");
-            }
-            else
-            {
-                return BadRequest("Failed to send message.");
             }
         }
 
