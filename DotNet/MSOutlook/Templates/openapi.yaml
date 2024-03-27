@@ -31,14 +31,14 @@ paths:
   $skillapproot/messages/get:
     post:
       summary: Retrieve Outlook Email Details
-      description: Fetches details of a specific email message using its unique ID.
+      description: Fetches details of a specific email message
       operationId: GetMessage
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/EmailIdRequest'
+              $ref: '#/components/schemas/EmailGetRequest'
       responses:
         '200':
           description: Successfully retrieved the email details.
@@ -53,14 +53,14 @@ paths:
   $skillapproot/messages/delete:
     post:
       summary: Delete Outlook Email Message
-      description: Deletes a specific email message identified by its unique ID.
+      description: Deletes email message from user's Outlook mailbox
       operationId: DeleteMessage
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/EmailIdRequest'
+              $ref: '#/components/schemas/EmailDeleteRequest'
       responses:
         '200':
           description: Email message deleted successfully.
@@ -70,28 +70,6 @@ paths:
           description: Unauthorized, requires valid authentication.
         '404':
           description: Email message not found.
-        '500':
-          description: Server Error
-  $skillapproot/messages/sendDraft:
-    post:
-      summary: Send Draft Outlook Email message
-      description: Sends a previously created draft email, identified by its unique ID.
-      operationId: SendDraftMessage
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/EmailIdRequest'
-      responses:
-        '202':
-          description: Draft Email sent successfully.
-        '400':
-          description: Error in sending the draft email, possibly due to invalid input.
-        '401':
-          description: Unauthorized, requires valid authentication.
-        '404':
-          description: Original draft email not found or inaccessible.
         '500':
           description: Server Error
   $skillapproot/messages/reply:
@@ -188,10 +166,6 @@ components:
       title: Outlook Email Details
       type: object
       properties:
-        id:
-          title: Email ID
-          type: string
-          description: A unique identifier for the email message, used for tracking and referencing purposes.
         from:
           title: Sender's Email Address
           type: string
@@ -249,6 +223,46 @@ components:
           title: Has Attachments
           type: boolean
           description: Indicates if emails should have attachments. Setting to 'true' returns only emails with attachments, and 'false' returns emails without attachments. 
+        body:
+          title: Body
+          type: string
+          description: Filters emails containing the specified string within their body content. Useful for searching specific topics or content.
+    EmailGetRequest:
+      title: Parameters to retrieve a specific email in user's Outlook mailbox
+      type: object
+      properties:
+        from:
+          title: From
+          type: string
+          description: A string value representing the sender's email address. The search returns emails only from this specified sender.
+        to:
+          title: To
+          type: string
+          description: Identifies the intended recipient's email address. The search narrows down to emails sent to this specific address.
+        subject:
+          title: Subject
+          type: string
+          description: Searches for emails with subjects containing the specified keyword, allowing partial matches for flexibility.
+        body:
+          title: Body
+          type: string
+          description: Filters emails containing the specified string within their body content. Useful for searching specific topics or content.
+    EmailDeleteRequest:
+      title: Parameters to delete emails in user's Outlook mailbox
+      type: object
+      properties:
+        from:
+          title: From
+          type: string
+          description: A string value representing the sender's email address. The search returns emails only from this specified sender.
+        to:
+          title: To
+          type: string
+          description: Identifies the intended recipient's email address. The search narrows down to emails sent to this specific address.
+        subject:
+          title: Subject
+          type: string
+          description: Searches for emails with subjects containing the specified keyword, allowing partial matches for flexibility.
         body:
           title: Body
           type: string
@@ -357,12 +371,3 @@ components:
         comment:
           type: string
           description: An optional comment to include in the body of the reply.
-    EmailIdRequest:
-      title: Unique identification of an Outlook email message
-      type: object
-      required:
-        - id
-      properties:
-        id:
-          type: string
-          description: Unique Id of an email message to be used to get his details, delete, replay and forward.
