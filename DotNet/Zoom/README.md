@@ -32,21 +32,10 @@ This skill allows the authenticated user to perform simple tasks on his/her Zoom
 
 ## Test Prompts
 
-Please refer to the root README (https://github.com/vertexgraphinc/aiskills/blob/main/DotNet/README.md) for instructions on how to host the custom skill and install it on the VertexGraph.ai website. Once the Microsoft Outlook Skill is properly installed, you can try the following example prompts on the AI Assistant:
+Please refer to the root README (https://github.com/vertexgraphinc/aiskills/blob/main/DotNet/README.md) for instructions on how to host the custom skill and install it on the VertexGraph.ai website. Once the Zoom Skill is properly installed, you can try the following example prompts on the AI Assistant:
 
-- Get chats for the past week.
-- Create a chat with <example@example.com> in my MS teams.
-- Update my most recent chat's topic to "chat with friend”.
-- Add <testing1@vertexgraph.com> to my chats within last 2 days in my MS teams.
-- Remove <example@example.com> from my chats within last 2 days in my MS teams.
-- Get chat messages for the past week from my MS teams.
-- Send a message with content "test message from ai chat" to chats within past week from my MS teams.
-- Update chat messages to "new update message" from my MS teams in the chat with topic containing 'test1'.
-- Remove chat messages from my MS teams with topic containing "chat".
-- Get teams with <example@example.com>.
-- Create a team with <example@example.com>.
-- Update most recently created team display name to "update team display name”.
-- Remove most recently created team.
-- Get team members who are the owner of the teams.
-- Add <example@example.com> to all teams.
-- Remove <testing1@vertexgraph.com> from most recent team.
+- Get my upcoming Zoom meetings
+- Create a meeting in zoom at 5 pm with example@example.com and example2@example.com
+- Update my upcoming Zoom meeting to 8pm the next day
+- Remove my Zoom meetings from today till the end of the week
+- Get all my Zoom recordings
