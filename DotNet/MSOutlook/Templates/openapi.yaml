@@ -247,7 +247,7 @@ components:
           description: Filters emails based on specified importance levels (e.g., 'high', 'normal', 'low'). Only emails matching this level are included.
         has_attachments:
           title: Has Attachments
-          type: boolean
+          type: string
           description: Indicates if emails should have attachments. Setting to 'true' returns only emails with attachments, and 'false' returns emails without attachments. 
         body:
           title: Body

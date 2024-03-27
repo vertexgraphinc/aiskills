@@ -81,7 +81,7 @@ namespace MSOutlook.Services
                     query += " and ";
                 }
 
-                if ((bool)request.HasAttachments)
+                if ("true".Equals(request.HasAttachments, StringComparison.CurrentCultureIgnoreCase) || "1".Equals(request.HasAttachments))
                 {
                     query += "hasAttachments eq true";
                 }
