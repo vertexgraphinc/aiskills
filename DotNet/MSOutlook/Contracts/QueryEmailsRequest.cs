@@ -32,7 +32,7 @@ namespace MSOutlook.Contracts
 
         [JsonProperty("has_attachments")]
         [JsonPropertyName("has_attachments")]
-        public bool? HasAttachments { get; set; }
+        public string HasAttachments { get; set; }
 
         [JsonProperty("body")]
         [JsonPropertyName("body")]
