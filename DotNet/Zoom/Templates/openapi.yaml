@@ -1,0 +1,457 @@
+﻿openapi: 3.1.0
+info:
+  title: Zoom Skill
+  description: A VertexGraph skill to access user's Zoom account info
+  version: 1.0.0
+servers:
+  - url: $skillhost
+paths:
+  $skillapproot/meetings/query:
+    post:
+      summary: Query Zoom Meetings
+      description: Search for user's Zoom meetings
+      operationId: QueryMeetings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MeetingsQueryRequest"
+      responses:
+        "200":
+          description: Returns meetings that match the query parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeetingsQueryResponse'
+        "401":
+          description: Unauthorized, requires valid authentication.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeetingsQueryResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeetingsQueryResponse'
+  $skillapproot/meetings/create:
+    post:
+      summary: Create a New Zoom Meeting
+      description: Create a new meeting in Zoom
+      operationId: CreateMeeting
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MeetingCreateRequest'
+      responses:
+        '201':
+          description: Meeting created successfully.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeetingCreateResponse'
+        '400':
+          description: Error in creating the meeting, possibly due to invalid input.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeetingCreateResponse'
+        '401':
+          description: Unauthorized, requires valid authentication.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeetingCreateResponse'
+        '500':
+          description: Server Error
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeetingCreateResponse'
+  $skillapproot/meetings/update:
+    post:
+      summary: Update Zoom Meeting Details
+      description: Update details of specific meetings in Zoom
+      operationId: UpdateMeetings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MeetingsUpdateRequest'
+      responses:
+        '200':
+          description: Meetings updated successfully.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '400':
+          description: Error in updating the meetings, possibly due to invalid input.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '401':
+          description: Unauthorized, requires valid authentication.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '500':
+          description: Server Error
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  $skillapproot/meetings/remove:
+    post:
+      summary: Remove Zoom Meetings
+      description: Remove specific meetings in Zoom
+      operationId: RemoveMeetings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MeetingsRemoveRequest'
+      responses:
+        '200':
+          description: Meetings removed successfully.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '400':
+          description: Error in removing the meetings, possibly due to invalid input.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '401':
+          description: Unauthorized, requires valid authentication.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '500':
+          description: Server Error
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  $skillapproot/meetings/recordings/query:
+    post:
+      summary: Query Zoom Meeting Recordings
+      description: Search for recordings of user's Zoom meetings
+      operationId: QueryMeetingRecordings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MeetingRecordingsQueryRequest"
+      responses:
+        "200":
+          description: Returns meeting recordings that match the query parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeetingRecordingsQueryResponse'
+        "401":
+          description: Unauthorized, requires valid authentication.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeetingRecordingsQueryResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeetingRecordingsQueryResponse'
+components:
+  schemas:
+    ServerResponse:  
+      title: Server Response
+      type: object
+      properties: 
+        message:   
+          title: Message from Server. Used by various operations.
+          type: string    
+          description: A success or error message.
+    MeetingsQueryRequest:
+      title: Parameters to search for user's Zoom meetings
+      type: object
+      properties:
+        topicAgenda:
+          title: Topic Agenda
+          type: string
+          description: Searches for meetings with topics or agendas containing the specified keyword, allowing partial matches for flexibility.
+        type:
+          title: Type
+          type: string
+          description: Searches for meetings with type matching the specified meeting type. The possible values are 'scheduled', 'live', 'upcoming', 'upcoming_meetings', or 'previous_meetings'.
+        from:
+          title: From
+          type: string         
+          description: Specifies the exact starting point in last updated date for the meetings search. The search will return meetings occured strictly after this specified date.
+        to:
+          title: To
+          type: string         
+          description: Defines the end boundary for the meetings search. The search includes meetings occured before this specific date.
+    MeetingsQueryResponse:
+      type: object
+      properties:
+        message:   
+          title: Message from Server
+          type: string    
+          description: A success or error message. 
+        meetings:
+          type: array
+          items:
+            $ref: "#/components/schemas/MeetingResponse"
+          description: The list of Zoom meetings.
+    MeetingResponse:
+      type: object
+      properties:
+        agenda:
+          type: string
+          title: Agenda
+          description: The title or description of the meeting.
+        createdAt:
+          type: string
+          title: Created At
+          description: The timestamp when the meeting was created.
+        duration:
+          type: integer
+          title: Duration
+          description: The duration of the meeting in minutes.
+        hostEmail:
+          type: string
+          title: Host Email
+          description: The email address of the host of the meeting.
+        joinUrl:
+          type: string
+          format: uri
+          title: Join URL
+          description: The URL that participants can use to join the meeting.
+        startTime:
+          type: string
+          title: Start Time
+          description: The start time of the meeting.
+        topic:
+          type: string
+          title: Topic
+          description: The subject or topic of the meeting.
+        type:
+          type: integer
+          title: Type
+          description: The type of meeting. The possible values are 1 (instant meeting), 2 (scheduled meeting), 3 (recurring meeting with no fixed time), or 8 (recurring meeting with fixed time).
+        autoRecording:
+          title: Auto Recording
+          type: string
+          description: The setting for automatic recording. This is required to be enabled if transcript of the meeting is needed. The possible values are 'local', 'cloud', or 'none'
+    MeetingCreateRequest:
+      title: Parameters to create a Zoom meeting
+      type: object
+      properties:
+        agenda:
+          type: string
+          title: Agenda
+          description: The agenda of the meeting.
+        topic:
+          title: Topic
+          type: string
+          description: The topic of the meeting.
+        startTime:
+          type: string
+          title: Start Time
+          description: The start time of the meeting.
+        duration:
+          type: integer
+          title: Duration
+          description: The duration of the meeting in minutes.
+        memberEmails:
+          title: Member Emails
+          type: string
+          description: Members email addresses concatenated together with commas in between.
+          example: "test@test.com,test1@test1.com,test2@test2.com"
+        type:
+          title: Type
+          type: string
+          description: The type of the meeting. The possible values are 1 (instanct meeting) or 2 (scheduled meeting)
+        autoRecording:
+          title: Auto Recording
+          type: string
+          description: The setting for automatic recording. This is required to be enabled if transcript of the meeting is needed. The possible values are 'local', 'cloud', or 'none'
+      required:
+        - memberEmails
+    MeetingCreateResponse:
+      type: object
+      properties:
+        message:   
+          title: Message from Server. Used by various operations.
+          type: string    
+          description: A success or error message.
+        meeting:
+          $ref: "#/components/schemas/MeetingResponse"
+    MeetingsUpdateRequest:
+      title: Parameters to update or modify Zoom meetings
+      type: object
+      properties:
+        topicAgenda:
+          title: Topic Agenda
+          type: string
+          description: Searches for meetings with topics or agendas containing the specified keyword, allowing partial matches for flexibility.
+        type:
+          title: Type
+          type: string
+          description: Searches for meetings with type matching the specified meeting type. The possible values are 'scheduled', 'live', 'upcoming', 'upcoming_meetings', or 'previous_meetings'.
+        from:
+          title: From
+          type: string         
+          description: Specifies the exact starting point in last updated date for the meetings search. The search will return meetings occured strictly after this specified date.
+        to:
+          title: To
+          type: string         
+          description: Defines the end boundary for the meetings search. The search includes meetings occured before this specific date.
+        updatedAgenda:
+          type: string
+          title: Updated Agenda
+          description: The new agenda of the meeting.
+        updatedTopic:
+          type: string
+          title: Updated Topic
+          description: The new topic of the meeting.
+        updatedStartTime:
+          type: string
+          title: Updated Start Time
+          description: The new start time of the meeting.
+        updatedDuration:
+          type: string
+          title: Updated Duration
+          description: The new duration of the meeting in minutes.
+    MeetingsRemoveRequest:
+      title: Parameters to remove Zoom meetings
+      type: object
+      properties:
+        topicAgenda:
+          title: Topic Agenda
+          type: string
+          description: Searches for meetings with topics or agendas containing the specified keyword, allowing partial matches for flexibility.
+        type:
+          title: Type
+          type: string
+          description: Searches for meetings with type matching the specified meeting type. The possible values are 'scheduled', 'live', 'upcoming', 'upcoming_meetings', or 'previous_meetings'.
+        from:
+          title: From
+          type: string         
+          description: Specifies the exact starting point in last updated date for the meetings search. The search will return meetings occured strictly after this specified date.
+        to:
+          title: To
+          type: string         
+          description: Defines the end boundary for the meetings search. The search includes meetings occured before this specific date.
+    MeetingRecordingsQueryRequest:
+      title: Parameters to search for user's Zoom meeting recordings
+      type: object
+      properties:
+        topicAgenda:
+          title: Topic Agenda
+          type: string
+          description: Searches for meetings with topics or agendas containing the specified keyword, allowing partial matches for flexibility.
+        type:
+          title: Type
+          type: string
+          description: Searches for meetings with type matching the specified meeting type. The possible values are 'scheduled', 'live', 'upcoming', 'upcoming_meetings', or 'previous_meetings'.
+        from:
+          title: From
+          type: string         
+          description: Specifies the exact starting point in last updated date for the meetings search. The search will return meetings occured strictly after this specified date.
+        to:
+          title: To
+          type: string         
+          description: Defines the end boundary for the meetings search. The search includes meetings occured before this specific date.
+        recordingType:
+          title: Recording Type
+          type: string
+          description: Searches for meeting recordings with type matching the specified recording file type. The possible values are 'MP4', 'M4A', 'TIMELINE', 'TRANSCRIPT', 'CHAT', 'CC', 'CSV', 'SUMMARY', or 'CHAT_MESSAGE'.
+    MeetingRecordingsQueryResponse:
+      type: object
+      properties:
+        message:   
+          title: Message from Server
+          type: string    
+          description: A success or error message. 
+        recordingFiles:
+          type: array
+          items:
+            $ref: "#/components/schemas/MeetingRecordingResponse"
+          description: The list of Zoom meeting recordings.
+    MeetingRecordingResponse:
+      type: object
+      properties:
+        meetingTopic:
+          type: string
+          title: Meeting Topic
+          description: The subject or topic of the meeting.
+        meetingStartTime:
+          type: string
+          title: Meeting Start Time
+          description: The start time of the meeting.
+        meetingDuration:
+          type: integer
+          title: Meeting Duration
+          description: The duration of the meeting in minutes.
+        meetingType:
+          type: integer
+          title: Type
+          description: The type of meeting. The possible values are 1 (instant meeting), 2 (scheduled meeting), 3 (recurring meeting with no fixed time), or 8 (recurring meeting with fixed time).
+        downloadUrl:
+          type: string
+          format: uri
+          title: Download URL
+          description: The URL for downloading the recording file.
+        filePath:
+          type: string
+          title: File Path
+          description: The path to the recording file.
+        fileSize:
+          type: integer
+          title: File Size
+          description: The size of the recording file in bytes.
+        fileType:
+          type: string
+          title: File Type
+          description: The type of the recording file.
+        fileExtension:
+          type: string
+          title: File Extension
+          description: The file extension of the recording file.
+        playUrl:
+          type: string
+          format: uri
+          title: Play URL
+          description: The URL for playing the recording file.
+        recordingEnd:
+          type: string
+          format: date-time
+          title: Recording End Time
+          description: The timestamp when the recording of the file ended.
+        recordingStart:
+          type: string
+          format: date-time
+          title: Recording Start Time
+          description: The timestamp when the recording of the file started.
+        recordingType:
+          type: string
+          title: Recording Type
+          description: The type of recording. The possible values are "shared_screen_with_speaker_view".
+        status:
+          type: string
+          title: Status
+          description: The status of the recording file. The possible values are "completed".
