@@ -8,11 +8,7 @@ namespace MSOutlook.Interfaces
     {
         Task<List<EmailResponse>> ListMessage(QueryEmailsRequest request, string token);
 
-        Task<EmailResponse> GetMessage(EmailIdRequest request, string token);
-
-        Task<bool> DeleteMessage(EmailIdRequest request, string token);
-
-        Task<bool> SendDraftMessage(EmailIdRequest request, string token);
+        Task<bool> DeleteMessage(string msdId, string token);
 
         Task<bool> ReplyMessage(string msgId, string recipients, string comment, string token);
 
