@@ -49,11 +49,7 @@ namespace MSOutlook.Services
 
                     ClientId = Para.ClientId,
                     ClientSecret = Para.ClientSecret,
-                    RefreshToken = Para.RefreshToken,                   
-                    Parameters =
-                        {
-                            { "scope", APIConstants.GraphApiScope }
-                        }
+                    RefreshToken = Para.RefreshToken
                 });
 
             }

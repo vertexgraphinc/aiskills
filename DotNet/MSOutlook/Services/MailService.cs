@@ -81,7 +81,7 @@ namespace MSOutlook.Services
                     query += " and ";
                 }
 
-                if ((bool)request.HasAttachments)
+                if ("true".Equals(request.HasAttachments, StringComparison.CurrentCultureIgnoreCase) || "1".Equals(request.HasAttachments))
                 {
                     query += "hasAttachments eq true";
                 }
@@ -125,55 +125,13 @@ namespace MSOutlook.Services
             }
         }
 
-        public async Task<EmailResponse> GetMessage(EmailIdRequest request, string token)
+        public async Task<bool> DeleteMessage(string msdId, string token)
         {
-            string query = $"messages/{request.Id}";
-
-            try
-            {
-                MSGraphMessage msg = await _apiHelper.Get<MSGraphMessage>(query, token);
-                if (msg == null)
-                    return new EmailResponse();
-
-                return new EmailResponse
-                {
-                    Id = msg.Id,
-                    From = msg.From.EmailAddress.Address,
-                    Subject = msg.Subject,
-                    Body = msg.BodyPreview, //Utils.CleanHtml(msg.BodyPreview);
-                    Received = msg.ReceivedDateTime.ToString()
-                };
-            }
-            catch (HttpRequestException e)
-            {
-                // Handle exception (e.g., log it)
-                return new EmailResponse();
-            }
-        }
-
-        public async Task<bool> DeleteMessage(EmailIdRequest request, string token)
-        {
-            string query = $"messages/{request.Id}";
+            string query = $"messages/{msdId}";
 
             try
             {
                 return await _apiHelper.Delete(query, token);
-            }
-            catch (HttpRequestException e)
-            {
-                // Handle exception (e.g., log it)
-                return false;
-            }
-        }
-
-        public async Task<bool> SendDraftMessage(EmailIdRequest request, string token)
-        {
-            string query = $"messages/{request.Id}/send";
-
-            try
-            {
-                bool success = await _apiHelper.Post<bool>(query, null, token);
-                return success;
             }
             catch (HttpRequestException e)
             {
