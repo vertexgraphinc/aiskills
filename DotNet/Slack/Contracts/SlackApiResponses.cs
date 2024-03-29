@@ -75,19 +75,25 @@ namespace Slack.Contracts
     }
 
 
-    public class SlackUserData
+    public class SlackUserData : ApiResult
     {
-        [JsonProperty("ok"), JsonPropertyName("ok")]
-        public bool Ok { get; set; }
+        [JsonProperty("url"), JsonPropertyName("url")]
+        public string Url { get; set; }
 
-        [JsonProperty("sub"), JsonPropertyName("sub")]
-        public string Sub { get; set; }
+        [JsonProperty("team"), JsonPropertyName("team")]
+        public string Team { get; set; }
 
-        [JsonProperty("https://slack.com/user_id"), JsonPropertyName("https://slack.com/user_id")]
+        [JsonProperty("user"), JsonPropertyName("user")]
+        public string User { get; set; }
+
+        [JsonProperty("team_id"), JsonPropertyName("team_id")]
+        public string TeamId { get; set; }
+
+        [JsonProperty("user_id"), JsonPropertyName("user_id")]
         public string UserId { get; set; }
 
-        [JsonProperty("https://slack.com/team_id"), JsonPropertyName("https://slack.com/team_id")]
-        public string TeamId { get; set; }
+        [JsonProperty("is_enterprise_install"), JsonPropertyName("is_enterprise_install")]
+        public bool IsEnterpriseInstall { get; set; }
     }
 
     public class ProfileData
@@ -140,6 +146,23 @@ namespace Slack.Contracts
 
         [JsonProperty("time"), JsonPropertyName("time")]
         public string Time { get; set; }
+
+    }
+
+    public class SlackDndResponse : ApiResult
+    {
+
+        [JsonProperty("snooze_enabled"), JsonPropertyName("snooze_enabled")]
+        public bool SnoozeEnabled { get; set; }
+
+        [JsonProperty("snooze_endtime"), JsonPropertyName("snooze_endtime")]
+        public string SnoozeEndTime { get; set; }
+
+        [JsonProperty("snooze_remaining"), JsonPropertyName("snooze_remaining")]
+        public string SnoozeRemaining { get; set; }
+
+        [JsonProperty("snooze_is_indefinite"), JsonPropertyName("snooze_is_indefinite")]
+        public bool SnoozeIsIndefinite { get; set; }
 
     }
 
