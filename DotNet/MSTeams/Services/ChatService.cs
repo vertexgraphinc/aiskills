@@ -43,23 +43,38 @@ namespace MSTeams.Services
                 query += $"chatType eq \'{request.ChatType}\'";
             }
 
-            if (!string.IsNullOrEmpty(request.LastUpdatedBeginTime))
+            if (!string.IsNullOrEmpty(request.LastUpdatedBeginTime) || !string.IsNullOrEmpty(request.LastUpdatedEndTime))
             {
-                DateTime BeginDT = DateTime.Parse(request.LastUpdatedBeginTime);
-                lastUpdatedBeginTime = UtilityHelper.FormatDateTimeUtc(BeginDT);
-            }
+                if (!string.IsNullOrEmpty(request.LastUpdatedBeginTime))
+                {
+                    DateTime BeginDT = DateTime.Parse(request.LastUpdatedBeginTime);
+                    lastUpdatedBeginTime = UtilityHelper.FormatDateTimeUtc(BeginDT);
+                    if (query != "$filter=")
+                    {
+                        query += " and ";
+                    }
+                    query += $"lastUpdatedDateTime ge {lastUpdatedBeginTime}";
+                }
 
-            if (!string.IsNullOrEmpty(request.LastUpdatedEndTime))
-            {
-                DateTime EndDT = DateTime.Parse(request.LastUpdatedEndTime);
-                lastUpdatedEndTime = UtilityHelper.FormatDateTimeUtc(EndDT);
+                if (!string.IsNullOrEmpty(request.LastUpdatedEndTime))
+                {
+                    DateTime EndDT = DateTime.Parse(request.LastUpdatedEndTime);
+                    lastUpdatedEndTime = UtilityHelper.FormatDateTimeUtc(EndDT);
+                    if (query != "$filter=")
+                    {
+                        query += " and ";
+                    }
+                    query += $"lastUpdatedDateTime le {lastUpdatedEndTime}";
+                }
             }
-
-            if (query != "$filter=")
+            else
             {
-                query += " and ";
+                if (query != "$filter=")
+                {
+                    query += " and ";
+                }
+                query += $"lastUpdatedDateTime ge {lastUpdatedBeginTime} and lastUpdatedDateTime le {lastUpdatedEndTime}";
             }
-            query += $"lastUpdatedDateTime ge {lastUpdatedBeginTime} and lastUpdatedDateTime le {lastUpdatedEndTime}";
             query = "me/chats?$expand=members&" + query;
 
             MSGraphChats chats = await _apiHelper.Get<MSGraphChats>(query, token);
@@ -348,17 +363,38 @@ namespace MSTeams.Services
 
                 string lastModifiedBeginTime = UtilityHelper.FormatDateTimeUtc(DateTime.Now.AddDays(-1));
                 string lastModifiedEndTime = UtilityHelper.FormatDateTimeUtc(DateTime.Now);
-                if (!string.IsNullOrEmpty(request.LastModifiedBeginTime))
+                if (!string.IsNullOrEmpty(request.LastModifiedBeginTime) || !string.IsNullOrEmpty(request.LastModifiedEndTime))
                 {
-                    DateTime BeginDT = DateTime.Parse(request.LastModifiedBeginTime);
-                    lastModifiedBeginTime = UtilityHelper.FormatDateTimeUtc(BeginDT);
+                    if (!string.IsNullOrEmpty(request.LastModifiedBeginTime))
+                    {
+                        DateTime BeginDT = DateTime.Parse(request.LastModifiedBeginTime);
+                        lastModifiedBeginTime = UtilityHelper.FormatDateTimeUtc(BeginDT);
+                        if (query != "$filter=")
+                        {
+                            query += " and ";
+                        }
+                        query += $"lastModifiedDateTime gt {lastModifiedBeginTime}";
+                    }
+
+                    if (!string.IsNullOrEmpty(request.LastModifiedEndTime))
+                    {
+                        DateTime EndDT = DateTime.Parse(request.LastModifiedEndTime);
+                        lastModifiedEndTime = UtilityHelper.FormatDateTimeUtc(EndDT);
+                        if (query != "$filter=")
+                        {
+                            query += " and ";
+                        }
+                        query += $"lastModifiedDateTime lt {lastModifiedEndTime}";
+                    }
                 }
-                if (!string.IsNullOrEmpty(request.LastModifiedEndTime))
+                else
                 {
-                    DateTime EndDT = DateTime.Parse(request.LastModifiedEndTime);
-                    lastModifiedEndTime = UtilityHelper.FormatDateTimeUtc(EndDT);
+                    if (query != "$filter=")
+                    {
+                        query += " and ";
+                    }
+                    query += $"lastModifiedDateTime gt {lastModifiedBeginTime} and lastModifiedDateTime lt {lastModifiedEndTime}";
                 }
-                query += $"lastModifiedDateTime gt {lastModifiedBeginTime} and lastModifiedDateTime lt {lastModifiedEndTime}";
 
                 var tasks = chats.Value.Select(async chat =>
                 {
@@ -461,17 +497,38 @@ namespace MSTeams.Services
 
                 string lastModifiedBeginTime = UtilityHelper.FormatDateTimeUtc(DateTime.Now.AddDays(-1));
                 string lastModifiedEndTime = UtilityHelper.FormatDateTimeUtc(DateTime.Now);
-                if (!string.IsNullOrEmpty(request.LastModifiedBeginTime))
+                if (!string.IsNullOrEmpty(request.LastModifiedBeginTime) || !string.IsNullOrEmpty(request.LastModifiedEndTime))
                 {
-                    DateTime BeginDT = DateTime.Parse(request.LastModifiedBeginTime);
-                    lastModifiedBeginTime = UtilityHelper.FormatDateTimeUtc(BeginDT);
+                    if (!string.IsNullOrEmpty(request.LastModifiedBeginTime))
+                    {
+                        DateTime BeginDT = DateTime.Parse(request.LastModifiedBeginTime);
+                        lastModifiedBeginTime = UtilityHelper.FormatDateTimeUtc(BeginDT);
+                        if (query != "$filter=")
+                        {
+                            query += " and ";
+                        }
+                        query += $"lastModifiedDateTime gt {lastModifiedBeginTime}";
+                    }
+
+                    if (!string.IsNullOrEmpty(request.LastModifiedEndTime))
+                    {
+                        DateTime EndDT = DateTime.Parse(request.LastModifiedEndTime);
+                        lastModifiedEndTime = UtilityHelper.FormatDateTimeUtc(EndDT);
+                        if (query != "$filter=")
+                        {
+                            query += " and ";
+                        }
+                        query += $"lastModifiedDateTime lt {lastModifiedEndTime}";
+                    }
                 }
-                if (!string.IsNullOrEmpty(request.LastModifiedEndTime))
+                else
                 {
-                    DateTime EndDT = DateTime.Parse(request.LastModifiedEndTime);
-                    lastModifiedEndTime = UtilityHelper.FormatDateTimeUtc(EndDT);
+                    if (query != "$filter=")
+                    {
+                        query += " and ";
+                    }
+                    query += $"lastModifiedDateTime gt {lastModifiedBeginTime} and lastModifiedDateTime lt {lastModifiedEndTime}";
                 }
-                query += $"lastModifiedDateTime gt {lastModifiedBeginTime} and lastModifiedDateTime lt {lastModifiedEndTime}";
 
                 var tasks1 = chats.Value.Select(async chat =>
                 {
@@ -533,17 +590,38 @@ namespace MSTeams.Services
 
                 string lastModifiedBeginTime = UtilityHelper.FormatDateTimeUtc(DateTime.Now.AddDays(-1));
                 string lastModifiedEndTime = UtilityHelper.FormatDateTimeUtc(DateTime.Now);
-                if (!string.IsNullOrEmpty(request.LastModifiedBeginTime))
+                if (!string.IsNullOrEmpty(request.LastModifiedBeginTime) || !string.IsNullOrEmpty(request.LastModifiedEndTime))
                 {
-                    DateTime BeginDT = DateTime.Parse(request.LastModifiedBeginTime);
-                    lastModifiedBeginTime = UtilityHelper.FormatDateTimeUtc(BeginDT);
+                    if (!string.IsNullOrEmpty(request.LastModifiedBeginTime))
+                    {
+                        DateTime BeginDT = DateTime.Parse(request.LastModifiedBeginTime);
+                        lastModifiedBeginTime = UtilityHelper.FormatDateTimeUtc(BeginDT);
+                        if (query != "$filter=")
+                        {
+                            query += " and ";
+                        }
+                        query += $"lastModifiedDateTime gt {lastModifiedBeginTime}";
+                    }
+
+                    if (!string.IsNullOrEmpty(request.LastModifiedEndTime))
+                    {
+                        DateTime EndDT = DateTime.Parse(request.LastModifiedEndTime);
+                        lastModifiedEndTime = UtilityHelper.FormatDateTimeUtc(EndDT);
+                        if (query != "$filter=")
+                        {
+                            query += " and ";
+                        }
+                        query += $"lastModifiedDateTime lt {lastModifiedEndTime}";
+                    }
                 }
-                if (!string.IsNullOrEmpty(request.LastModifiedEndTime))
+                else
                 {
-                    DateTime EndDT = DateTime.Parse(request.LastModifiedEndTime);
-                    lastModifiedEndTime = UtilityHelper.FormatDateTimeUtc(EndDT);
+                    if (query != "$filter=")
+                    {
+                        query += " and ";
+                    }
+                    query += $"lastModifiedDateTime gt {lastModifiedBeginTime} and lastModifiedDateTime lt {lastModifiedEndTime}";
                 }
-                query += $"lastModifiedDateTime gt {lastModifiedBeginTime} and lastModifiedDateTime lt {lastModifiedEndTime}";
 
                 var tasks1 = chats.Value.Select(async chat =>
                 {
