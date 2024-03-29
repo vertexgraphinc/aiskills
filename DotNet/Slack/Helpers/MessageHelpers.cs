@@ -128,17 +128,17 @@ namespace Slack.Helpers
             System.Diagnostics.Debug.WriteLine("[vertex][Messages][SetDnd]");
             var response = new ServerResponse();
 
-            var result = await Post<ApiResult>($"/dnd.setSnooze", JsonConvert.SerializeObject(Para, Formatting.None,
+            var result = await Post<SlackDndResponse>($"/dnd.setSnooze", JsonConvert.SerializeObject(Para, Formatting.None,
                 new JsonSerializerSettings
                 {
                     NullValueHandling = NullValueHandling.Ignore
                 }));
 
-            DateTime currentTime = DateTime.Now;
-            currentTime = currentTime.AddMinutes(int.Parse(Para.NumOfMins));
-            if (result.Ok == true)
+       
+            if (result.Ok == true && result.SnoozeEnabled == true)
             {
-                response.Message = "Notifications paused till " + currentTime.ToString("MMM dd 'at' h:mmtt");
+                var offset = await GetUserTimeZoneOffset();
+                response.Message = "Notifications paused till " + ParseUnixToDate(double.Parse(result.SnoozeEndTime), offset);
             }
             else
             {
@@ -323,7 +323,7 @@ namespace Slack.Helpers
         public async Task<int> GetUserTimeZoneOffset()
         {
 
-            var response = await Get<SlackUserData>($"/openid.connect.userInfo");
+            var response = await Get<SlackUserData>($"/auth.test");
             if (response.Ok == false) return 0;
 
             var userData = await Get<UserInfoResponse>($"/users.info?user={response.UserId}");
