@@ -254,7 +254,7 @@ namespace Slack.Helpers
 
             if (types == "all") types = "public_channel,private_channel,mpim,im";
 
-            var result = await Get<ChannelsResponse>($"/conversations.list?types={types}");
+            var result = await Get<ChannelsResponse>($"/conversations.list?types={types}&exclude_archived=true");
 
             if (result.Ok == true)
             {
@@ -293,7 +293,7 @@ namespace Slack.Helpers
         public async Task<string> FindChannelIdByName(string channelName)
         {
 
-            var response = await Get<ChannelsResponse>($"/conversations.list?types=public_channel,private_channel");
+            var response = await Get<ChannelsResponse>($"/conversations.list?types=public_channel,private_channel&exclude_archived=true");
             var channel = response?.Channels.FirstOrDefault(c => c.Name == channelName);
 
             return channel?.Id;
@@ -314,7 +314,7 @@ namespace Slack.Helpers
             var id = await FindUserIdByName(username);
             if (id == null) return null;
 
-            var response = await Get<ChannelsResponse>($"/conversations.list?types=im");
+            var response = await Get<ChannelsResponse>($"/conversations.list?types=im&exclude_archived=true");
             var channel = response?.Channels.FirstOrDefault(c => c.UserId == id);
 
             return channel?.Id;
@@ -335,6 +335,8 @@ namespace Slack.Helpers
 
         public async Task<string> GetUser(string userId)
         {
+            if(userId == null) return "Unknown User";
+
             if (!userMap.ContainsKey(userId))
             {
                 var response = await Get<UserInfoResponse>($"/users.info?user={userId}");
@@ -342,8 +344,6 @@ namespace Slack.Helpers
                 {
                     userMap.Add(response.User.Id, response.User.RealName);
                 }
-
-                return response.User.RealName;
             }
 
             return userMap.GetValueOrDefault(userId);
