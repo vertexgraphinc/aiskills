@@ -135,6 +135,11 @@ namespace MSTeams.Services
                 if (string.IsNullOrEmpty(request.MemberEmails))
                     throw new Exception("Member emails are not specified.");
 
+                if (!string.IsNullOrEmpty(request.Topic) && !string.IsNullOrEmpty(request.ChatType) && request.ChatType == "oneOnOne")
+                {
+                    throw new Exception("One on one chat cannot have a topic.");
+                }
+
                 MSGraphUserEntity creator = await _apiHelper.Get<MSGraphUserEntity>("me", token);
                 if (string.IsNullOrEmpty(creator.Id))
                     throw new Exception("Chat creator info not found.");
