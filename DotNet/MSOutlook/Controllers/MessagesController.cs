@@ -148,7 +148,7 @@ namespace MSOutlook.Controllers
 
             var emailList = await _mailService.ListMessage(findEmailRequest, token);
 
-            if (emailList.Count == 0 || emailList.Count > 1)
+            if (emailList.Count <= 0)
             {
                 return StatusCode(500, "Email not found, give more specific information");
             }
@@ -199,7 +199,7 @@ namespace MSOutlook.Controllers
 
             var emailList = await _mailService.ListMessage(findEmailRequest, token);
 
-            if (emailList.Count == 0 || emailList.Count > 1)
+            if (emailList.Count <= 0)
             {
                 return StatusCode(500, "Email not found, give more specific information");
             }
@@ -251,7 +251,7 @@ namespace MSOutlook.Controllers
 
             var emailList = await _mailService.ListMessage(findEmailRequest, token);
 
-            if (emailList.Count == 0 || emailList.Count > 1)
+            if (emailList.Count <= 0)
             {
                 return StatusCode(500, "Email not found, give more specific information");
             }
