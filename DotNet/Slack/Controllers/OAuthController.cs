@@ -7,6 +7,7 @@ using System.Web;
 using System.Text.Json;
 using Slack.Constants;
 using Newtonsoft.Json.Linq;
+using Microsoft.AspNetCore.DataProtection;
 namespace Slack.Controllers
 {
     [ApiController,Route("[controller]")]
@@ -57,25 +58,32 @@ namespace Slack.Controllers
                         { "scope", APIConstants.ApiScope } 
                     }
                 });
+                return GetToken(resp);
             }
             else
             {
-                resp = await client.RequestRefreshTokenAsync(new RefreshTokenRequest
+                try
                 {
-                    Address = APIConstants.ApiAuthURL,
-                    GrantType = Para.GrantType,
-
-                    ClientId = Para.ClientId,
-                    ClientSecret = Para.ClientSecret,
-                    RefreshToken = Para.Code,
-                    Parameters =
+                    resp = await client.RequestRefreshTokenAsync(new RefreshTokenRequest
                     {
-                        { "scope", APIConstants.ApiScope }
-                    }
-                });
+                        Address = APIConstants.ApiAuthURL,
+                        GrantType = Para.GrantType,
 
+                        ClientId = Para.ClientId,
+                        ClientSecret = Para.ClientSecret,
+                        RefreshToken = Para.Code
+                    });
+                }
+                catch(System.Exception ex)
+                {
+                    return new OAuthToken
+                    {
+                        Error = resp.Error,
+                        ErrorDescription = ex.Message
+                    };
+                }
+                return GetRefreshToken(resp);
             }
-            return GetToken(resp);
         }
 
         OAuthToken GetToken(TokenResponse resp)
@@ -91,18 +99,60 @@ namespace Slack.Controllers
                     ErrorDescription = resp.HttpErrorReason
                 };
             }
-
-            JObject authedUser = JObject.Parse(resp.Json.ToString())["authed_user"] as JObject;
-
-            return new OAuthToken
+            string resp2 = resp.Json.ToString();
+            try
             {
-                AccessToken = authedUser["access_token"].ToString(),
-                RefreshToken = authedUser["refresh_token"]?.ToString(),
-                Scope = authedUser["scope"].ToString(),
-                ExpiresIn = authedUser["expires_in"] != null ? authedUser["expires_in"].ToString() : int.MaxValue.ToString()
-            };
+                var jresp = JsonSerializer.Deserialize<OAuthAuthUserResponse>(resp2);
+                return new OAuthToken
+                {
+                    AccessToken = jresp.AuthedUser.AccessToken,
+                    RefreshToken = jresp.AuthedUser.RefreshToken,
+                    ExpiresIn = jresp.AuthedUser.ExpiresIn.ToString()
+                };
+            }
+            catch(System.Exception ex)
+            {
+                return new OAuthToken
+                {
+                    Error = resp.Error,
+                    ErrorDescription = ex.Message
+                };
+            }
         }
 
+        OAuthToken GetRefreshToken(TokenResponse resp)
+        {
+            if (resp == null)
+                return null;
+
+            if (resp.IsError)
+            {
+                return new OAuthToken
+                {
+                    Error = resp.Error,
+                    ErrorDescription = resp.HttpErrorReason
+                };
+            }
+            string resp2 = resp.Json.ToString(); 
+            try
+            {
+                var jresp = JsonSerializer.Deserialize<OAuthRefreshTokenResponse>(resp2);
+                return new OAuthToken
+                {
+                    AccessToken = jresp.AccessToken,
+                    RefreshToken = jresp.RefreshToken,
+                    ExpiresIn = jresp.ExpiresIn.ToString()
+                };
+            }
+            catch (System.Exception ex)
+            {
+                return new OAuthToken
+                {
+                    Error = resp.Error,
+                    ErrorDescription = ex.Message
+                };
+            }
+        }
 
     }
 }
