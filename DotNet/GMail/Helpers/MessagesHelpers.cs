@@ -353,7 +353,10 @@ namespace GMail.Helpers
                 origMessage.From = origFrom;
                 origMessage.Subject = origSubject;
                 origMessage.Snippet = fullMsg.Snippet;
-                origMessage.Body = origBody;
+
+                string finalBody = Sanitize(StripHtmlTags(origBody));
+
+                origMessage.Body = finalBody;
                 origMessage.Received = origDate;
             }
             return origMessage;

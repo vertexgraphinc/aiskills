@@ -2,6 +2,10 @@
 using System;
 using System.Text.RegularExpressions;
 using HtmlAgilityPack;
+using System.Xml.Linq;
+using Microsoft.Extensions.FileSystemGlobbing;
+using static System.Net.Mime.MediaTypeNames;
+using static System.Net.WebRequestMethods;
 
 namespace GMail.Helpers
 {
@@ -150,28 +154,33 @@ namespace GMail.Helpers
             {
                 return "";
             }
-            /*
+            
             html = html.Replace("\u00A0", " ");//unicode non-breaking spaces    
             html = html.Replace("&nbsp;", " ");//html non-breaking spaces
-            return Regex.Replace(html, @"<([^>]+)([^>]*?)>", delegate (Match match)
-            {
-                var tagName = match.Groups[1].Value.ToLower();
-                if (tagName == "script" || tagName == "style")
-                {
-                    return ""; // Remove content of script and style tags
-                }
-                else
-                {
-                    return match.Groups[2].Value; // Keep content of other tags
-                }
-            });
-            */
-            //if using the HtmlAgilityPack third-party lib is unacceptable, we can use the code above which
-            //is not as good, but only uses regular expressions. The above seems to leave a lot of styles on the page
-            //but may be good enough for most emails.
             var doc = new HtmlDocument();
             doc.LoadHtml(html);
-            return doc.DocumentNode.InnerText;
+            string txt = doc.DocumentNode.InnerText;
+            //strip "![test](https://example.com/test.jpg)" to just "https://example.com/test.jpg"
+            string pattern = @"!\[[^\]*]\]\((https?://[^)]+)\)";
+            txt = Regex.Replace(txt, pattern, "\n$1");
+
+            //strip "!][(https://example.com/test.jpg)" to just "https://example.com/test.jpg"
+            pattern = @"!\]\[\((https?://[^)]+)\)";
+            txt = Regex.Replace(txt, pattern, "\n$1");
+
+            //replace all multiple line breaks with double line break
+            txt = Regex.Replace(txt, @"(\r\n|\n\r|\n|\r){2,}", "\n\n");
+
+            txt = txt.Replace("\"", "&quot;");
+            txt = txt.Replace("'", "&apos;");
+            txt = txt.Replace("{", "&#123;");
+            txt = txt.Replace("}", "&#125;");
+            txt = txt.Replace("[", "&#91;");
+            txt = txt.Replace("]", "&#93;");
+            txt = txt.Replace("(", "&#40;");
+            txt = txt.Replace(")", "&#41;");
+            
+            return txt;
         }
         public bool IsAlphaNumeric(string text)
         {
