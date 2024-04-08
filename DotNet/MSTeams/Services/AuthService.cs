@@ -49,11 +49,7 @@ namespace MSTeams.Services
 
                     ClientId = Para.ClientId,
                     ClientSecret = Para.ClientSecret,
-                    RefreshToken = Para.RefreshToken,                   
-                    Parameters =
-                        {
-                            { "scope", APIConstants.GraphApiScope }
-                        }
+                    RefreshToken = Para.RefreshToken
                 });
 
             }
@@ -89,7 +85,7 @@ namespace MSTeams.Services
             }
             catch (Exception ex)
             {
-                string exc = ex.Message;
+                System.Diagnostics.Debug.WriteLine("[vertex][GetToken]ex:" + ex.ToString());
                 return null;
             }
         }

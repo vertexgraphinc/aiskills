@@ -74,8 +74,8 @@ paths:
           description: Server Error
   $skillapproot/messages/reply:
     post:
-      summary: Reply to an Outlook Email
-      description: Sends a reply to an email, identified by its unique ID, with an optional comment as the body of the message.
+      summary: Query and Reply to an Outlook Email
+      description: Searches for emails and replies to the original sender with a comment.
       operationId: ReplyMessage
       requestBody:
         required: true
@@ -96,8 +96,8 @@ paths:
           description: Server Error
   $skillapproot/messages/replyAll:
     post:
-      summary: Reply to All Recipients of an Outlook Email
-      description: Sends a reply to all original recipients of an email, identified by its unique ID, with an optional comment as the body of the message.
+      summary: Query and Reply to All Recipients of an Outlook Email
+      description: Searches for emails and replies to the original recipient(s) with a comment.
       operationId: ReplyAllMessage
       requestBody:
         required: true
@@ -107,7 +107,7 @@ paths:
               $ref: '#/components/schemas/EmailReplyAllRequest'
       responses:
         '200':
-          description: Reply Email sent successfully to all recipients.
+          description: Replied successfully to all recipients.
         '400':
           description: Error in sending the reply email, possibly due to invalid input.
         '401':
@@ -118,8 +118,8 @@ paths:
           description: Server Error
   $skillapproot/messages/forward:
     post:
-      summary: Forward an Outlook Email message
-      description: Forwards an email identified by its unique ID to specified recipients with an optional comment as the body of the message.
+      summary: Query and forward Outlook Email message(s).
+      description: Searches and forwards email(s) to one or more recipients with an optional comment.
       operationId: ForwardMessage
       requestBody:
         required: true
@@ -129,7 +129,7 @@ paths:
               $ref: '#/components/schemas/EmailForwardRequest'
       responses:
         '200':
-          description: Email forwarded successfully.
+          description: Email(s) forwarded successfully.
         '400':
           description: Error in forwarding the email, possibly due to invalid input.
         '401':

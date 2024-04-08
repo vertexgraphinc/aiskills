@@ -42,15 +42,26 @@ namespace MSOutlook.Services
             }
             else
             {
-                resp = await _httpClient.RequestRefreshTokenAsync(new RefreshTokenRequest
+                try
                 {
-                    Address = APIConstants.GraphApiAuthURL + $"{tenant}/oauth2/v2.0/token",
-                    GrantType = Para.GrantType,
+                    resp = await _httpClient.RequestRefreshTokenAsync(new RefreshTokenRequest
+                    {
+                        Address = APIConstants.GraphApiAuthURL + $"{tenant}/oauth2/v2.0/token",
+                        GrantType = Para.GrantType,
 
-                    ClientId = Para.ClientId,
-                    ClientSecret = Para.ClientSecret,
-                    RefreshToken = Para.RefreshToken
-                });
+                        ClientId = Para.ClientId,
+                        ClientSecret = Para.ClientSecret,
+                        RefreshToken = Para.RefreshToken
+                    });
+                }
+                catch (Exception ex)
+                {
+                    return new OAuthToken
+                    {
+                        Error = ex.Message,
+                        ErrorDescription = ex.ToString()
+                    };
+                }
 
             }
 

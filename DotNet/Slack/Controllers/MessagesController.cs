@@ -154,6 +154,10 @@ namespace Slack.Controllers
 
             System.Diagnostics.Debug.WriteLine("[vertex][Messages][ListChannelMessages] Response:" + JsonConvert.SerializeObject(response));
 
+            if (response.Messages.Count == 0)
+            {
+                response.Message = "No results were found";
+            }
             return response;
         }
         #endregion

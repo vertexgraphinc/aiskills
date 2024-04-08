@@ -24,7 +24,7 @@ namespace MSOutlook.Services
         #region Message
         public async Task<List<EmailResponse>> ListMessage(QueryEmailsRequest request, string token)
         {
-            string query = "filter=";
+            string query = "$filter=";
 
             string beginDate = UtilityHelper.FormatDateTimeUtc(DateTime.Now.AddDays(-1));
             string endDate = UtilityHelper.FormatDateTimeUtc(DateTime.Now);
@@ -33,74 +33,52 @@ namespace MSOutlook.Services
                 DateTime BeginDT = DateTime.Parse(request.BeginTime);
                 beginDate = UtilityHelper.FormatDateTimeUtc(BeginDT);
 
-                query += $"receivedDateTime ge {beginDate}";
+                query += $"receivedDateTime ge {beginDate} and ";
             }
             if (!string.IsNullOrEmpty(request.EndTime))
             {
                 DateTime EndDT = DateTime.Parse(request.EndTime);
                 endDate = UtilityHelper.FormatDateTimeUtc(EndDT);
 
-                if (query != "filter=")
-                {
-                    query += " and ";
-                }
-                query += $"receivedDateTime le {endDate}";
+                query += $"receivedDateTime le {endDate} and ";
             }
 
             if (!string.IsNullOrEmpty(request.From))
             {
-                if (query != "filter=")
-                {
-                    query += " and ";
-                }
-                query += $"(contains(from/emailAddress/address, \'{request.From}\') or contains(from/emailAddress/name, '{request.From}'))";
+                query += $"(contains(from/emailAddress/address, \'{request.From}\') or contains(from/emailAddress/name, '{request.From}')) and ";
             }
 
             if (!string.IsNullOrEmpty(request.Subject))
             {
-                if (query != "filter=")
-                {
-                    query += " and ";
-                }
-                query += $"contains(subject, \'{request.Subject}\')";
+                query += $"contains(subject, \'{request.Subject}\') and ";
             }
 
             if (!string.IsNullOrEmpty(request.Importance))
             {
-                if (query != "filter=")
-                {
-                    query += " and ";
-                }
-                query += $"importance eq \'{request.Importance}\'";
+                query += $"importance eq \'{request.Importance}\' and ";
             }
 
             if (request.HasAttachments != null)
             {
-                if (query != "filter=")
-                {
-                    query += " and ";
-                }
 
                 if ("true".Equals(request.HasAttachments, StringComparison.CurrentCultureIgnoreCase) || "1".Equals(request.HasAttachments))
                 {
-                    query += "hasAttachments eq true";
+                    query += "hasAttachments eq true and ";
                 }
                 else
                 {
-                    query += "hasAttachments eq false";
+                    query += "hasAttachments eq false and ";
                 }
-            }
-
-            if (!string.IsNullOrEmpty(request.Body))
-            {
-                // cannot filter by body content, can search though, but what else can we send in the search query?
-                query = $"$search={request.Body}";
             }
 
             if (!string.IsNullOrEmpty(request.To))
             {
-                // cannot filter by sender, can search though, but what else can we send in the search query?
-                query = $"$search=\"recipients:{request.To}\"";
+                query += $"contains(recipients,\'{request.To}\') and ";
+            }
+
+            if (query.EndsWith(" and "))
+            {
+                query = query.Substring(0, query.Length - 5); // Removing the last " and "
             }
 
             try
@@ -109,7 +87,14 @@ namespace MSOutlook.Services
                 if (msgs == null || msgs.Values == null)
                     return new List<EmailResponse>();
 
-                return msgs.Values.Select(msg => new EmailResponse
+                var msgList = msgs.Values;
+                if (!string.IsNullOrEmpty(request.Body))
+                {
+                    msgList = msgList.Where(msg => msg.BodyPreview.Contains(request.Body)).ToList();
+                }
+                
+
+                return msgList.Select(msg => new EmailResponse
                 {
                     Id = msg.Id,
                     From = (msg.From != null && msg.From.EmailAddress != null ? msg.From.EmailAddress.Address : null),
