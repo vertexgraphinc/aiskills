@@ -20,15 +20,9 @@ This skill allows the authenticated user to perform simple tasks on his/her Zoom
 
 ![Application Basic Info Screenshot](https://raw.githubusercontent.com/vertexgraphinc/aiskills/main/DotNet/Zoom/images/Zoom_App_Basic_Info.png)
 
-5. Navigate to **Scope** and add all necessary permissions in the application (_user:read:user, meeting:read:list_meetings, meeting:write:meeting, meeting:update:meeting, meeting:delete:meeting, user:read:list_recordings_). Then click **Continue** to be ready for using.
+5. Navigate to **Scope** and add all necessary permissions in the application (_user:read:user, meeting:read:list_meetings, meeting:write:meeting, meeting:update:meeting, meeting:delete:meeting, cloud_recording:read:list_recording_files_). Then click **Continue** to be ready for using.
 
 ![API Scope Screenshot](https://raw.githubusercontent.com/vertexgraphinc/aiskills/main/DotNet/Zoom/images/Zoom_Scope.png)
-
-6. (Note: This step is only done while obtaining the authorization code for the Vertexgraph app) While obtaining the authorization code, click on **Add App Now** and authorize the app with the stated scopes/permissions.
-
-![API Scope Screenshot](https://raw.githubusercontent.com/vertexgraphinc/aiskills/main/DotNet/Zoom/images/Zoom_Authentication.png)
-
-![API Scope Screenshot](https://raw.githubusercontent.com/vertexgraphinc/aiskills/main/DotNet/Zoom/images/Zoom_Consent.png)
 
 ## Test Prompts
 
