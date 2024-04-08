@@ -32,13 +32,7 @@ namespace Zoom.Services
                     ClientId = Para.ClientId,
                     ClientSecret = Para.ClientSecret,
                     Code = Para.Code,
-                    RedirectUri = Para.RedirectUri,
-                    Parameters =
-                    {
-                        { "grant_type", Para.GrantType },
-                        { "code", Para.Code },
-                        { "redirect_uri", Para.RedirectUri }
-                    }
+                    RedirectUri = Para.RedirectUri
                 });
             }
             else
@@ -50,12 +44,7 @@ namespace Zoom.Services
 
                     ClientId = Para.ClientId,
                     ClientSecret = Para.ClientSecret,
-                    RefreshToken = Para.RefreshToken,
-                    Parameters =
-                    {
-                        { "grant_type", "refresh_token" },
-                        { "refresh_token", Para.RefreshToken }
-                    }
+                    RefreshToken = Para.RefreshToken
                 });
             }
 
