@@ -4,6 +4,6 @@
     {
         public const string ZoomApiAuthURL = "https://zoom.us/oauth/";
         public const string ZoomApiBaseURL = "https://api.zoom.us/v2/";
-        public const string ZoomApiScope = "user:read:user meeting:read:meeting meeting:write:meeting meeting:update:meeting meeting:delete:meeting";
+        public const string ZoomApiScope = "user:read:user meeting:read:meeting meeting:write:meeting meeting:update:meeting meeting:delete:meeting cloud_recording:read:list_recording_files";
     }
 }

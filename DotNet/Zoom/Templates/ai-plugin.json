@@ -7,7 +7,7 @@
   "auth": {
     "type": "oauth",
     "client_url": "oauth/auth",
-    "scope": "user:read:user meeting:read:meeting meeting:write:meeting meeting:update:meeting meeting:delete:meeting",
+    "scope": "user:read:user meeting:read:meeting meeting:write:meeting meeting:update:meeting meeting:delete:meeting cloud_recording:read:list_recording_files",
     "authorization_url": "oauth/token",
     "authorization_content_type": "application/json"
   },
