@@ -20,7 +20,8 @@ namespace Zoom.Controllers
         [HttpGet("auth")]
         public void Auth()
         {
-            Response.Redirect(APIConstants.ZoomApiAuthURL + $"authorize{Request.QueryString}");
+            string url = APIConstants.ZoomApiAuthURL + $"authorize?client_id={Request.Query["client_id"]}&response_type={Request.Query["response_type"]}&redirect_uri={Request.Query["redirect_uri"]}";
+            Response.Redirect(APIConstants.ZoomApiAuthURL + $"authorize?client_id={Request.Query["client_id"]}&response_type={Request.Query["response_type"]}&redirect_uri={Request.Query["redirect_uri"]}");
         }
 
         [HttpPost("token")]
