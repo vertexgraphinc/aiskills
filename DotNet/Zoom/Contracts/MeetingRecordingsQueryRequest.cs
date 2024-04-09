@@ -21,8 +21,8 @@ namespace Zoom.Contracts
         [JsonPropertyName("to")]
         public string To { get; set; }
 
-        [JsonProperty("recordingType")]
-        [JsonPropertyName("recordingType")]
-        public string RecordingType { get; set; }
+        [JsonProperty("fileType")]
+        [JsonPropertyName("fileType")]
+        public string FileType { get; set; }
     }
 }
