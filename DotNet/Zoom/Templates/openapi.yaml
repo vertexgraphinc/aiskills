@@ -174,6 +174,36 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MeetingRecordingsQueryResponse'
+  $skillapproot/meetings/chats/query:
+    post:
+      summary: Query Zoom Meeting Chats
+      description: Search for chats of user's Zoom meetings
+      operationId: QueryMeetingChats
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MeetingChatsQueryRequest"
+      responses:
+        "200":
+          description: Returns meeting chats that match the query parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeetingChatsQueryResponse'
+        "401":
+          description: Unauthorized, requires valid authentication.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeetingChatsQueryResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeetingChatsQueryResponse'
 components:
   schemas:
     ServerResponse:  
@@ -376,8 +406,8 @@ components:
           title: To
           type: string         
           description: Defines the end boundary for the meetings search. The search includes meetings occured before this specific date.
-        recordingType:
-          title: Recording Type
+        fileType:
+          title: File Type
           type: string
           description: Searches for meeting recordings with type matching the specified recording file type. The possible values are 'MP4', 'M4A', 'TIMELINE', 'TRANSCRIPT', 'CHAT', 'CC', 'CSV', 'SUMMARY', or 'CHAT_MESSAGE'.
     MeetingRecordingsQueryResponse:
@@ -455,3 +485,59 @@ components:
           type: string
           title: Status
           description: The status of the recording file. The possible values are "completed".
+    MeetingChatsQueryRequest:
+      title: Parameters to search for user's Zoom meeting chats
+      type: object
+      properties:
+        topicAgenda:
+          title: Topic Agenda
+          type: string
+          description: Searches for meetings with topics or agendas containing the specified keyword, allowing partial matches for flexibility.
+        type:
+          title: Type
+          type: string
+          description: Searches for meetings with type matching the specified meeting type. The possible values are 'scheduled', 'live', 'upcoming', 'upcoming_meetings', or 'previous_meetings'.
+        from:
+          title: From
+          type: string         
+          description: Specifies the exact starting point in last updated date for the meetings search. The search will return meetings occured strictly after this specified date.
+        to:
+          title: To
+          type: string         
+          description: Defines the end boundary for the meetings search. The search includes meetings occured before this specific date.
+    MeetingChatsQueryResponse:
+      type: object
+      properties:
+        message:   
+          title: Message from Server
+          type: string    
+          description: A success or error message. 
+        chats:
+          type: array
+          items:
+            $ref: "#/components/schemas/MeetingChatResponse"
+          description: The list of Zoom meeting chats.
+    MeetingChatResponse:
+      type: object
+      properties:
+        meetingTopic:
+          type: string
+          title: Meeting Topic
+          description: The subject or topic of the meeting.
+        meetingStartTime:
+          type: string
+          title: Meeting Start Time
+          description: The start time of the meeting.
+        meetingDuration:
+          type: integer
+          title: Meeting Duration
+          description: The duration of the meeting in minutes.
+        meetingType:
+          type: integer
+          title: Type
+          description: The type of meeting. The possible values are 1 (instant meeting), 2 (scheduled meeting), 3 (recurring meeting with no fixed time), or 8 (recurring meeting with fixed time).
+        downloadUrl:
+          type: string
+          format: uri
+          title: Download URL
+          description: The URL for downloading the chat file.

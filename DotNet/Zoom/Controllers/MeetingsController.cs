@@ -210,5 +210,39 @@ namespace Zoom.Controllers
             System.Diagnostics.Debug.WriteLine("[vertex][Meetings][Recordings][Query]response:" + JsonConvert.SerializeObject(resp));
             return resp;
         }
+
+        [HttpPost("chats/query")]
+        public async Task<MeetingChatsQueryResponse> QueryMeetingChats(MeetingChatsQueryRequest request)
+        {
+            System.Diagnostics.Debug.WriteLine("[vertex][Meetings][Chats][Query]");
+            MeetingChatsQueryResponse resp = new MeetingChatsQueryResponse
+            {
+                Chats = null
+            };
+            Response.StatusCode = 200;
+
+            string authorizationHeader = Request.Headers["Authorization"].FirstOrDefault();
+            string token = TokenHelper.GetSessionToken(authorizationHeader);
+            if (string.IsNullOrEmpty(token))
+            {
+                Response.StatusCode = 401;
+                resp.Message = "Unauthorized.";
+                return resp;
+            }
+
+            try
+            {
+                resp.Chats = await _meetingService.QueryMeetingChats(request, token);
+            }
+            catch (Exception e)
+            {
+                Response.StatusCode = 500;
+                resp.Message = e.Message;
+                return resp;
+            }
+
+            System.Diagnostics.Debug.WriteLine("[vertex][Meetings][Chats][Query]response:" + JsonConvert.SerializeObject(resp));
+            return resp;
+        }
     }
 }

@@ -15,5 +15,7 @@ namespace Zoom.Interfaces
         Task<bool> RemoveMeetings(MeetingsRemoveRequest request, string token);
 
         Task<List<MeetingRecordingResponse>> QueryMeetingRecordings(MeetingRecordingsQueryRequest request, string token);
+
+        Task<List<MeetingChatResponse>> QueryMeetingChats(MeetingChatsQueryRequest request, string token);
     }
 }

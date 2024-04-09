@@ -252,6 +252,7 @@ namespace Zoom.Services
                     if (recordings.RecordingFiles == null || !recordings.RecordingFiles.Any())
                         return new List<MeetingRecordingResponse>();
 
+                    recordings.RecordingFiles = recordings.RecordingFiles.Where(recording => string.IsNullOrEmpty(request.FileType) || recording.FileType == request.FileType).ToList();
                     List<MeetingRecordingResponse> recordingResponses = new List<MeetingRecordingResponse>();
                     foreach(ZoomRecording recording in recordings.RecordingFiles)
                     {
@@ -264,6 +265,7 @@ namespace Zoom.Services
                             DownloadUrl = recording.DownloadUrl,
                             FilePath = recording.FilePath,
                             FileSize = recording.FileSize,
+                            FileType = recording.FileType,
                             FileExtension = recording.FileExtension,
                             PlayUrl = recording.PlayUrl,
                             RecordingEnd = recording.RecordingEnd,
@@ -277,6 +279,58 @@ namespace Zoom.Services
                 List<MeetingRecordingResponse> results = (await Task.WhenAll(tasks)).SelectMany(recordingResponse => recordingResponse).ToList();
 
                 System.Diagnostics.Debug.WriteLine("[vertex][MeetingService][QueryMeetingRecordings]return:" + JsonConvert.SerializeObject(results));
+                return results;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public async Task<List<MeetingChatResponse>> QueryMeetingChats(MeetingChatsQueryRequest request, string token)
+        {
+            try
+            {
+                System.Diagnostics.Debug.WriteLine("[vertex][MeetingService][QueryMeetingChats]");
+
+                ZoomMeetings meetings = await QueryRawMeetings(new MeetingsQueryRequest
+                {
+                    TopicAgenda = request.TopicAgenda,
+                    Type = request.Type,
+                    From = request.From,
+                    To = request.To
+                }, token);
+                if (meetings == null || meetings.Meetings == null)
+                    throw new Exception("Meetings not found.");
+
+                var tasks = meetings.Meetings.Select(async meeting =>
+                {
+                    string urlQuery = $"meetings/{meeting.Id}/recordings";
+                    ZoomRecordings recordings = await _apiHelper.Get<ZoomRecordings>(urlQuery, token);
+                    if (recordings.RecordingFiles == null || !recordings.RecordingFiles.Any())
+                        return new List<MeetingChatResponse>();
+
+                    recordings.RecordingFiles = recordings.RecordingFiles.Where(recording => recording.FileType == "CHAT").ToList();
+                    if (recordings.RecordingFiles == null || !recordings.RecordingFiles.Any())
+                        return new List<MeetingChatResponse>();
+
+                    List<MeetingChatResponse> chatResponses = new List<MeetingChatResponse>();
+                    foreach (ZoomRecording recording in recordings.RecordingFiles)
+                    {
+                        chatResponses.Append(new MeetingChatResponse
+                        {
+                            MeetingTopic = meeting.Topic,
+                            MeetingType = meeting.Type,
+                            MeetingStartTime = meeting.StartTime,
+                            MeetingDuration = meeting.Duration,
+                            DownloadUrl = recording.DownloadUrl
+                        });
+                    }
+                    return chatResponses;
+                });
+                List<MeetingChatResponse> results = (await Task.WhenAll(tasks)).SelectMany(chatResponse => chatResponse).ToList();
+
+                System.Diagnostics.Debug.WriteLine("[vertex][MeetingService][QueryMeetingChats]return:" + JsonConvert.SerializeObject(results));
                 return results;
             }
             catch (Exception e)
