@@ -219,6 +219,15 @@ namespace Jira.Contracts
         public List<JiraPriority> AllPriorities { get; set; }
     }
 
+    public class JiraProjectSearchResponse
+    {
+        [JsonProperty("total"), JsonPropertyName("total")]
+        public int Total { get; set; }
+
+        [JsonProperty("values"), JsonPropertyName("values")]
+        public List<JiraProject> Projects { get; set; }
+    }
+
 
     public class JiraCommentRequest
     {

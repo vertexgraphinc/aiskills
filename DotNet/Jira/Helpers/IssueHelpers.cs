@@ -18,8 +18,10 @@ namespace Jira.Helpers
 
         public async Task<SearchIssuesResponse> SearchIssues(SearchIssuesRequest Para)
         {
-            var result = new SearchIssuesResponse();
-            result.IssueList = new List<SimpleJiraIssue>();
+            var result = new SearchIssuesResponse
+            {
+                IssueList = new List<SimpleJiraIssue>()
+            };
 
             var query = "jql=";
           
@@ -240,7 +242,7 @@ namespace Jira.Helpers
             if(assigneeAccountId == null)
             {
                 Response.StatusCode = 500;
-                result.Message = "Found more then one user or no users, provide more accurate information";
+                result.Message = "Error finding assignee user, provide more accurate information";
                 return result;
             }
 
@@ -281,6 +283,24 @@ namespace Jira.Helpers
                 }
 
             }
+
+            if(Para.ProjectKey == null && Para.ProjectName != null)
+            {
+                var projectSearch = await Get<JiraProjectSearchResponse>($"project/search?query={Para.ProjectName}");
+
+                if(projectSearch.Total == 1)
+                {
+                    Para.ProjectKey = projectSearch.Projects[0]?.Key;
+                }
+
+            }
+
+            
+            if(Para.ProjectKey == null){
+                Response.StatusCode = 500;
+                result.Message = "Could not find specified project to add issue to";
+            }
+            
 
             var assigneeId = await FindAccountIdByName(new AssignIssueRequest { NewAssigneeName = Para.Assignee });
 
