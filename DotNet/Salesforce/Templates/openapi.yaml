@@ -1,0 +1,12 @@
+﻿openapi: 3.1.0
+info:
+  title: Salesforce Skill
+  description: A VertexGraph skill to access user's Salesforce account info
+  version: 1.0.0
+servers:
+  - url: $skillhost
+paths:
+  
+components:
+  schemas:
+    
