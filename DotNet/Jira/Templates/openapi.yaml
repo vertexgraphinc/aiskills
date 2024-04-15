@@ -1,0 +1,400 @@
+﻿openapi: 3.1.0
+info:
+  title: Jira Skill
+  description: A VertexGraph Skill to access and perform tasks on the user's Jira account.
+  version: 1.0.0
+servers:
+  - url: $skillhost 
+### ===========================================================================
+### ENDPOINTS==================================================================
+### ===========================================================================   
+paths:
+  $skillapproot/issues/create:
+    post:
+      summary: Create a new issue
+      operationId: CreateIssue
+      requestBody:
+        description: Request body for creating a new issue
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateIssueRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+
+  $skillapproot/issues/search:
+    post:
+      summary: Search for issues based on criteria
+      operationId: SearchIssues
+      requestBody:
+        description: Request body for searching issues
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchIssuesRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchIssuesResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchIssuesResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchIssuesResponse'
+
+  $skillapproot/issues/comment:
+    post:
+      summary: Add a comment to an issue
+      operationId: AddCommentToIssue
+      requestBody:
+        description: Request body for adding a comment to an issue
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddCommentRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+
+  $skillapproot/issues/assign:
+    post:
+      summary: Assign an issue to a user
+      operationId: AssignIssue
+      requestBody:
+        description: Request body for assigning an issue
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssignIssueRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  $skillapproot/issues/update:
+    post:
+      summary: Update an existing issue
+      operationId: UpdateIssue
+      requestBody:
+        description: Request body for updating an existing issue
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateIssueRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+
+  $skillapproot/issues/transition:
+    post:
+      summary: Transition an issue to a different status
+      operationId: TransitionIssue
+      requestBody:
+        description: Request body for transitioning an issue
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransitionIssueRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  $skillapproot/issues/get:
+    post:
+      summary: Get details of a specific issue
+      operationId: GetIssueDetails
+      requestBody:
+        description: Request body for getting details of an issue
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetIssueRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetIssueResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetIssueResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetIssueResponse'
+components:
+  schemas:
+    CreateIssueRequest:
+      type: object
+      properties:
+        projectKey:
+          type: string
+          description: The key of the project where the issue will be created.
+        projectName:
+          type: string
+          description: The name of the project where the issue will be created.
+        summary:
+          type: string
+          description: A brief summary or title of the issue.
+        description:
+          type: string
+          description: A detailed description of the issue.
+        issuetype:
+          type: string
+          description: The type of issue (e.g., Bug, Task, Story).
+        priority:
+          type: string
+          description: The priority of the issue (e.g., High, Medium, Low).
+        assignee:
+          type: string
+          description: The name or username of the user assigned to the issue.
+    SearchIssuesRequest:
+      type: object
+      properties:
+        textQuery:
+          type: string
+          description: A text query used to search for specific keywords or phrases within issues.
+        projectName:
+          type: string
+          description: The name of the project where the issues are located.
+        assignee:
+          type: string
+          description: The name or username of the user assigned to the issues.
+        status:
+          type: string
+          description: The status of the issues (e.g., Open, In Progress, Done).
+        priority:
+          type: string
+          description: The priority of the issues (e.g., High, Medium, Low).
+        issueType:
+          type: string
+          description: The type of issues to search for (e.g., Bug, Task, Story).
+
+    GetIssueRequest:
+      allOf:
+        - $ref: '#/components/schemas/SearchIssuesRequest'
+      properties:
+        issueKey:
+          type: string
+          description: The key of the specific issue to retrieve.
+
+    CommentIssueRequest:
+      allOf:
+        - $ref: '#/components/schemas/GetIssueRequest'
+      properties:
+        comment:
+          type: string
+          description: The comment to be added to the issue.
+    AssignIssueRequest:
+      allOf:
+        - $ref: '#/components/schemas/GetIssueRequest'
+      properties:
+        newAssigneeName:
+          type: string
+          description: The name of the new assignee for the issue.
+        newAssigneeEmail:
+          type: string
+          format: email
+          description: The email address of the new assignee for the issue.
+    TransitionIssueRequest:
+      allOf:
+        - $ref: '#/components/schemas/GetIssueRequest'
+      properties:
+        transition:
+          type: string
+          description: The transition to apply to the issue.
+    UpdateIssueRequest:
+      allOf:
+        - $ref: '#/components/schemas/GetIssueRequest'
+      properties:
+        newSummary:
+          type: string
+          description: The new summary or title of the issue.
+        newDescription:
+          type: string
+          description: The new detailed description of the issue.
+        newIssuetype:
+          type: string
+          description: The new type of issue (e.g., Bug, Task, Story).
+        newAssignee:
+          type: string
+          description: The username or ID of the new user assigned to the issue.
+    SimpleJiraIssue:
+      type: object
+      properties:
+        key:
+          type: string
+          description: The unique key of the issue.
+        summary:
+          type: string
+          description: A brief summary or title of the issue.
+        status:
+          type: string
+          description: The status of the issue.
+        statusCategory:
+          type: string
+          description: The category of the issue status.
+        issueType:
+          type: string
+          description: The type of the issue.
+        projectName:
+          type: string
+          description: The name of the project where the issue belongs.
+        projectKey:
+          type: string
+          description: The key of the project where the issue belongs.
+        description:
+          type: string
+          description: A detailed description of the issue.
+        creator:
+          type: string
+          description: The creator or reporter of the issue.
+        assignee:
+          type: string
+          description: The assignee of the issue.
+        created:
+          type: string
+          description: The date and time when the issue was created.
+        updated:
+          type: string
+          description: The date and time when the issue was last updated.
+        resolution:
+          type: string
+          description: The resolution status of the issue.
+        resolutionDescription:
+          type: string
+          description: A description of the resolution of the issue.
+        resolutionDate:
+          type: string
+          description: The date and time when the issue was resolved.
+        priority:
+          type: string
+          description: The priority of the issue.
+    ServerResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: A message from the server.
+    SearchIssuesResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: A message from the server.
+        issueList:
+          type: array
+          description: A list of Jira issues matching the search criteria.
+          items:
+            $ref: '#/components/schemas/SimpleJiraIssue'
+    GetIssueResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: A message from the server.
+        issue:
+          $ref: '#/components/schemas/SimpleJiraIssue'
+
+### ++++++++++++++++++++++++++++++++++++++++++++++++++++ 
