@@ -1,0 +1,21 @@
+﻿{
+  "schema_version": "v3",
+  "name_for_human": "Jira",
+  "name_for_model": "Jira",
+  "description_for_human": "A Skill to access and perform tasks on the user's Jira account.",
+  "description_for_model": "A Skill to access and perform tasks on the user's Jira account.",
+  "auth": {
+    "type": "oauth",
+    "client_url": "skill/oauth/auth",
+    "scope": "read:jira-work write:jira-work read:jira-user",
+    "authorization_url": "skill/oauth/token",
+    "authorization_content_type": "application/json"
+  },
+  "api": {
+    "type": "openapi",
+    "url": "skill/apidefs"
+  },
+  "logo_url": "<need url here>",
+  "contact_email": "support@vertexgraph.com",
+  "legal_info_url": "https://vertexgraph.sharepoint.com/sites/vertexgraph-public/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2Fvertexgraph%2Dpublic%2FShared%20Documents%2FVertexGraph%20Privacy%20Policy%20%2D%20August%2022%2Epdf&parent=%2Fsites%2Fvertexgraph%2Dpublic%2FShared%20Documents&p=true&ga=1"
+}
