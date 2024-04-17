@@ -81,7 +81,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AddCommentRequest'
+              $ref: '#/components/schemas/CommentIssueRequest'
       responses:
         '200':
           description: OK
@@ -272,24 +272,78 @@ components:
           description: The type of issues to search for (e.g., Bug, Task, Story).
 
     GetIssueRequest:
-      allOf:
-        - $ref: '#/components/schemas/SearchIssuesRequest'
       properties:
+        textQuery:
+          type: string
+          description: A text query used to search for specific keywords or phrases within the issue.
+        projectName:
+          type: string
+          description: The name of the project where the issue is located.
+        assignee:
+          type: string
+          description: The name or username of the user assigned to the issue.
+        status:
+          type: string
+          description: The status of the issue (e.g., Open, In Progress, Done).
+        priority:
+          type: string
+          description: The priority of the issue (e.g., High, Medium, Low).
+        issueType:
+          type: string
+          description: The type of issue.
         issueKey:
           type: string
           description: The key of the specific issue to retrieve.
 
     CommentIssueRequest:
-      allOf:
-        - $ref: '#/components/schemas/GetIssueRequest'
       properties:
+        textQuery:
+          type: string
+          description: A text query used to search for specific keywords or phrases within the issue.
+        projectName:
+          type: string
+          description: The name of the project where the issue is located.
+        assignee:
+          type: string
+          description: The name or username of the user assigned to the issue.
+        status:
+          type: string
+          description: The status of the issue (e.g., Open, In Progress, Done).
+        priority:
+          type: string
+          description: The priority of the issue (e.g., High, Medium, Low).
+        issueType:
+          type: string
+          description: The type of issue.
+        issueKey:
+          type: string
+          description: The key of the specific issue to retrieve.
         comment:
           type: string
           description: The comment to be added to the issue.
     AssignIssueRequest:
-      allOf:
-        - $ref: '#/components/schemas/GetIssueRequest'
       properties:
+        textQuery:
+          type: string
+          description: A text query used to search for specific keywords or phrases within the issue.
+        projectName:
+          type: string
+          description: The name of the project where the issue is located.
+        assignee:
+          type: string
+          description: The name or username of the user assigned to the issue.
+        status:
+          type: string
+          description: The status of the issue (e.g., Open, In Progress, Done).
+        priority:
+          type: string
+          description: The priority of the issue (e.g., High, Medium, Low).
+        issueType:
+          type: string
+          description: The type of issue.
+        issueKey:
+          type: string
+          description: The key of the specific issue to retrieve.
         newAssigneeName:
           type: string
           description: The name of the new assignee for the issue.
@@ -298,16 +352,54 @@ components:
           format: email
           description: The email address of the new assignee for the issue.
     TransitionIssueRequest:
-      allOf:
-        - $ref: '#/components/schemas/GetIssueRequest'
       properties:
+        textQuery:
+          type: string
+          description: A text query used to search for specific keywords or phrases within the issue.
+        projectName:
+          type: string
+          description: The name of the project where the issue is located.
+        assignee:
+          type: string
+          description: The name or username of the user assigned to the issue.
+        status:
+          type: string
+          description: The status of the issue (e.g., Open, In Progress, Done).
+        priority:
+          type: string
+          description: The priority of the issue (e.g., High, Medium, Low).
+        issueType:
+          type: string
+          description: The type of issue.
+        issueKey:
+          type: string
+          description: The key of the specific issue to retrieve.
         transition:
           type: string
           description: The transition to apply to the issue.
     UpdateIssueRequest:
-      allOf:
-        - $ref: '#/components/schemas/GetIssueRequest'
       properties:
+        textQuery:
+          type: string
+          description: A text query used to search for specific keywords or phrases within the issue.
+        projectName:
+          type: string
+          description: The name of the project where the issue is located.
+        assignee:
+          type: string
+          description: The name or username of the user assigned to the issue.
+        status:
+          type: string
+          description: The status of the issue (e.g., Open, In Progress, Done).
+        priority:
+          type: string
+          description: The priority of the issue (e.g., High, Medium, Low).
+        issueType:
+          type: string
+          description: The type of issue.
+        issueKey:
+          type: string
+          description: The key of the specific issue to retrieve.
         newSummary:
           type: string
           description: The new summary or title of the issue.
