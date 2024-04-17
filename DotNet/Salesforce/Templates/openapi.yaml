@@ -6,7 +6,322 @@ info:
 servers:
   - url: $skillhost
 paths:
-  
+  $skillapproot/campaigns/query:
+    post:
+      summary: Query Salesforce Campaigns
+      description: Search for user's Salesforce campaigns
+      operationId: QueryCampaigns
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CampaignsQueryRequest"
+      responses:
+        "200":
+          description: Returns campaigns that match the query parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignsQueryResponse'
+        "401":
+          description: Unauthorized, requires valid authentication.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignsQueryResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignsQueryResponse'
+  $skillapproot/campaigns/create:
+    post:
+      summary: Create a New Salesforce Campaign
+      description: Create a new campaign in Salesforce
+      operationId: CreateCampaign
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CampaignCreateRequest'
+      responses:
+        '201':
+          description: Campaign created successfully.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignCreateResponse'
+        '400':
+          description: Error in creating the campaign, possibly due to invalid input.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignCreateResponse'
+        '401':
+          description: Unauthorized, requires valid authentication.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignCreateResponse'
+        '500':
+          description: Server Error
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignCreateResponse'
+  $skillapproot/campaigns/update:
+    post:
+      summary: Update Salesforce Campaigns Details
+      description: Update details of specific campaigns in Salesforce
+      operationId: UpdateCampaigns
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CampaignsUpdateRequest'
+      responses:
+        '200':
+          description: Campaigns updated successfully.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '400':
+          description: Error in updating the campaigns, possibly due to invalid input.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '401':
+          description: Unauthorized, requires valid authentication.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '500':
+          description: Server Error
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  $skillapproot/campaigns/remove:
+    post:
+      summary: Remove Salesforce Campaigns
+      description: Remove specific campaigns in Salesforce
+      operationId: RemoveCampaigns
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CampaignsRemoveRequest'
+      responses:
+        '200':
+          description: Campaigns removed successfully.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '400':
+          description: Error in removing the campaigns, possibly due to invalid input.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '401':
+          description: Unauthorized, requires valid authentication.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '500':
+          description: Server Error
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+      
 components:
   schemas:
-    
+    ServerResponse:  
+      title: Server Response
+      type: object
+      properties: 
+        message:   
+          title: Message from Server. Used by various operations.
+          type: string    
+          description: A success or error message.
+    CampaignsQueryRequest:
+      title: Parameters to search for user's Salesforce campaigns
+      type: object
+      properties:
+        description:
+          title: Description
+          type: string
+          description: Searches for campaigns with descriptions containing the specified keyword, allowing partial matches for flexibility.
+        name:
+          title: Name
+          type: string
+          description: Searches for campaigns with name matching the specified campaign name.
+        createdBeginTime:
+          title: Created Begin Time
+          type: string         
+          description: Specifies the exact starting point in created time for the campaigns search. The search will return campaigns created strictly after this specified timestamp.
+        createdEndTime:
+          title: Created End Time
+          type: string         
+          description: Defines the end boundary for the campaigns search. The search includes campaigns created before this specific timestamp.
+        modifiedBeginTime:
+          title: Modified Begin Time
+          type: string         
+          description: Specifies the exact starting point in modified time for the campaigns search. The search will return campaigns modified strictly after this specified timestamp.
+        modifiedEndTime:
+          title: Modified End Time
+          type: string         
+          description: Defines the end boundary for the campaigns search. The search includes campaigns modified before this specific timestamp.
+    CampaignsQueryResponse:
+      type: object
+      properties:
+        message:   
+          title: Message from Server
+          type: string    
+          description: A success or error message. 
+        campaigns:
+          type: array
+          items:
+            $ref: "#/components/schemas/CampaignResponse"
+          description: The list of Salesforce campaigns.
+    CampaignResponse:
+      type: object
+      properties:
+        createdDate:
+          type: string
+          description: The date and time when the campaign was created.
+        modifiedDate:
+          type: string
+          format: date-time
+          description: The date and time when the campaign was last modified.
+        name:
+          type: string
+          description: The name of the campaign.
+        description:
+          type: string
+          description: A description of the campaign.
+        campaignCode:
+          type: string
+          description: The code associated with the campaign.
+        color:
+          type: string
+          description: The color associated with the campaign. The color is in hex value.
+        favorite:
+          type: boolean
+          description: Indicates whether the campaign is marked as a favorite.
+    CampaignCreateRequest:
+      title: Parameters to create a Salesforce campaign
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the campaign.
+        description:
+          type: string
+          description: A description of the campaign.
+        campaignCode:
+          type: string
+          description: The code associated with the campaign.
+        color:
+          type: string
+          description: The color associated with the campaign. The color is in hex value.
+        favorite:
+          type: boolean
+          description: Indicates whether the campaign is marked as a favorite.
+      required:
+        - name
+        - description
+        - campaignCode
+        - color
+        - favorite
+    CampaignCreateResponse:
+      type: object
+      properties:
+        message:   
+          title: Message from Server. Used by various operations.
+          type: string    
+          description: A success or error message.
+        campaign:
+          $ref: "#/components/schemas/CampaignResponse"
+    CampaignsUpdateRequest:
+      title: Parameters to update or modify Salesforce campaigns
+      type: object
+      properties:
+        description:
+          title: Description
+          type: string
+          description: Searches for campaigns with descriptions containing the specified keyword, allowing partial matches for flexibility.
+        name:
+          title: Name
+          type: string
+          description: Searches for campaigns with name matching the specified campaign name.
+        createdBeginTime:
+          title: Created Begin Time
+          type: string         
+          description: Specifies the exact starting point in created time for the campaigns search. The search will return campaigns created strictly after this specified timestamp.
+        createdEndTime:
+          title: Created End Time
+          type: string         
+          description: Defines the end boundary for the campaigns search. The search includes campaigns created before this specific timestamp.
+        modifiedBeginTime:
+          title: Modified Begin Time
+          type: string         
+          description: Specifies the exact starting point in modified time for the campaigns search. The search will return campaigns modified strictly after this specified timestamp.
+        modifiedEndTime:
+          title: Modified End Time
+          type: string         
+          description: Defines the end boundary for the campaigns search. The search includes campaigns modified before this specific timestamp.
+        updatedName:
+          type: string
+          description: The updated name of the campaign.
+        updatedDescription:
+          type: string
+          description: The updated description of the campaign.
+        updatedCampaignCode:
+          type: string
+          description: The updated code associated with the campaign.
+        updatedColor:
+          type: string
+          description: The updated color associated with the campaign. The color is in hex value.
+        updatedFavorite:
+          type: boolean
+          description: The updated favorite status of the campaign. Indicates whether the campaign is marked as a favorite.
+    CampaignsRemoveRequest:
+      title: Parameters to remove Salesforce campaigns
+      type: object
+      properties:
+        description:
+          title: Description
+          type: string
+          description: Searches for campaigns with descriptions containing the specified keyword, allowing partial matches for flexibility.
+        name:
+          title: Name
+          type: string
+          description: Searches for campaigns with name matching the specified campaign name.
+        createdBeginTime:
+          title: Created Begin Time
+          type: string         
+          description: Specifies the exact starting point in created time for the campaigns search. The search will return campaigns created strictly after this specified timestamp.
+        createdEndTime:
+          title: Created End Time
+          type: string         
+          description: Defines the end boundary for the campaigns search. The search includes campaigns created before this specific timestamp.
+        modifiedBeginTime:
+          title: Modified Begin Time
+          type: string         
+          description: Specifies the exact starting point in modified time for the campaigns search. The search will return campaigns modified strictly after this specified timestamp.
+        modifiedEndTime:
+          title: Modified End Time
+          type: string         
+          description: Defines the end boundary for the campaigns search. The search includes campaigns modified before this specific timestamp.
