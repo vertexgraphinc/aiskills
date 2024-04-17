@@ -69,6 +69,7 @@ namespace Jira.Helpers
                 
                 foreach(var issue in jiraResponse.Issues)
                 {
+
                     result.IssueList.Add(SimplifyJiraIssue(issue));
                 }
             }
@@ -91,7 +92,7 @@ namespace Jira.Helpers
             if (Has(Para.IssueKey))
             {
                 var jiraIssueResponse = await Get<JiraIssue>($"issue/{Para.IssueKey}");
-                if (jiraIssueResponse == null)
+                if (jiraIssueResponse == null || jiraIssueResponse.Key == null || jiraIssueResponse.Fields == null)
                 {
                     Response.StatusCode = 500;
                     result.Message = "Could not find issue with key";
@@ -273,16 +274,20 @@ namespace Jira.Helpers
 
             var allIssueTypes = await Get<List<JiraIssueType>>($"issuetype");
 
-            var issueTypeId = "";
+            string issueTypeId = null;
 
-            foreach (JiraIssueType type in allIssueTypes)
+            if (Para.IssueType != null)
             {
-                if (Para.IssueType.ToLower() == type.Name.ToLower())
+                foreach (JiraIssueType type in allIssueTypes)
                 {
-                    issueTypeId = type.Id;
+                    if (Para.IssueType.ToLower() == type.Name.ToLower())
+                    {
+                        issueTypeId = type.Id;
+                        break;
+                    }
                 }
-
             }
+            
 
             if(Para.ProjectKey == null && Para.ProjectName != null)
             {
@@ -299,6 +304,7 @@ namespace Jira.Helpers
             if(Para.ProjectKey == null){
                 Response.StatusCode = 500;
                 result.Message = "Could not find specified project to add issue to";
+                return result;
             }
             
 
@@ -369,6 +375,7 @@ namespace Jira.Helpers
                     if (Para.NewIssueType.ToLower() == type.Name.ToLower())
                     {
                         issueTypeId = type.Id;
+                        break;
                     }
 
                 }
