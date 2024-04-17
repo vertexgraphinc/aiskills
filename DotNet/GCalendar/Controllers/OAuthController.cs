@@ -60,12 +60,7 @@ namespace GCalendar.Controllers
 
                     ClientId = Para.ClientId,
                     ClientSecret = Para.ClientSecret,
-                    RefreshToken = Para.Code,                    
-                    Parameters =
-                        {
-
-                            { "scope", "https://www.googleapis.com/auth/calendar" }
-                        }
+                    RefreshToken = Para.Code
                 });
 
             }
