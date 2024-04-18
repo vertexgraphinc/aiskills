@@ -144,7 +144,312 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerResponse'
-      
+  $skillapproot/contacts/query:
+    post:
+      summary: Query Salesforce Contacts
+      description: Search for user's Salesforce contacts
+      operationId: QueryContacts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContactsQueryRequest"
+      responses:
+        "200":
+          description: Returns contacts that match the query parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactsQueryResponse'
+        "401":
+          description: Unauthorized, requires valid authentication.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactsQueryResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContactsQueryResponse'
+  $skillapproot/contacts/create:
+    post:
+      summary: Create a New Salesforce Contact
+      description: Create a new contact in Salesforce
+      operationId: CreateContact
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactCreateRequest'
+      responses:
+        '201':
+          description: Contact created successfully.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '400':
+          description: Error in creating the contact, possibly due to invalid input.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '401':
+          description: Unauthorized, requires valid authentication.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '500':
+          description: Server Error
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  $skillapproot/contacts/update:
+    post:
+      summary: Update Salesforce Contacts Details
+      description: Update details of specific contacts in Salesforce
+      operationId: UpdateContacts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactsUpdateRequest'
+      responses:
+        '200':
+          description: Contacts updated successfully.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '400':
+          description: Error in updating the contacts, possibly due to invalid input.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '401':
+          description: Unauthorized, requires valid authentication.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '500':
+          description: Server Error
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  $skillapproot/contacts/remove:
+    post:
+      summary: Remove Salesforce Contacts
+      description: Remove specific contacts in Salesforce
+      operationId: RemoveContacts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ContactsRemoveRequest'
+      responses:
+        '200':
+          description: Contacts removed successfully.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '400':
+          description: Error in removing the contacts, possibly due to invalid input.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '401':
+          description: Unauthorized, requires valid authentication.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '500':
+          description: Server Error
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  $skillapproot/messages/query:
+    post:
+      summary: Query Salesforce Message Definitions
+      description: Search for user's Salesforce message definitions
+      operationId: QueryMessages
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MessagesQueryRequest"
+      responses:
+        "200":
+          description: Returns message definitions that match the query parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessagesQueryResponse'
+        "401":
+          description: Unauthorized, requires valid authentication.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessagesQueryResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessagesQueryResponse'
+  $skillapproot/messages/send:
+    post:
+      summary: Send Salesforce Messages
+      description: Send Salesforce message to multiple recipients
+      operationId: SendMessages
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MessagesSendRequest"
+      responses:
+        "200":
+          description: Message sent successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "401":
+          description: Unauthorized, requires valid authentication.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  $skillapproot/messages/create:
+    post:
+      summary: Create a New Salesforce Message
+      description: Create a new message definition in Salesforce
+      operationId: CreateMessage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageCreateRequest'
+      responses:
+        '201':
+          description: Message created successfully.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '400':
+          description: Error in creating the message definition, possibly due to invalid input.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '401':
+          description: Unauthorized, requires valid authentication.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '500':
+          description: Server Error
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  $skillapproot/messages/update:
+    post:
+      summary: Update Salesforce Messages Details
+      description: Update details of specific message definitions in Salesforce
+      operationId: UpdateMessages
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessagesUpdateRequest'
+      responses:
+        '200':
+          description: Messages updated successfully.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '400':
+          description: Error in updating the message definitions, possibly due to invalid input.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '401':
+          description: Unauthorized, requires valid authentication.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '500':
+          description: Server Error
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  $skillapproot/messages/remove:
+    post:
+      summary: Remove Salesforce Messages
+      description: Remove specific message definitions in Salesforce
+      operationId: RemoveMessages
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessagesRemoveRequest'
+      responses:
+        '200':
+          description: Messages removed successfully.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '400':
+          description: Error in removing the message definitions, possibly due to invalid input.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '401':
+          description: Unauthorized, requires valid authentication.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '500':
+          description: Server Error
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
 components:
   schemas:
     ServerResponse:  
@@ -225,18 +530,23 @@ components:
       type: object
       properties:
         name:
+          title: Name
           type: string
           description: The name of the campaign.
         description:
+          title: Description
           type: string
           description: A description of the campaign.
         campaignCode:
+          title: Campaign Code
           type: string
           description: The code associated with the campaign.
         color:
+          title: Color
           type: string
           description: The color associated with the campaign. The color is in hex value.
         favorite:
+          title: Favorite
           type: boolean
           description: Indicates whether the campaign is marked as a favorite.
       required:
@@ -283,18 +593,23 @@ components:
           type: string         
           description: Defines the end boundary for the campaigns search. The search includes campaigns modified before this specific timestamp.
         updatedName:
+          title: Updated Name
           type: string
           description: The updated name of the campaign.
         updatedDescription:
+          title: Updated Description
           type: string
           description: The updated description of the campaign.
         updatedCampaignCode:
+          title: Updated Campaign Code
           type: string
           description: The updated code associated with the campaign.
         updatedColor:
+          title: Updated Color
           type: string
           description: The updated color associated with the campaign. The color is in hex value.
         updatedFavorite:
+          title: Updated Favorite
           type: boolean
           description: The updated favorite status of the campaign. Indicates whether the campaign is marked as a favorite.
     CampaignsRemoveRequest:
@@ -325,3 +640,213 @@ components:
           title: Modified End Time
           type: string         
           description: Defines the end boundary for the campaigns search. The search includes campaigns modified before this specific timestamp.
+    ContactsQueryRequest:
+      title: Parameters to search for user's Salesforce contacts
+      type: object
+      properties:
+        contactKeys:
+          title: Contact Keys
+          type: string
+          description: Contact keys (in email format) concatenated together with commas in between. The search will return contacts with contact key matching with one of the specified contact keys.
+    ContactsQueryResponse:
+      type: object
+      properties:
+        message:   
+          title: Message from Server
+          type: string    
+          description: A success or error message. 
+        contacts:
+          type: array
+          items:
+            $ref: "#/components/schemas/ContactResponse"
+          description: The list of Salesforce contacts.
+    ContactResponse:
+      type: object
+      properties:
+        requestedContactKey:
+          title: Requested Contact Key
+          description: The key requested for the contact
+          type: string
+        isNewContact:
+          title: Is New Contact
+          description: Indicates whether the contact is new
+          type: boolean
+        contactType:
+          title: Contact Type
+          description: The type of the contact
+          type: string
+        contactStatus:
+          title: Contact Status
+          description: The status of the contact
+          type: string
+    ContactCreateRequest:
+      title: Parameters to create a Salesforce contact
+      type: object
+      properties:
+        contactKey:
+          title: Contact Key
+          type: string
+          format: email
+          description: The primary address for the contact.
+        firstName:
+          title: First Name
+          type: string
+          description: First name of the contact.
+        lastName:
+          title: Last Name
+          type: string
+          description: Last name of the contact.
+        phoneNumber:
+          title: Phone Number
+          type: string
+          description: The phone number associated with the contact.
+      required:
+        - contactKey
+    ContactsUpdateRequest:
+      title: Parameters to update or modify Salesforce contacts
+      type: object
+      properties:
+        contactKeys:
+          title: Contact Keys
+          type: string
+          description: Contact keys (in email format) concatenated together with commas in between. The search will return contacts with contact key matching with one of the specified contact keys.
+        updatedFirstName:
+          title: First Name
+          type: string
+          description: Updated first name of the contact.
+        updatedLastName:
+          title: Last Name
+          type: string
+          description: Updated last name of the contact.
+        updatedPhoneNumber:
+          title: Phone Number
+          type: string
+          description: The updated phone number associated with the contact.
+    ContactsRemoveRequest:
+      title: Parameters to remove Salesforce contacts
+      type: object
+      properties:
+        contactKeys:
+          title: Contact Keys
+          type: string
+          description: Contact keys (in email format) concatenated together with commas in between. The search will return contacts with contact key matching with one of the specified contact keys.
+    MessagesQueryRequest:
+      title: Parameters to search for user's Salesforce message definitions
+      type: object
+      properties:
+        definitionKeys:
+          title: Definition Keys
+          type: string
+          description: Definition keys concatenated together with commas in between. The search will return message definitions with definition key matching with one of the specified definition keys.
+        status:
+          title: Status
+          type: string
+          description: Searches for message definitions with status matching the specified status. The possible values are 'active', 'inactive', or 'deleted'.
+    MessagesQueryResponse:
+      type: object
+      properties:
+        message:   
+          title: Message from Server
+          type: string    
+          description: A success or error message. 
+        messages:
+          type: array
+          items:
+            $ref: "#/components/schemas/MessageResponse"
+          description: The list of Salesforce message definitions.
+    MessageResponse:
+      type: object
+      properties:
+        definitionKey:
+          title: Definition Key
+          description: The unique key of the message definition
+          type: string
+        status:
+          title: Status
+          description: The status of the message definition
+          type: string
+        name:
+          title: Name
+          description: The name of the message definition
+          type: string
+        description:
+          title: Description
+          description: The description of the message definition
+          type: string
+        createdDate:
+          title: Created Date
+          description: The date when the message definition was created
+          type: string
+        modifiedDate:
+          title: Modified Date
+          description: The date when the message definition was last modified
+          type: string
+    MessagesSendRequest:
+      title: Parameters to send Salesforce message to recipients
+      type: object
+      properties:
+        definitionKey:
+          title: Definition Key
+          type: string
+          description: The definition key of the message definition that wanted to be sent.
+        emails:
+          title: Member Emails
+          type: string
+          description: Recipients email addresses concatenated together with commas in between.
+          example: "test@test.com,test1@test1.com,test2@test2.com"
+    MessageCreateRequest:
+      title: Parameters to create a Salesforce message definition
+      type: object
+      properties:
+        definitionKey:
+          title: Definition Key
+          description: The unique key of the message definition
+          type: string
+        status:
+          title: Status
+          description: The status of the message definition
+          type: string
+        name:
+          title: Name
+          description: The name of the message definition
+          type: string
+        description:
+          title: Description
+          description: The description of the message definition
+          type: string
+      required:
+        - definitionKey
+        - status
+        - name
+    MessagesUpdateRequest:
+      title: Parameters to update or modify Salesforce message definitions
+      type: object
+      properties:
+        definitionKeys:
+          title: Definition Keys
+          type: string
+          description: Definition keys concatenated together with commas in between. The search will return message definitions with definition key matching with one of the specified definition keys.
+        status:
+          title: Status
+          type: string
+          description: Searches for message definitions with status matching the specified status. The possible values are 'active', 'inactive', or 'deleted'.
+        updatedName:
+          title: Updated Name
+          description: The updated name of the message definition
+          type: string
+        updatedDescription:
+          title: Description
+          description: The updated description of the message definition
+          type: string
+    MessagesRemoveRequest:
+      title: Parameters to remove Salesforce message definitions
+      type: object
+      properties:
+        definitionKeys:
+          title: Definition Keys
+          type: string
+          description: Definition keys concatenated together with commas in between. The search will return message definitions with definition key matching with one of the specified definition keys.
+        status:
+          title: Status
+          type: string
+          description: Searches for message definitions with status matching the specified status. The possible values are 'active', 'inactive', or 'deleted'.
