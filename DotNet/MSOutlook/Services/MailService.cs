@@ -99,7 +99,7 @@ namespace MSOutlook.Services
                     Id = msg.Id,
                     From = (msg.From != null && msg.From.EmailAddress != null ? msg.From.EmailAddress.Address : null),
                     Subject = msg.Subject,
-                    Body = msg.BodyPreview, //Utils.CleanHtml(msg.BodyPreview);
+                    Body = UtilityHelper.Sanitize(UtilityHelper.StripHtmlTags(msg.Body.Content)),
                     Received = msg.ReceivedDateTime.ToString()
                 }).ToList();
             }
