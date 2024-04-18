@@ -48,10 +48,9 @@ namespace MSOutlook.Services
                     {
                         Address = APIConstants.GraphApiAuthURL + $"{tenant}/oauth2/v2.0/token",
                         GrantType = Para.GrantType,
-
                         ClientId = Para.ClientId,
                         ClientSecret = Para.ClientSecret,
-                        RefreshToken = Para.RefreshToken
+                        RefreshToken = Para.Code
                     });
                 }
                 catch (Exception ex)
