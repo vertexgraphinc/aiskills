@@ -103,9 +103,13 @@ namespace MSOutlook.Controllers
 
             var emailList = await _mailService.ListMessage(findEmailRequest, token);
 
-            if (emailList.Count == 0 || emailList.Count > 1)
+            if (emailList.Count == 0)
             {
-                return StatusCode(500, "Email not found, give more specific information");
+                return StatusCode(500, "Email not found, please provide more specific information");
+            }
+            if (emailList.Count > 1)
+            {
+                return StatusCode(500, "More than 1 email was found, please narrow down your search");
             }
 
             var id = emailList[0].Id;
