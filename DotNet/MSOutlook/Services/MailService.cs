@@ -8,6 +8,7 @@ using MSOutlook.Helpers;
 using System.Linq;
 using System.Net.Http;
 using System.Runtime.ConstrainedExecution;
+using System.Collections;
 
 
 namespace MSOutlook.Services
@@ -24,7 +25,7 @@ namespace MSOutlook.Services
         #region Message
         public async Task<List<EmailResponse>> ListMessage(QueryEmailsRequest request, string token)
         {
-            string query = "$filter=";
+            string query = "$top=250&filter=";
 
             string beginDate = UtilityHelper.FormatDateTimeUtc(DateTime.Now.AddDays(-1));
             string endDate = UtilityHelper.FormatDateTimeUtc(DateTime.Now);
@@ -45,12 +46,7 @@ namespace MSOutlook.Services
 
             if (!string.IsNullOrEmpty(request.From))
             {
-                query += $"(contains(from/emailAddress/address, \'{request.From}\') or contains(from/emailAddress/name, '{request.From}')) and ";
-            }
-
-            if (!string.IsNullOrEmpty(request.Subject))
-            {
-                query += $"contains(subject, \'{request.Subject}\') and ";
+                query += $"(from/emailAddress/address eq \'{request.From}\' or from/emailAddress/name eq '{request.From}') and ";
             }
 
             if (!string.IsNullOrEmpty(request.Importance))
@@ -73,7 +69,7 @@ namespace MSOutlook.Services
 
             if (!string.IsNullOrEmpty(request.To))
             {
-                query += $"contains(recipients,\'{request.To}\') and ";
+                query += $"recipients eq \'{request.To}\' and ";
             }
 
             if (query.EndsWith(" and "))
@@ -88,11 +84,23 @@ namespace MSOutlook.Services
                     return new List<EmailResponse>();
 
                 var msgList = msgs.Values;
+                if (!string.IsNullOrEmpty(request.Subject))
+                {
+                    //due to performance reasons, the outlook does support contains OData query
+                    //apply a contains filter on the subject after the initial query
+                    msgList = msgList.Where(msg => msg.Subject.Contains(request.Subject)).ToList();
+                }
+
                 if (!string.IsNullOrEmpty(request.Body))
                 {
-                    msgList = msgList.Where(msg => msg.BodyPreview.Contains(request.Body)).ToList();
+                    //due to performance reasons, the outlook does support contains OData query
+                    //apply a contains filter on the body after the initial query
+                    msgList = msgList.Where(msg => msg.Body.Content.Contains(request.Body)).ToList();
                 }
-                
+                if(msgList.Count > 20)
+                {
+                    msgList = msgList.Take(20).ToList();
+                }
 
                 return msgList.Select(msg => new EmailResponse
                 {
