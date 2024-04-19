@@ -304,22 +304,22 @@ components:
           title: Name
           type: string
           description: Searches for campaigns with name matching the specified campaign name.
-        createdBeginTime:
-          title: Created Begin Time
+        type:
+          title: Type
+          type: string
+          description: Searches for campaigns with type matching the specified campaign type. The possible values are 'Conference', 'Webinar', 'Trade Show', 'Public Relations', 'Partners', 'Referral Program', 'Advertisement', 'Banner Ads', 'Direct Mail', 'Email', 'Telemarketing', and 'Other'.
+        status:
+          title: Status
+          type: string
+          description: Searches for campaigns with status matching the specified campaign status. The possible values are 'Planned', 'In Progress', 'Completed', and 'Aborted'.
+        startDateBeginTime:
+          title: Start Date Begin Time
           type: string         
-          description: Specifies the exact starting point in created time for the campaigns search. The search will return campaigns created strictly after this specified timestamp.
-        createdEndTime:
-          title: Created End Time
+          description: Specifies the exact starting point in start date for the campaigns search. The search will return campaigns started strictly after this specified timestamp.
+        startDateEndTime:
+          title: Start Date End Time
           type: string         
-          description: Defines the end boundary for the campaigns search. The search includes campaigns created before this specific timestamp.
-        modifiedBeginTime:
-          title: Modified Begin Time
-          type: string         
-          description: Specifies the exact starting point in modified time for the campaigns search. The search will return campaigns modified strictly after this specified timestamp.
-        modifiedEndTime:
-          title: Modified End Time
-          type: string         
-          description: Defines the end boundary for the campaigns search. The search includes campaigns modified before this specific timestamp.
+          description: Defines the end boundary for the campaigns search. The search includes campaigns started before this specific timestamp.
     CampaignsQueryResponse:
       type: object
       properties:
@@ -335,28 +335,34 @@ components:
     CampaignResponse:
       type: object
       properties:
-        createdDate:
-          type: string
-          description: The date and time when the campaign was created.
-        modifiedDate:
-          type: string
-          format: date-time
-          description: The date and time when the campaign was last modified.
         name:
+          title: Name
           type: string
           description: The name of the campaign.
+        isActive:
+          title: Is Active
+          type: boolean
+          description: Indicates whether the campaign is active or not. Default is false.
+        type:
+          title: Type
+          type: string
+          description: The type of the campaign. The possible values are 'Conference', 'Webinar', 'Trade Show', 'Public Relations', 'Partners', 'Referral Program', 'Advertisement', 'Banner Ads', 'Direct Mail', 'Email', 'Telemarketing', and 'Other'.
+        status:
+          title: Status
+          type: string
+          description: The type of the campaign. The possible values are 'Planned', 'In Progress', 'Completed', and 'Aborted'.
+        startDate:
+          title: Start Date
+          type: string
+          description: The start date of the campaign. The format is in 'MM/DD/YYYY'.
+        endDate:
+          title: End Date
+          type: string
+          description: The end date of the campaign. The format is in 'MM/DD/YYYY'.
         description:
+          title: Description
           type: string
           description: A description of the campaign.
-        campaignCode:
-          type: string
-          description: The code associated with the campaign.
-        color:
-          type: string
-          description: The color associated with the campaign. The color is in hex value.
-        favorite:
-          type: boolean
-          description: Indicates whether the campaign is marked as a favorite.
     CampaignCreateRequest:
       title: Parameters to create a Salesforce campaign
       type: object
@@ -365,28 +371,32 @@ components:
           title: Name
           type: string
           description: The name of the campaign.
+        isActive:
+          title: Is Active
+          type: boolean
+          description: Indicates whether the campaign is active or not. Default is false.
+        type:
+          title: Type
+          type: string
+          description: The type of the campaign. The possible values are 'Conference', 'Webinar', 'Trade Show', 'Public Relations', 'Partners', 'Referral Program', 'Advertisement', 'Banner Ads', 'Direct Mail', 'Email', 'Telemarketing', and 'Other'.
+        status:
+          title: Status
+          type: string
+          description: The type of the campaign. The possible values are 'Planned', 'In Progress', 'Completed', and 'Aborted'.
+        startDate:
+          title: Start Date
+          type: string
+          description: The start date of the campaign. The format is in 'MM/DD/YYYY'.
+        endDate:
+          title: End Date
+          type: string
+          description: The end date of the campaign. The format is in 'MM/DD/YYYY'.
         description:
           title: Description
           type: string
           description: A description of the campaign.
-        campaignCode:
-          title: Campaign Code
-          type: string
-          description: The code associated with the campaign.
-        color:
-          title: Color
-          type: string
-          description: The color associated with the campaign. The color is in hex value.
-        favorite:
-          title: Favorite
-          type: boolean
-          description: Indicates whether the campaign is marked as a favorite.
       required:
         - name
-        - description
-        - campaignCode
-        - color
-        - favorite
     CampaignCreateResponse:
       type: object
       properties:
@@ -408,42 +418,46 @@ components:
           title: Name
           type: string
           description: Searches for campaigns with name matching the specified campaign name.
-        createdBeginTime:
-          title: Created Begin Time
+        type:
+          title: Type
+          type: string
+          description: Searches for campaigns with type matching the specified campaign type. The possible values are 'Conference', 'Webinar', 'Trade Show', 'Public Relations', 'Partners', 'Referral Program', 'Advertisement', 'Banner Ads', 'Direct Mail', 'Email', 'Telemarketing', and 'Other'.
+        status:
+          title: Status
+          type: string
+          description: Searches for campaigns with status matching the specified campaign status. The possible values are 'Planned', 'In Progress', 'Completed', and 'Aborted'.
+        startDateBeginTime:
+          title: Start Date Begin Time
           type: string         
-          description: Specifies the exact starting point in created time for the campaigns search. The search will return campaigns created strictly after this specified timestamp.
-        createdEndTime:
-          title: Created End Time
+          description: Specifies the exact starting point in start date for the campaigns search. The search will return campaigns started strictly after this specified timestamp.
+        startDateEndTime:
+          title: Start Date End Time
           type: string         
-          description: Defines the end boundary for the campaigns search. The search includes campaigns created before this specific timestamp.
-        modifiedBeginTime:
-          title: Modified Begin Time
-          type: string         
-          description: Specifies the exact starting point in modified time for the campaigns search. The search will return campaigns modified strictly after this specified timestamp.
-        modifiedEndTime:
-          title: Modified End Time
-          type: string         
-          description: Defines the end boundary for the campaigns search. The search includes campaigns modified before this specific timestamp.
+          description: Defines the end boundary for the campaigns search. The search includes campaigns started before this specific timestamp.
         updatedName:
           title: Updated Name
           type: string
           description: The updated name of the campaign.
+        updatedType:
+          title: Updated Type
+          type: string
+          description: The updated type of the campaign. The possible values are 'Conference', 'Webinar', 'Trade Show', 'Public Relations', 'Partners', 'Referral Program', 'Advertisement', 'Banner Ads', 'Direct Mail', 'Email', 'Telemarketing', and 'Other'.
+        updatedStatus:
+          title: Updated Status
+          type: string
+          description: The updated type of the campaign. The possible values are 'Planned', 'In Progress', 'Completed', and 'Aborted'.
+        updatedStartDate:
+          title: Updated Start Date
+          type: string
+          description: The updated start date of the campaign. The format is in 'MM/DD/YYYY'.
+        updatedEndDate:
+          title: Updated End Date
+          type: string
+          description: The updated end date of the campaign. The format is in 'MM/DD/YYYY'.
         updatedDescription:
           title: Updated Description
           type: string
           description: The updated description of the campaign.
-        updatedCampaignCode:
-          title: Updated Campaign Code
-          type: string
-          description: The updated code associated with the campaign.
-        updatedColor:
-          title: Updated Color
-          type: string
-          description: The updated color associated with the campaign. The color is in hex value.
-        updatedFavorite:
-          title: Updated Favorite
-          type: boolean
-          description: The updated favorite status of the campaign. Indicates whether the campaign is marked as a favorite.
     CampaignsRemoveRequest:
       title: Parameters to remove Salesforce campaigns
       type: object
@@ -456,30 +470,51 @@ components:
           title: Name
           type: string
           description: Searches for campaigns with name matching the specified campaign name.
-        createdBeginTime:
-          title: Created Begin Time
+        type:
+          title: Type
+          type: string
+          description: Searches for campaigns with type matching the specified campaign type. The possible values are 'Conference', 'Webinar', 'Trade Show', 'Public Relations', 'Partners', 'Referral Program', 'Advertisement', 'Banner Ads', 'Direct Mail', 'Email', 'Telemarketing', and 'Other'.
+        status:
+          title: Status
+          type: string
+          description: Searches for campaigns with status matching the specified campaign status. The possible values are 'Planned', 'In Progress', 'Completed', and 'Aborted'.
+        startDateBeginTime:
+          title: Start Date Begin Time
           type: string         
-          description: Specifies the exact starting point in created time for the campaigns search. The search will return campaigns created strictly after this specified timestamp.
-        createdEndTime:
-          title: Created End Time
+          description: Specifies the exact starting point in start date for the campaigns search. The search will return campaigns started strictly after this specified timestamp.
+        startDateEndTime:
+          title: Start Date End Time
           type: string         
-          description: Defines the end boundary for the campaigns search. The search includes campaigns created before this specific timestamp.
-        modifiedBeginTime:
-          title: Modified Begin Time
-          type: string         
-          description: Specifies the exact starting point in modified time for the campaigns search. The search will return campaigns modified strictly after this specified timestamp.
-        modifiedEndTime:
-          title: Modified End Time
-          type: string         
-          description: Defines the end boundary for the campaigns search. The search includes campaigns modified before this specific timestamp.
+          description: Defines the end boundary for the campaigns search. The search includes campaigns started before this specific timestamp.
     ContactsQueryRequest:
       title: Parameters to search for user's Salesforce contacts
       type: object
       properties:
-        contactKeys:
-          title: Contact Keys
+        firstName:
+          title: First Name
           type: string
-          description: Contact keys (in email format) concatenated together with commas in between. The search will return contacts with contact key matching with one of the specified contact keys.
+          description: Searches for contacts with first names matching the specified contact first name.
+        lastName:
+          title: Last Name
+          type: string
+          description: Searches for contacts with last names matching the specified contact last name.
+        phoneNumber:
+          title: Phone Number
+          type: string
+          description: Searches for contacts with phone numbers matching the specified contact phone number.
+        email:
+          title: Email
+          type: string
+          format: email
+          description: Searches for contacts with emails matching the specified contact email.
+        address:
+          title: Address
+          type: string
+          description: Searches for campaigns with addresses containing the specified keyword, allowing partial matches for flexibility.
+        description:
+          title: Description
+          type: string
+          description: Searches for campaigns with descriptions containing the specified keyword, allowing partial matches for flexibility.
     ContactsQueryResponse:
       type: object
       properties:
@@ -495,31 +530,6 @@ components:
     ContactResponse:
       type: object
       properties:
-        requestedContactKey:
-          title: Requested Contact Key
-          description: The key requested for the contact
-          type: string
-        isNewContact:
-          title: Is New Contact
-          description: Indicates whether the contact is new
-          type: boolean
-        contactType:
-          title: Contact Type
-          description: The type of the contact
-          type: string
-        contactStatus:
-          title: Contact Status
-          description: The status of the contact
-          type: string
-    ContactCreateRequest:
-      title: Parameters to create a Salesforce contact
-      type: object
-      properties:
-        contactKey:
-          title: Contact Key
-          type: string
-          format: email
-          description: The primary address for the contact.
         firstName:
           title: First Name
           type: string
@@ -532,33 +542,130 @@ components:
           title: Phone Number
           type: string
           description: The phone number associated with the contact.
+        email:
+          title: Email
+          type: string
+          format: email
+          description: The email associated with the contact.
+        address:
+          title: Address
+          type: string
+          description: The address associated with the contact.
+        description:
+          title: Description
+          type: string
+          description: The description of the contact.
+    ContactCreateRequest:
+      title: Parameters to create a Salesforce contact
+      type: object
+      properties:
+        firstName:
+          title: First Name
+          type: string
+          description: First name of the contact.
+        lastName:
+          title: Last Name
+          type: string
+          description: Last name of the contact.
+        phoneNumber:
+          title: Phone Number
+          type: string
+          description: The phone number associated with the contact.
+        email:
+          title: Email
+          type: string
+          format: email
+          description: The email associated with the contact.
+        address:
+          title: Address
+          type: string
+          description: The address associated with the contact.
+        description:
+          title: Description
+          type: string
+          description: The description of the contact.
       required:
-        - contactKey
+        - lastName
     ContactsUpdateRequest:
       title: Parameters to update or modify Salesforce contacts
       type: object
       properties:
-        contactKeys:
-          title: Contact Keys
-          type: string
-          description: Contact keys (in email format) concatenated together with commas in between. The search will return contacts with contact key matching with one of the specified contact keys.
-        updatedFirstName:
+        firstName:
           title: First Name
           type: string
-          description: Updated first name of the contact.
-        updatedLastName:
+          description: Searches for contacts with first names matching the specified contact first name.
+        lastName:
           title: Last Name
           type: string
-          description: Updated last name of the contact.
-        updatedPhoneNumber:
+          description: Searches for contacts with last names matching the specified contact last name.
+        phoneNumber:
           title: Phone Number
           type: string
+          description: Searches for contacts with phone numbers matching the specified contact phone number.
+        email:
+          title: Email
+          type: string
+          format: email
+          description: Searches for contacts with emails matching the specified contact email.
+        address:
+          title: Address
+          type: string
+          description: Searches for campaigns with addresses containing the specified keyword, allowing partial matches for flexibility.
+        description:
+          title: Description
+          type: string
+          description: Searches for campaigns with descriptions containing the specified keyword, allowing partial matches for flexibility.
+        updatedFirstName:
+          title: Updated First Name
+          type: string
+          description: The updated first name of the contact.
+        updatedLastName:
+          title: Updated Last Name
+          type: string
+          description: The updated last name of the contact.
+        updatedPhoneNumber:
+          title: Updated Phone Number
+          type: string
           description: The updated phone number associated with the contact.
+        updatedEmail:
+          title: Updated Email
+          type: string
+          format: email
+          description: The updated email associated with the contact.
+        updatedAddress:
+          title: Updated Address
+          type: string
+          description: The updated address associated with the contact.
+        updatedDescription:
+          title: Updated Description
+          type: string
+          description: The updated description of the contact.
     ContactsRemoveRequest:
       title: Parameters to remove Salesforce contacts
       type: object
       properties:
-        contactKeys:
-          title: Contact Keys
+        firstName:
+          title: First Name
           type: string
-          description: Contact keys (in email format) concatenated together with commas in between. The search will return contacts with contact key matching with one of the specified contact keys.
+          description: Searches for contacts with first names matching the specified contact first name.
+        lastName:
+          title: Last Name
+          type: string
+          description: Searches for contacts with last names matching the specified contact last name.
+        phoneNumber:
+          title: Phone Number
+          type: string
+          description: Searches for contacts with phone numbers matching the specified contact phone number.
+        email:
+          title: Email
+          type: string
+          format: email
+          description: Searches for contacts with emails matching the specified contact email.
+        address:
+          title: Address
+          type: string
+          description: Searches for campaigns with addresses containing the specified keyword, allowing partial matches for flexibility.
+        description:
+          title: Description
+          type: string
+          description: Searches for campaigns with descriptions containing the specified keyword, allowing partial matches for flexibility.
