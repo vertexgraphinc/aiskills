@@ -266,7 +266,7 @@ components:
           format: date-time
           title: Original Start
           description: |
-            The original start time of the instance in the result. Optional.
+            The original start time of the instance in the result.
         timeMax:
           type: string
           format: date-time
@@ -281,9 +281,6 @@ components:
           description: |
             Lower bound (inclusive) for an event's end time to filter by.
             The default is the current time.
-      required:
-        - timeMin
-        - timeMax
 ### UpdateEventRequest==================================
     UpdateEventRequest:
       title: Parameters for Update Event operation.
