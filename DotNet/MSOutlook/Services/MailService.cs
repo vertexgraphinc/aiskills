@@ -9,6 +9,8 @@ using System.Linq;
 using System.Net.Http;
 using System.Runtime.ConstrainedExecution;
 using System.Collections;
+using System.Net.Mail;
+using System.Net;
 
 
 namespace MSOutlook.Services
@@ -25,7 +27,7 @@ namespace MSOutlook.Services
         #region Message
         public async Task<List<EmailResponse>> ListMessage(QueryEmailsRequest request, string token)
         {
-            string query = "$top=250&filter=";
+            string query = "$top=250&$filter=";
 
             string beginDate = UtilityHelper.FormatDateTimeUtc(DateTime.Now.AddDays(-1));
             string endDate = UtilityHelper.FormatDateTimeUtc(DateTime.Now);
@@ -69,14 +71,14 @@ namespace MSOutlook.Services
 
             if (!string.IsNullOrEmpty(request.To))
             {
-                query += $"recipients eq \'{request.To}\' and ";
+                query += $"(from/emailAddress/address eq '{request.To}' or from/emailAddress/name eq '{request.To}') and ";
             }
 
             if (query.EndsWith(" and "))
             {
                 query = query.Substring(0, query.Length - 5); // Removing the last " and "
             }
-
+            query = System.Net.WebUtility.UrlEncode(query);
             try
             {
                 MSGraphMessages msgs = await _apiHelper.Get<MSGraphMessages>($"messages?{query}", token);
