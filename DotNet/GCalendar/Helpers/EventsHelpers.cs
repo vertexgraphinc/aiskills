@@ -360,7 +360,25 @@ namespace GCalendar.Helpers
             {
                 if (Has(item.Recurrence))
                 {
-                    var result = await Get<GCalendarListEventsMessage>($"/primary/events/{item.Id}/instances?{searchParams}");
+                    string recurParams = "";
+                    if (!String.IsNullOrEmpty(Para.OriginalStart))
+                    {
+                        recurParams = "timeMin=" + Para.OriginalStart;
+                    }
+                    else
+                    {
+                        recurParams = "timeMin=" + Para.TimeMin;
+                    }
+                    if (!String.IsNullOrEmpty(Para.OriginalStart))
+                    {
+                        if(recurParams.Length > 0)
+                        {
+                            recurParams += "&";
+                        }
+                        recurParams += "timeMax=" + Para.TimeMax;
+                    }
+
+                    var result = await Get<GCalendarListEventsMessage>($"/primary/events/{item.Id}/instances?{recurParams}");
                     if (!(Has(result) && Has(result.Items)))
                         continue;
 
