@@ -102,25 +102,20 @@ namespace MSOutlook.Controllers
             };
 
             var emailList = await _mailService.ListMessage(findEmailRequest, token);
-
-            if (emailList.Count == 0)
+            int deletedCount = 0;
+            foreach(var eml in emailList)
             {
-                return StatusCode(500, "Email not found, please provide more specific information");
+                if (string.IsNullOrEmpty(eml.Id))
+                    continue;
+                bool isDeleted = await _mailService.DeleteMessage(eml.Id, token);
+                if (isDeleted)
+                    deletedCount++;
             }
-            if (emailList.Count > 1)
+            System.Diagnostics.Debug.WriteLine("[vertex][Messages][DeleteMessage] deletedCount:" + deletedCount.ToString());
+
+            if (deletedCount > 0)
             {
-                return StatusCode(500, "More than 1 email was found, please narrow down your search");
-            }
-
-            var id = emailList[0].Id;
-
-            bool isDeleted = await _mailService.DeleteMessage(id, token);
-
-            System.Diagnostics.Debug.WriteLine("[vertex][Messages][DeleteMessage] Response:" + isDeleted);
-
-            if (isDeleted)
-            {
-                return Ok("Message deleted successfully.");
+                return Ok(deletedCount.ToString() + " message(s) deleted successfully.");
             }
             else
             {
