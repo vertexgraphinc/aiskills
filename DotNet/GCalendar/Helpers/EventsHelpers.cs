@@ -115,7 +115,7 @@ namespace GCalendar.Helpers
 
             var eventToUpdate = eventList[0];
 
-            var attendeeStringList = eventToUpdate.AttendeesEmails?.Split(",");
+            var attendeeStringList = !string.IsNullOrEmpty(eventToUpdate.AttendeesEmails) ? eventToUpdate.AttendeesEmails.Split(",").ToList() : new List<string>();
             var attendeeList = new List<Attendee>();
             foreach (var email in attendeeStringList)
             {
