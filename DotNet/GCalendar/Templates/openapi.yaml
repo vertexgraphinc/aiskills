@@ -138,11 +138,11 @@ paths:
             schema:
               $ref: '#/components/schemas/GetRecurringEventRequest'
 ### /events/update---------------------------------------------------- 
-  $skillapproot/events/update:
+  $skillapproot/events/search_and_update:
     post:
-      title: Update event
-      operationId: UpdateEvent
-      summary: Update an event from primary calendar
+      title: Search and Update Event
+      operationId: SearchAndUpdateEvent
+      summary: Searches for calendar events and updates them in one step.
       responses:
         "200":
           description: OK  
@@ -163,7 +163,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ServerResponse'
       requestBody:
-        description: Request body to remove an event
+        description: Request body to update an event
         required: true
         content:
           application/json:
@@ -286,9 +286,6 @@ components:
       title: Parameters for Update Event operation.
       type: object
       properties:
-        id:
-          type: string
-          description: The ID of the event
         timeZone:
           type: string
           description: The time zone of the event.

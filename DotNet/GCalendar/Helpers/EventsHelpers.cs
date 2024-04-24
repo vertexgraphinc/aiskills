@@ -115,7 +115,8 @@ namespace GCalendar.Helpers
 
             var eventToUpdate = eventList[0];
 
-            var attendeeStringList = eventToUpdate.AttendeesEmails?.Split(",");
+            var attendeeStringList = eventToUpdate.AttendeesEmails?.Split(",") ?? new string[0];
+
             var attendeeList = new List<Attendee>();
             foreach (var email in attendeeStringList)
             {
@@ -183,7 +184,7 @@ namespace GCalendar.Helpers
 
 
 
-            var result = await Patch($"/primary/events/{Para.Id}", JsonConvert.SerializeObject(eventObject, Formatting.None,
+            var result = await Patch($"/primary/events/{eventToUpdate.Id}", JsonConvert.SerializeObject(eventObject, Formatting.None,
                             new JsonSerializerSettings
                             {
                                 NullValueHandling = NullValueHandling.Ignore
