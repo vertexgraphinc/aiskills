@@ -216,13 +216,13 @@ components:
           format: date-time
           title: Time Max
           description: |
-            Upper bound (exclusive) for an event's start date and time to filter by.
+            Upper bound (exclusive) for an event's start date and time to filter by. The search will return the events with start time before this timestamp.
         timeMin:
           type: string
           format: date-time
           title: Time Min
           description: |
-            Lower bound (inclusive) for an event's end date and time to filter by.
+            Lower bound (inclusive) for an event's end date and time to filter by. The search will return the events with end time after this timestamp.
       required:
         - timeMin
         - timeMax
@@ -298,12 +298,12 @@ components:
           description: The current summary of the event.
         currentStartDateTime:
           type: string
-          description: The current start date and time of the event in UTC time.
+          description: Upper bound (exclusive) for an event's start date and time to filter by. The search will return the events with start time before this timestamp.
           format: date-time
           example: "2024-02-16T19:00:00Z"
         currentEndDateTime:
           type: string
-          description: The current end date and time of the event in UTC time.
+          description: Lower bound (inclusive) for an event's end date and time to filter by. The search will return the events with end time after this timestamp.
           format: date-time
           example: "2024-02-16T19:00:00Z"
         updatedSummary:
