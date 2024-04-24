@@ -27,7 +27,7 @@ namespace MSOutlook.Services
         #region Message
         public async Task<List<EmailResponse>> ListMessage(QueryEmailsRequest request, string token)
         {
-            string query = "$top=250&$filter=";
+            string query = "$filter=";
 
             string beginDate = UtilityHelper.FormatDateTimeUtc(DateTime.Now.AddDays(-1));
             string endDate = UtilityHelper.FormatDateTimeUtc(DateTime.Now);
@@ -78,6 +78,8 @@ namespace MSOutlook.Services
             {
                 query = query.Substring(0, query.Length - 5); // Removing the last " and "
             }
+            query += "&";
+            query += "$top=250";
             query = System.Net.WebUtility.UrlEncode(query);
             try
             {
