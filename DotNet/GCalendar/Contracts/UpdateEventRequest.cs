@@ -5,9 +5,6 @@ namespace GCalendar.Contracts
 {
     public class UpdateEventRequest
     {
-        [JsonProperty("id"), JsonPropertyName("id")]
-        public string Id { get; set; }
-
         [JsonProperty("timeZone"), JsonPropertyName("timeZone")]
         public string TimeZone { get; set; }
 
