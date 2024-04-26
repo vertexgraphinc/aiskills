@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using System;
 using System.Linq;
 using System.Net.Http;
+using static Slack.Contracts.SearchMessagesResponse;
+using System.Collections;
 
 namespace Slack.Helpers
 {
@@ -70,13 +72,68 @@ namespace Slack.Helpers
 
             return response;
         }
+        static bool IsEmail(string str)
+        {
+            // Regular expression pattern for email validation
+            string pattern = @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$";
 
+            // Using Regex.IsMatch to check if the email matches the pattern
+            return Regex.IsMatch(str, pattern);
+        }
 
         public async Task<SearchMessagesResponse> QueryMessages(SearchRequest Para)
         {
-            var result = await Get<SearchMessagesResponse>($"/search.messages?query={Para.Query}&count=10");
+            var result = new SearchMessagesResponse();
+            if (Para == null || (string.IsNullOrEmpty(Para.Query) && string.IsNullOrEmpty(Para.MemberEmail)))
+            {
+                Response.StatusCode = 500;
+                result.Message = "Missing query parameters";
+            }
+            if(!string.IsNullOrEmpty(Para.Query))
+            {
+                string query = Para.Query.Trim();
+                if (Para.Query.ToLower().StartsWith("from:"))
+                {
+                    //from:email@example.com is not supported in query
+                    //set the MemberEmail instead, which translates email into the user id first
+                    query = query.Substring(5);
+                }
+                if (IsEmail(query))
+                {
+                    Para.MemberEmail = query;
+                    Para.Query = "";
+                }
+            }
+            bool ranQuery = false;
+            if (!string.IsNullOrEmpty(Para.MemberEmail))
+            {
+                if (IsEmail(Para.MemberEmail))
+                {
+                    //if likely to be an email, look up the user id first
+                    var user = await Get<UserResponse>($"/users.lookupByEmail?email={Para.MemberEmail}");
+                    if (user.Ok == true && !string.IsNullOrEmpty(user.User.Id))
+                    {
+                        string query = "";
+                        if (string.IsNullOrEmpty(Para.Query))
+                        {
+                            query = Uri.EscapeDataString($"from:@{user.User.Name}");
+                        }
+                        else
+                        {
+                            query = Uri.EscapeDataString($"from:@{user.User.Name} {Para.Query}");
+                        }
+                        ranQuery = true;
+                        result = await Get<SearchMessagesResponse>($"/search.messages?query={query}&count=10");
+                    }
+                }
+            }
+            if (!ranQuery)
+            {
+                string query = Uri.EscapeDataString(Para.Query);
+                result = await Get<SearchMessagesResponse>($"/search.messages?query={query}&count=10");
+            }
 
-            if (result.Ok == true)
+            if (result!= null && result.Ok == true)
             {
                 result.Message = "Successfully retrieved results";
                 var timeZone = await GetUserTimeZoneOffset();

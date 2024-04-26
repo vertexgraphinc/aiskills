@@ -563,7 +563,10 @@ components:
       properties:
         query:
           type: string    
-          description: Search query.     
+          description: A simple string to search for in the content of the messages.
+        memberEmail:
+          type: string    
+          description: The email of the member who sent the message.  
 ### ++++++++++++++++++++++++++++++++++++++++++++++++++++   
 ### RESPONSE COMPONENTS+++++++++++++++++++++++++++++++++   
 ### ServerResponse++++++++++++++++++++++++++++++++++++++      
