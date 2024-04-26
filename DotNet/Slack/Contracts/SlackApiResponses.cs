@@ -10,6 +10,26 @@ namespace Slack.Contracts
 
     }
 
+    public class UserResponse
+    {
+        [JsonProperty("ok"), JsonPropertyName("ok")]
+        public bool Ok { get; set; }
+
+        [JsonProperty("user"), JsonPropertyName("user")]
+        public User User { get; set; }
+
+        [JsonProperty("error"), JsonPropertyName("error")]
+        public string Error { get; set; }
+    }
+    public class User
+    {
+        [JsonProperty("id"), JsonPropertyName("id")]
+        public string Id { get; set; }
+
+        [JsonProperty("name"), JsonPropertyName("name")]
+        public string Name { get; set; }
+
+    }
     public class ApiResult
     {
 
