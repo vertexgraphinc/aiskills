@@ -21,6 +21,7 @@ namespace MSOutlook.Helpers
             {
                 return new List<string>();
             }
+            System.Diagnostics.Debug.WriteLine("[vertex][UtilityHelper][GetEmailListFromString] recipients:" + recipients);
 
             if (JsonHelper.IsJsonArray(recipients))
             {
@@ -28,15 +29,30 @@ namespace MSOutlook.Helpers
                 {
                     return JsonConvert.DeserializeObject<List<string>>(recipients);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-
-                    return new List<string>();
+                    System.Diagnostics.Debug.WriteLine("[vertex][UtilityHelper][GetEmailListFromString] ex:" + ex.ToString());
+                    var lst = new List<string>();
+                    lst.Add(recipients);
+                    return lst;
                 }
             }
             else
             {
-                return recipients.Split(';').ToList();
+                if (recipients.Contains(";"))
+                {
+                    return recipients.Split(';').ToList();
+                }
+                else if (recipients.Contains(","))
+                {
+                    return recipients.Split(',').ToList();
+                }
+                else
+                {
+                    var lst = new List<string>();
+                    lst.Add(recipients);
+                    return lst;
+                }
             }
         }
         public static bool Has(object param)

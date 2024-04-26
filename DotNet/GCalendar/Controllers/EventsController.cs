@@ -54,7 +54,7 @@ namespace GCalendar.Controllers
         #endregion
 
         #region Update Calendar Event
-        [HttpPost("update"), HttpPost("~/skill/{controller}/update")]
+        [HttpPost("search_and_update"), HttpPost("~/skill/{controller}/search_and_update")]
         public async Task<ServerResponse> UpdateEvent(UpdateEventRequest Para)
         {
             System.Diagnostics.Debug.WriteLine("[vertex][Events][UpdateEvent]");
