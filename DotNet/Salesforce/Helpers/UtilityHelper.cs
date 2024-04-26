@@ -13,7 +13,7 @@ namespace Salesforce.Helpers
             return dateTime.ToUniversalTime().ToString(format);
         }
 
-        public static string FormatDate(DateTime dateTime, string format = "yyyy-MM-dd")
+        public static string FormatDate(DateTime dateTime, string format = "MM/dd/yyyy")
         {
             return dateTime.ToUniversalTime().ToString(format);
         }
