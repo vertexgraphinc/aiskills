@@ -24,6 +24,8 @@ namespace Salesforce
             services.AddCors();
             services.AddControllers();
             services.AddHttpClient();
+            services.AddScoped<ICampaignService, CampaignService>();
+            services.AddScoped<IContactService, ContactService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddHttpClient<ApiHelper>();
         }
