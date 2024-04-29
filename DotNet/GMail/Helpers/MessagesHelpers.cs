@@ -19,18 +19,19 @@ namespace GMail.Helpers
         {
             var RetMsgs = new List<GMailMessage>();
             
-            if (!HasAtLeastOneProp(new string[] { Para.From, Para.Label, Para.Subject, Para.Body, Para.Status, Para.BeginTime, Para.EndTime }))
+            if (!HasAtLeastOneProp(new string[] { Para.From, Para.To, Para.Label, Para.Subject, Para.Body, Para.Status, Para.BeginTime, Para.EndTime }))
             {
                 throw new Exception("At least one search parameter is necessary.");
             }
 
             string from = GetOptionalQStringParam("from", Para.From);
+            string to = GetOptionalQStringParam("to", Para.To);
             string label = GetOptionalQStringParam("label", Para.Label);
             string subject = GetOptionalQStringParam("subject", Para.Subject);
             string body = GetBodyQuery(Para.Body);
             string status = GetOptionalQStringParam("is", Para.Status);
             string dateQuery = GetSentQuery(Para.BeginTime, Para.EndTime);
-            string searchParams = AssembleSearchParams(from, label, subject, body, status, dateQuery);
+            string searchParams = AssembleSearchParams(from, to, label, subject, body, status, dateQuery);
 
             System.Diagnostics.Debug.WriteLine("[vertex]:searchParams:" + searchParams);
 
@@ -148,18 +149,19 @@ namespace GMail.Helpers
             System.Diagnostics.Debug.WriteLine("[vertex]:ListThreads");
             var messages = new List<GMailMessage>();
 
-            if (!HasAtLeastOneProp(new string[] { Para.From, Para.Label, Para.Subject, Para.Body, Para.Status, Para.BeginTime, Para.EndTime }))
+            if (!HasAtLeastOneProp(new string[] { Para.From, Para.To, Para.Label, Para.Subject, Para.Body, Para.Status, Para.BeginTime, Para.EndTime }))
             {
                 throw new Exception("At least one search parameter is necessary.");
             }
 
             string from = GetOptionalQStringParam("from", Para.From);
+            string to = GetOptionalQStringParam("to", Para.To);
             string label = GetOptionalQStringParam("label", Para.Label);
             string subject = GetOptionalQStringParam("subject", Para.Subject);
             string body = GetBodyQuery(Para.Body);
             string status = GetOptionalQStringParam("is", Para.Status);
             string dateQuery = GetSentQuery(Para.BeginTime, Para.EndTime);
-            string searchParams = AssembleSearchParams(from, label, subject, body, status, dateQuery);
+            string searchParams = AssembleSearchParams(from, to, label, subject, body, status, dateQuery);
 
             System.Diagnostics.Debug.WriteLine("[vertex][ListThreads]:searchParams:" + searchParams);
 

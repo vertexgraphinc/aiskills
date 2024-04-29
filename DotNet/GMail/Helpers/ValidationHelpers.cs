@@ -67,9 +67,9 @@ namespace GMail.Helpers
             }
             return q;
         }
-        public string AssembleSearchParams(string from, string label, string subject, string body, string status, string dateQuery)
+        public string AssembleSearchParams(string from, string to, string label, string subject, string body, string status, string dateQuery)
         {
-            string searchParams = string.Concat(from, label, subject, status);
+            string searchParams = string.Concat(from, to, label, subject, status);
             searchParams = string.Concat(body, searchParams.Trim());
             if (Has(searchParams))
             {
