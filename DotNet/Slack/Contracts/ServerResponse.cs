@@ -10,7 +10,7 @@ namespace Slack.Contracts
         [JsonProperty("message"),JsonPropertyName("message")]
         public string Message
         {
-            get { return _message; }
+            get { return _message ?? ""; }
             set { _message = value; }
         }
     }

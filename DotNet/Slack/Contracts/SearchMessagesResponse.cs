@@ -6,6 +6,7 @@ namespace Slack.Contracts
 {
     public class SearchMessagesResponse : ServerResponse
     {
+        private string _error;
         [JsonProperty("messages"), JsonPropertyName("messages")]
         public MessagesData Messages { get; set; }
 
@@ -13,7 +14,11 @@ namespace Slack.Contracts
         public bool Ok { get; set; }
 
         [JsonProperty("error"), JsonPropertyName("error")]
-        public string Error { get; set; }
+        public string Error
+        {
+            get { return _error ?? ""; }
+            set { _error = value; }
+        }
         public class MessagesData
         {
             [JsonProperty("matches"), JsonPropertyName("matches")]

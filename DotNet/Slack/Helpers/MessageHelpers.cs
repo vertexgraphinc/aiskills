@@ -88,6 +88,7 @@ namespace Slack.Helpers
             {
                 Response.StatusCode = 500;
                 result.Message = "Missing query parameters";
+                return result;
             }
             if(!string.IsNullOrEmpty(Para.Query))
             {
@@ -111,7 +112,7 @@ namespace Slack.Helpers
                 {
                     //if likely to be an email, look up the user id first
                     var user = await Get<UserResponse>($"/users.lookupByEmail?email={Para.MemberEmail}");
-                    if (user.Ok == true && !string.IsNullOrEmpty(user.User.Id))
+                    if (user.Ok == true && user.User != null && !string.IsNullOrEmpty(user.User.Name))
                     {
                         string query = "";
                         if (string.IsNullOrEmpty(Para.Query))
@@ -125,6 +126,12 @@ namespace Slack.Helpers
                         ranQuery = true;
                         result = await Get<SearchMessagesResponse>($"/search.messages?query={query}&count=10");
                     }
+                    else
+                    {
+                        Response.StatusCode = 500;
+                        result.Message = "Could not find user with email: " + Para.MemberEmail;
+                        return result;
+                    }
                 }
             }
             if (!ranQuery)
@@ -133,7 +140,7 @@ namespace Slack.Helpers
                 result = await Get<SearchMessagesResponse>($"/search.messages?query={query}&count=10");
             }
 
-            if (result!= null && result.Ok == true)
+            if (result != null && result.Ok == true && result.Messages != null)
             {
                 result.Message = "Successfully retrieved results";
                 var timeZone = await GetUserTimeZoneOffset();
@@ -150,8 +157,16 @@ namespace Slack.Helpers
             {
                 Response.StatusCode = 500;
                 result.Message = result.Error;
+                return result;
             }
-
+            if (result.Error == null)
+            {
+                result.Error = "";
+            }
+            if (result.Message == null)
+            {
+                result.Message = "";
+            }
             return result;
 
         }
