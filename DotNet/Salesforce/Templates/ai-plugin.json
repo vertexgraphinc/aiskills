@@ -2,12 +2,12 @@
   "schema_version": "v1",
   "name_for_human": "Salesforce",
   "name_for_model": "Salesforce",
-  "description_for_human": "Perform operations on Salesforce (to be updated)",
-  "description_for_model": "Perform operations on Salesforce (to be updated)",
+  "description_for_human": "Search, Create, and Modify Objects in Salesforce",
+  "description_for_model": "Search, Create, and Modify Objects in Salesforce",
   "auth": {
     "type": "oauth",
     "client_url": "oauth/auth",
-    "scope": "(to be updated)",
+    "scope": "offline_access api",
     "authorization_url": "oauth/token",
     "authorization_content_type": "application/json"
   },
