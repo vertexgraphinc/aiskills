@@ -736,7 +736,7 @@ components:
         description:
           title: Description
           type: string
-          description: Searches for campaigns with descriptions containing the specified keyword, allowing partial matches for flexibility.
+          description: Searches for contacts with descriptions containing the specified keyword, allowing partial matches for flexibility.
         updatedFirstName:
           title: Updated First Name
           type: string
@@ -782,7 +782,7 @@ components:
         description:
           title: Description
           type: string
-          description: Searches for campaigns with descriptions containing the specified keyword, allowing partial matches for flexibility.
+          description: Searches for contacts with descriptions containing the specified keyword, allowing partial matches for flexibility.
     LeadsCreateRequest:
       title: Parameters to create leads
       type: object
