@@ -68,7 +68,7 @@ namespace Salesforce.Helpers
                 string s = await httpResponse.Content.ReadAsStringAsync();
                 if (httpResponse.IsSuccessStatusCode)
                 {
-                    List<HttpStatusCode> successStatusCodes = new List<HttpStatusCode> { HttpStatusCode.Accepted, HttpStatusCode.NoContent };
+                    List<HttpStatusCode> successStatusCodes = new List<HttpStatusCode> { HttpStatusCode.Accepted, HttpStatusCode.NoContent, HttpStatusCode.Created };
                     if (successStatusCodes.Contains(httpResponse.StatusCode))
                     {
                         return typeof(T) == typeof(bool) ? (T)(object)true : default(T);

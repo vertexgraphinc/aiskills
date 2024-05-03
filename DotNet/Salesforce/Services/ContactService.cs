@@ -21,7 +21,7 @@ namespace Salesforce.Services
 
         private async Task<SalesforceContacts> QueryRawContacts(ContactsQueryRequest request, string token)
         {
-            string url = "v60.0/query?q=SELECT+Id,+Name,+IsActive,+Type,+Status,+StartDate,+EndDate,+Description+FROM+Contact";
+            string url = "v60.0/query?q=SELECT+Id,+FirstName,+LastName,+MobilePhone,+Email,+Description+FROM+Contact";
             SalesforceContacts result = await _apiHelper.Get<SalesforceContacts>(url, token);
             if (result == null || result.Records == null)
                 return result;
@@ -41,10 +41,6 @@ namespace Salesforce.Services
             if (!string.IsNullOrEmpty(request.Email))
             {
                 result.Records = result.Records.Where(contact => contact.Email == request.Email).ToList();
-            }
-            if (!string.IsNullOrEmpty(request.Address))
-            {
-                result.Records = result.Records.Where(contact => contact.Address == request.Address).ToList();
             }
             if (!string.IsNullOrEmpty(request.Description))
             {
@@ -70,7 +66,6 @@ namespace Salesforce.Services
                     LastName = contact.LastName,
                     PhoneNumber = contact.MobilePhone,
                     Email = contact.Email,
-                    Address = contact.Address,
                     Description = contact.Description
                 }).ToList();
 
@@ -92,14 +87,13 @@ namespace Salesforce.Services
                 if (string.IsNullOrEmpty(request.LastName))
                     throw new Exception("Contact lastname is not specified.");
 
-                string url = "v60.0/sobject/Contact";
+                string url = "v60.0/sobjects/Contact";
                 object body = new
                 {
                     request.FirstName,
                     request.LastName,
                     MobilePhone = request.PhoneNumber,
                     request.Email,
-                    request.Address,
                     request.Description
                 };
                 bool contactCreated = await _apiHelper.Post<bool>(url, body, token);
@@ -121,7 +115,7 @@ namespace Salesforce.Services
             {
                 System.Diagnostics.Debug.WriteLine("[vertex][ContactService][UpdateContacts]");
 
-                if (string.IsNullOrEmpty(request.UpdatedFirstName) && string.IsNullOrEmpty(request.UpdatedLastName) && string.IsNullOrEmpty(request.UpdatedPhoneNumber) && string.IsNullOrEmpty(request.Email) && string.IsNullOrEmpty(request.Address) && string.IsNullOrEmpty(request.Description))
+                if (string.IsNullOrEmpty(request.UpdatedFirstName) && string.IsNullOrEmpty(request.UpdatedLastName) && string.IsNullOrEmpty(request.UpdatedPhoneNumber) && string.IsNullOrEmpty(request.Email) && string.IsNullOrEmpty(request.Description))
                     throw new Exception("One or more updating parameters are not specified.");
 
                 SalesforceContacts contacts = await QueryRawContacts(new ContactsQueryRequest
@@ -130,7 +124,6 @@ namespace Salesforce.Services
                     LastName = request.LastName,
                     PhoneNumber = request.PhoneNumber,
                     Email = request.Email,
-                    Address = request.Address,
                     Description = request.Description
                 }, token);
                 if (contacts == null || contacts.Records == null)
@@ -138,14 +131,13 @@ namespace Salesforce.Services
 
                 var tasks = contacts.Records.Select(async contact =>
                 {
-                    string urlQuery = $"v60.0/sobject/Contact/{contact.Id}";
+                    string urlQuery = $"v60.0/sobjects/Contact/{contact.Id}";
                     object body = new
                     {
                         FirstName = string.IsNullOrEmpty(request.UpdatedFirstName) ? contact.FirstName : request.UpdatedFirstName,
                         LastName = string.IsNullOrEmpty(request.UpdatedLastName) ? contact.LastName : request.UpdatedLastName,
                         MobilePhone = string.IsNullOrEmpty(request.UpdatedPhoneNumber) ? contact.MobilePhone : request.UpdatedPhoneNumber,
                         Email = string.IsNullOrEmpty(request.UpdatedEmail) ? contact.Email : request.UpdatedEmail,
-                        Address = string.IsNullOrEmpty(request.UpdatedAddress) ? contact.Address : request.UpdatedAddress,
                         Description = string.IsNullOrEmpty(request.UpdatedDescription) ? contact.Description : request.UpdatedDescription
                     };
                     return await _apiHelper.Patch(urlQuery, body, token);
@@ -175,7 +167,6 @@ namespace Salesforce.Services
                     LastName = request.LastName,
                     PhoneNumber = request.PhoneNumber,
                     Email = request.Email,
-                    Address = request.Address,
                     Description = request.Description
                 }, token);
                 if (contacts == null || contacts.Records == null)
@@ -183,7 +174,7 @@ namespace Salesforce.Services
 
                 var tasks = contacts.Records.Select(async contact =>
                 {
-                    string urlQuery = $"v60.0/sobject/Contact/{contact.Id}";
+                    string urlQuery = $"v60.0/sobjects/Contact/{contact.Id}";
                     return await _apiHelper.Delete(urlQuery, token);
                 });
                 var results = await Task.WhenAll(tasks);

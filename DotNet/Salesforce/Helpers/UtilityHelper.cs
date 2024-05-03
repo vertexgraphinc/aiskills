@@ -8,14 +8,14 @@ namespace Salesforce.Helpers
 {
     public static class UtilityHelper
     {
-        public static string FormatDateTimeUtc(DateTime dateTime, string format = "yyyy-MM-ddTHH:mm:ssZ")
+        public static string FormatDateTimeUtc(DateTime dateTime, string format = "yyyy-MM-dd")
         {
             return dateTime.ToUniversalTime().ToString(format);
         }
 
-        public static string FormatDate(DateTime dateTime, string format = "MM/dd/yyyy")
+        public static string FormatDate(DateTime dateTime, string format = "yyyy-MM-dd")
         {
-            return dateTime.ToUniversalTime().ToString(format);
+            return dateTime.ToString(format);
         }
 
         public static List<string> GetEmailListFromString(string recipients)
