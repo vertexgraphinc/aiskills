@@ -21,10 +21,6 @@ namespace Salesforce.Contracts
         [JsonPropertyName("email")]
         public string Email { get; set; }
 
-        [JsonProperty("address")]
-        [JsonPropertyName("address")]
-        public string Address { get; set; }
-
         [JsonProperty("description")]
         [JsonPropertyName("description")]
         public string Description { get; set; }
@@ -44,10 +40,6 @@ namespace Salesforce.Contracts
         [JsonProperty("updatedEmail")]
         [JsonPropertyName("updatedEmail")]
         public string UpdatedEmail { get; set; }
-
-        [JsonProperty("updatedAddress")]
-        [JsonPropertyName("updatedAddress")]
-        public string UpdatedAddress { get; set; }
 
         [JsonProperty("updatedDescription")]
         [JsonPropertyName("updatedDescription")]
