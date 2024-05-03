@@ -26,10 +26,6 @@ namespace Salesforce.DTOs
         [JsonPropertyName("Email")]
         public string Email { get; set; }
 
-        [JsonProperty("Address")]
-        [JsonPropertyName("Address")]
-        public string Address { get; set; }
-
         [JsonProperty("Description")]
         [JsonPropertyName("Description")]
         public string Description { get; set; }
