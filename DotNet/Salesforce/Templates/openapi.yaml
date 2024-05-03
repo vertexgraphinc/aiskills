@@ -282,6 +282,144 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerResponse'
+  $skillapproot/leads/query:
+    post:
+      summary: Query Salesforce Leads
+      description: Search for user's Salesforce leads
+      operationId: QueryLeads
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LeadsQueryRequest"
+      responses:
+        "200":
+          description: Returns leads that match the query parameters.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeadsQueryResponse'
+        "401":
+          description: Unauthorized, requires valid authentication.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeadsQueryResponse'
+        "500":
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeadsQueryResponse'
+  $skillapproot/leads/create:
+    post:
+      summary: Create a New Salesforce Lead
+      description: Create a new lead in Salesforce
+      operationId: CreateLead
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LeadsCreateRequest'
+      responses:
+        '201':
+          description: Lead created successfully.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '400':
+          description: Error in creating the lead, possibly due to invalid input.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '401':
+          description: Unauthorized, requires valid authentication.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '500':
+          description: Server Error
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  $skillapproot/leads/update:
+    post:
+      summary: Update Salesforce Leads Details
+      description: Update details of specific leads in Salesforce
+      operationId: UpdateLeads
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LeadsUpdateRequest'
+      responses:
+        '200':
+          description: Leads updated successfully.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '400':
+          description: Error in updating the leads, possibly due to invalid input.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '401':
+          description: Unauthorized, requires valid authentication.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '500':
+          description: Server Error
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+  $skillapproot/leads/remove:
+    post:
+      summary: Remove Salesforce Leads
+      description: Remove specific leads in Salesforce
+      operationId: RemoveLeads
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LeadsQueryRequest'
+      responses:
+        '200':
+          description: Leads removed successfully.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '400':
+          description: Error in removing the leads, possibly due to invalid input.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '401':
+          description: Unauthorized, requires valid authentication.
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
+        '500':
+          description: Server Error
+          content:        
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServerResponse'
 components:
   schemas:
     ServerResponse:  
@@ -669,3 +807,257 @@ components:
           title: Description
           type: string
           description: Searches for campaigns with descriptions containing the specified keyword, allowing partial matches for flexibility.
+    LeadsCreateRequest:
+      title: Parameters to create leads
+      type: object
+      properties:
+        FirstName:
+          title: First Name
+          type: string
+          description: The first name of the lead.
+        LastName:
+          title: Last Name
+          type: string
+          description: The last name of the lead.
+        Email:
+          title: Email
+          type: string
+          format: email
+          description: The email address of the lead.
+        Company:
+          title: Company
+          type: string
+          description: The company associated with the lead.
+        Title:
+          title: Title
+          type: string
+          description: The title of the lead.
+        Phone:
+          title: Phone
+          type: string
+          description: The phone number of the lead.
+        Status:
+          title: Status
+          type: string
+          description: The status of the lead.
+        Industry:
+          title: Industry
+          type: string
+          description: The industry of the lead.
+        LeadSource:
+          title: Lead Source
+          type: string
+          description: The source of the lead.
+    LeadsUpdateRequest:
+      title: Parameters to update leads
+      type: object
+      properties:
+        FirstName:
+          title: First Name
+          type: string
+          description: The original first name of the lead.
+        LastName:
+          title: Last Name
+          type: string
+          description: The original last name of the lead.
+        Email:
+          title: Email
+          type: string
+          format: email
+          description: The original email address of the lead.
+        Company:
+          title: Company
+          type: string
+          description: The original company associated with the lead.
+        Phone:
+          title: Phone
+          type: string
+          description: The original phone number of the lead.
+        Status:
+          title: Status
+          type: string
+          description: The original status of the lead.
+        Industry:
+          title: Industry
+          type: string
+          description: The original industry of the lead.
+        LeadSource:
+          title: Lead Source
+          type: string
+          description: The original source of the lead.
+        MinAnnualRevenue:
+          title: Minimum Annual Revenue
+          type: string
+          description: The original minimum annual revenue of the lead.
+        MaxAnnualRevenue:
+          title: Maximum Annual Revenue
+          type: string
+          description: The original maximum annual revenue of the lead.
+        Rating:
+          title: Rating
+          type: string
+          description: The original rating of the lead.
+        Description:
+          title: Description
+          type: string
+          description: The original description of the lead.
+        UpdatedFirstName:
+          title: Updated First Name
+          type: string
+          description: The updated first name of the lead.
+        UpdatedLastName:
+          title: Updated Last Name
+          type: string
+          description: The updated last name of the lead.
+        UpdatedEmail:
+          title: Updated Email
+          type: string
+          format: email
+          description: The updated email address of the lead.
+        UpdatedCompany:
+          title: Updated Company
+          type: string
+          description: The updated company associated with the lead.
+        UpdatedPhone:
+          title: Updated Phone
+          type: string
+          description: The updated phone number of the lead.
+        UpdatedStatus:
+          title: Updated Status
+          type: string
+          description: The updated status of the lead.
+        UpdatedIndustry:
+          title: Updated Industry
+          type: string
+          description: The updated industry of the lead.
+        UpdatedLeadSource:
+          title: Updated Lead Source
+          type: string
+          description: The updated source of the lead.
+        UpdatedAnnualRevenue:
+          title: Updated Annual Revenue
+          type: string
+          description: The updated annual revenue of the lead.
+        UpdatedRating:
+          title: Updated Rating
+          type: string
+          description: The updated rating of the lead.
+        UpdatedDescription:
+          title: Updated Description
+          type: string
+          description: The updated description of the lead.
+
+    LeadsQueryRequest:
+      title: Parameters to query leads
+      type: object
+      properties:
+        FirstName:
+          title: First Name
+          type: string
+          description: Searches for leads with first names matching the specified first name.
+        LastName:
+          title: Last Name
+          type: string
+          description: Searches for leads with last names matching the specified last name.
+        Email:
+          title: Email
+          type: string
+          format: email
+          description: Searches for leads with emails matching the specified email.
+        Company:
+          title: Company
+          type: string
+          description: Searches for leads associated with the specified company name.
+        Phone:
+          title: Phone
+          type: string
+          description: Searches for leads with phone numbers matching the specified phone number.
+        Status:
+          title: Status
+          type: string
+          description: Searches for leads with the specified status.
+        Industry:
+          title: Industry
+          type: string
+          description: Searches for leads in the specified industry.
+        LeadSource:
+          title: Lead Source
+          type: string
+          description: Searches for leads with the specified lead source.
+        MinAnnualRevenue:
+          title: Minimum Annual Revenue
+          type: string
+          description: Searches for leads with annual revenue greater than or equal to the specified amount.
+        MaxAnnualRevenue:
+          title: Maximum Annual Revenue
+          type: string
+          description: Searches for leads with annual revenue less than or equal to the specified amount.
+        Rating:
+          title: Rating
+          type: string
+          description: Searches for leads with the specified rating.
+        Description:
+          title: Description
+          type: string
+          description: Searches for leads with descriptions containing the specified keyword, allowing partial matches for flexibility.
+    LeadResponse:
+      title: Lead response
+      type: object
+      properties:
+        FirstName:
+          title: First Name
+          type: string
+          description: The first name of the lead.
+        LastName:
+          title: Last Name
+          type: string
+          description: The last name of the lead.
+        Email:
+          title: Email
+          type: string
+          format: email
+          description: The email address of the lead.
+        Company:
+          title: Company
+          type: string
+          description: The company associated with the lead.
+        Phone:
+          title: Phone
+          type: string
+          description: The phone number of the lead.
+        Status:
+          title: Status
+          type: string
+          description: The status of the lead.
+        Industry:
+          title: Industry
+          type: string
+          description: The industry of the lead.
+        LeadSource:
+          title: Lead Source
+          type: string
+          description: The source of the lead.
+        AnnualRevenue:
+          title: Annual Revenue
+          type: string
+          description: The annual revenue of the lead.
+        Rating:
+          title: Rating
+          type: string
+          description: The rating of the lead.
+        Description:
+          title: Description
+          type: string
+          description: The description of the lead.
+    LeadsQueryResponse:
+      title: Leads query response
+      type: object
+      properties:
+        leads:
+          title: Leads
+          type: array
+          description: List of leads returned in the response.
+          items:
+            $ref: '#/components/schemas/LeadResponse'
+
+

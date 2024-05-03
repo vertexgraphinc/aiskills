@@ -30,7 +30,15 @@ namespace Salesforce.Helpers
             using (var httpResponse = await _httpClient.SendAsync(request))
             {
                 string responseContent = await httpResponse.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<T>(responseContent);
+                if (httpResponse.IsSuccessStatusCode)
+                { 
+                    return JsonConvert.DeserializeObject<T>(responseContent);
+                }
+                else
+                {
+                    // Handle error response, log it or throw an exception as appropriate
+                    throw new HttpRequestException($"Request failed with status code {httpResponse.StatusCode}");
+                }
             }
         }
 
@@ -46,12 +54,18 @@ namespace Salesforce.Helpers
 
             if (requestBody != null)
             {
-                string jsonRequestBody = JsonConvert.SerializeObject(requestBody);
+                string jsonRequestBody = JsonConvert.SerializeObject(requestBody, Formatting.None,
+                new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Ignore
+                });
                 request.Content = new StringContent(jsonRequestBody, Encoding.UTF8, "application/json");
             }
 
             using (var httpResponse = await _httpClient.SendAsync(request))
             {
+
+                string s = await httpResponse.Content.ReadAsStringAsync();
                 if (httpResponse.IsSuccessStatusCode)
                 {
                     List<HttpStatusCode> successStatusCodes = new List<HttpStatusCode> { HttpStatusCode.Accepted, HttpStatusCode.NoContent };
@@ -88,6 +102,7 @@ namespace Salesforce.Helpers
 
             using (var httpResponse = await _httpClient.SendAsync(request))
             {
+                string s = await httpResponse.Content.ReadAsStringAsync();
                 if (httpResponse.IsSuccessStatusCode)
                 {
                     return true;
@@ -119,6 +134,7 @@ namespace Salesforce.Helpers
 
             using (var httpResponse = await _httpClient.SendAsync(request))
             {
+                string s = await httpResponse.Content.ReadAsStringAsync();
                 if (httpResponse.IsSuccessStatusCode)
                 {
                     return true;

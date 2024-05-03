@@ -27,6 +27,7 @@ namespace Salesforce
             services.AddScoped<ICampaignService, CampaignService>();
             services.AddScoped<IContactService, ContactService>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<ILeadService, LeadService>();
             services.AddHttpClient<ApiHelper>();
         }
 
