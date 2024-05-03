@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace Salesforce.Contracts
 {
-    public class LeadQueryResponse : ServerResponse
+    public class LeadsQueryResponse : ServerResponse
     {
         [JsonProperty("leads")]
         [JsonPropertyName("leads")]

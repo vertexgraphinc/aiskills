@@ -6,13 +6,13 @@ namespace Salesforce.Interfaces
 {
     public interface ILeadService
     {
-        Task<List<LeadResponse>> QueryLeads(LeadQueryRequest request, string token);
+        Task<List<LeadResponse>> QueryLeads(LeadsQueryRequest request, string token);
 
-        Task<bool> CreateLead(LeadCreateRequest request, string token);
+        Task<bool> CreateLead(LeadsCreateRequest request, string token);
 
         Task<bool> UpdateLeads(LeadsUpdateRequest request, string token);
 
-        Task<bool> RemoveLeads(LeadQueryRequest request, string token);
+        Task<bool> RemoveLeads(LeadsQueryRequest request, string token);
 
     }
 }

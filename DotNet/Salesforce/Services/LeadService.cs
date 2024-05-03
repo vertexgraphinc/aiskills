@@ -21,14 +21,14 @@ namespace Salesforce.Services
             _apiHelper = apiHelper;
         }
 
-        private async Task<SalesforceLeads> QueryRawLeads(LeadQueryRequest request, string token)
+        private async Task<SalesforceLeads> QueryRawLeads(LeadsQueryRequest request, string token)
         {
             string url = "v60.0/query?q=SELECT Id,+FirstName,+LastName,+Email,+Company,+Phone,+Status,+Industry,+LeadSource,+Rating,+Description+FROM+Lead" + Uri.EscapeDataString(BuildLeadQuery(request));
             SalesforceLeads result = await _apiHelper.Get<SalesforceLeads>(url, token);
             return result;
         }
 
-        public async Task<List<LeadResponse>> QueryLeads(LeadQueryRequest request, string token)
+        public async Task<List<LeadResponse>> QueryLeads(LeadsQueryRequest request, string token)
         {
             try
             {
@@ -62,7 +62,7 @@ namespace Salesforce.Services
             }
         }
 
-        public async Task<bool> CreateLead(LeadCreateRequest request, string token)
+        public async Task<bool> CreateLead(LeadsCreateRequest request, string token)
         {
             try
             {
@@ -103,7 +103,7 @@ namespace Salesforce.Services
                 if (request.GetType().GetProperties().All(property => property.GetValue(request) == null))
                     throw new Exception("Parameters are not specified.");
 
-                SalesforceLeads Leads = await QueryRawLeads(new LeadQueryRequest
+                SalesforceLeads Leads = await QueryRawLeads(new LeadsQueryRequest
                 {
                     FirstName = request.FirstName,
                     LastName = request.LastName,
@@ -153,7 +153,7 @@ namespace Salesforce.Services
             }
         }
 
-        public async Task<bool> RemoveLeads(LeadQueryRequest request, string token)
+        public async Task<bool> RemoveLeads(LeadsQueryRequest request, string token)
         {
             try
             {
@@ -182,7 +182,7 @@ namespace Salesforce.Services
         }
 
 
-        private string BuildLeadQuery(LeadQueryRequest request)
+        private string BuildLeadQuery(LeadsQueryRequest request)
         {
             var query = " WHERE ";
 

@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace Salesforce.Contracts
 {
-    public class LeadCreateRequest
+    public class LeadsCreateRequest
     {
         [JsonProperty("FirstName")]
         [JsonPropertyName("FirstName")]

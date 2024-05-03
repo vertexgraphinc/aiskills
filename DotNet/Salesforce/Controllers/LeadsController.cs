@@ -21,10 +21,10 @@ namespace Salesforce.Controllers
         }
 
         [HttpPost("query")]
-        public async Task<LeadQueryResponse> QueryLeads(LeadQueryRequest request)
+        public async Task<LeadsQueryResponse> QueryLeads(LeadsQueryRequest request)
         {
             System.Diagnostics.Debug.WriteLine("[vertex][Leads][Query]");
-            LeadQueryResponse resp = new LeadQueryResponse
+            LeadsQueryResponse resp = new LeadsQueryResponse
             {
                 Leads = null
             };
@@ -55,7 +55,7 @@ namespace Salesforce.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<ServerResponse> CreateLead(LeadCreateRequest request)
+        public async Task<ServerResponse> CreateLead(LeadsCreateRequest request)
         {
             System.Diagnostics.Debug.WriteLine("[vertex][Leads][Create]");
             var resp = new ServerResponse();
@@ -135,7 +135,7 @@ namespace Salesforce.Controllers
         }
 
         [HttpPost("remove")]
-        public async Task<ServerResponse> RemoveLeads(LeadQueryRequest request)
+        public async Task<ServerResponse> RemoveLeads(LeadsQueryRequest request)
         {
             System.Diagnostics.Debug.WriteLine("[vertex][Leads][Remove]");
             var resp = new ServerResponse();
