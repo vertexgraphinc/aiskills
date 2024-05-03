@@ -45,12 +45,12 @@ namespace Salesforce.Services
             if (!string.IsNullOrEmpty(request.StartDateBeginTime))
             {
                 DateTime BeginDT = DateTime.Parse(request.StartDateBeginTime).Date;
-                result.Records = result.Records.Where(campaign => BeginDT >= DateTime.Parse(campaign.StartDate).Date).ToList();
+                result.Records = result.Records.Where(campaign => BeginDT <= DateTime.Parse(campaign.StartDate).Date).ToList();
             }
             if (!string.IsNullOrEmpty(request.StartDateEndTime))
             {
                 DateTime EndDT = DateTime.Parse(request.StartDateEndTime);
-                result.Records = result.Records.Where(campaign => EndDT <= DateTime.Parse(campaign.StartDate).Date).ToList();
+                result.Records = result.Records.Where(campaign => EndDT >= DateTime.Parse(campaign.StartDate).Date).ToList();
             }
 
             return result;
@@ -95,30 +95,30 @@ namespace Salesforce.Services
                 if (string.IsNullOrEmpty(request.Name))
                     throw new Exception("Campaign name is not specified.");
 
-                string url = "v60.0/sobject/Campaign";
+                string url = "v60.0/sobjects/Campaign";
                 object body = new
                 {
                     request.Name,
                     request.IsActive,
                     request.Type,
                     request.Status,
-                    request.StartDate,
-                    request.EndDate,
+                    StartDate = UtilityHelper.FormatDate(DateTime.Parse(request.StartDate).Date),
+                    EndDate = UtilityHelper.FormatDate(DateTime.Parse(request.EndDate).Date),
                     request.Description
                 };
-                SalesforceCampaign campaignCreated = await _apiHelper.Post<SalesforceCampaign>(url, body, token);
-                if (campaignCreated == null || campaignCreated.Id == null)
+                bool campaignCreated = await _apiHelper.Post<bool>(url, body, token);
+                if (!campaignCreated)
                     throw new Exception("Campaign failed to create.");
 
                 CampaignResponse result = new CampaignResponse
                 {
-                    Name = campaignCreated.Name,
-                    IsActive = campaignCreated.IsActive,
-                    Type = campaignCreated.Type,
-                    Status = campaignCreated.Status,
-                    StartDate = campaignCreated.StartDate,
-                    EndDate = campaignCreated.EndDate,
-                    Description = campaignCreated.Description
+                    Name = request.Name,
+                    IsActive = request.IsActive,
+                    Type = request.Type,
+                    Status = request.Status,
+                    StartDate = UtilityHelper.FormatDate(DateTime.Parse(request.StartDate).Date),
+                    EndDate = UtilityHelper.FormatDate(DateTime.Parse(request.EndDate).Date),
+                    Description = request.Description
                 };
 
                 System.Diagnostics.Debug.WriteLine("[vertex][CampaignService][CreateCampaign]return:" + JsonConvert.SerializeObject(result));
@@ -153,14 +153,14 @@ namespace Salesforce.Services
 
                 var tasks = campaigns.Records.Select(async campaign =>
                 {
-                    string urlQuery = $"v60.0/sobject/Campaign/{campaign.Id}";
+                    string urlQuery = $"v60.0/sobjects/Campaign/{campaign.Id}";
                     object body = new
                     {
                         Name = string.IsNullOrEmpty(request.UpdatedName) ? campaign.Name : request.UpdatedName,
                         Type = string.IsNullOrEmpty(request.UpdatedType) ? campaign.Type : request.UpdatedType,
                         Status = string.IsNullOrEmpty(request.UpdatedStatus) ? campaign.Status : request.UpdatedStatus,
-                        StartDate = string.IsNullOrEmpty(request.UpdatedStartDate) ? campaign.StartDate : request.UpdatedStartDate,
-                        EndDate = string.IsNullOrEmpty(request.UpdatedEndDate) ? campaign.EndDate : request.UpdatedEndDate,
+                        StartDate = UtilityHelper.FormatDate(DateTime.Parse(string.IsNullOrEmpty(request.UpdatedStartDate) ? campaign.StartDate : request.UpdatedStartDate).Date),
+                        EndDate = UtilityHelper.FormatDate(DateTime.Parse(string.IsNullOrEmpty(request.UpdatedEndDate) ? campaign.EndDate : request.UpdatedEndDate).Date),
                         Description = string.IsNullOrEmpty(request.UpdatedDescription) ? campaign.Description : request.UpdatedDescription
                     };
                     return await _apiHelper.Patch(urlQuery, body, token);
@@ -198,7 +198,7 @@ namespace Salesforce.Services
 
                 var tasks = campaigns.Records.Select(async campaign =>
                 {
-                    string urlQuery = $"v60.0/sobject/Campaign/{campaign.Id}";
+                    string urlQuery = $"v60.0/sobjects/Campaign/{campaign.Id}";
                     return await _apiHelper.Delete(urlQuery, token);
                 });
                 var results = await Task.WhenAll(tasks);
