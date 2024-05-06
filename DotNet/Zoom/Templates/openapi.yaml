@@ -218,10 +218,10 @@ components:
       title: Parameters to search for user's Zoom meetings
       type: object
       properties:
-        topicAgenda:
-          title: Topic Agenda
+        topicDescription:
+          title: Topic Description
           type: string
-          description: Searches for meetings with topics or agendas containing the specified keyword, allowing partial matches for flexibility.
+          description: Searches for meetings with topics or descriptions containing the specified keyword, allowing partial matches for flexibility.
         type:
           title: Type
           type: string
@@ -249,9 +249,9 @@ components:
     MeetingResponse:
       type: object
       properties:
-        agenda:
+        description:
           type: string
-          title: Agenda
+          title: Description
           description: The title or description of the meeting.
         createdAt:
           type: string
@@ -290,10 +290,10 @@ components:
       title: Parameters to create a Zoom meeting
       type: object
       properties:
-        agenda:
+        description:
           type: string
-          title: Agenda
-          description: The agenda of the meeting.
+          title: Description
+          description: The description of the meeting.
         topic:
           title: Topic
           type: string
@@ -334,10 +334,10 @@ components:
       title: Parameters to update or modify Zoom meetings
       type: object
       properties:
-        topicAgenda:
-          title: Topic Agenda
+        topicDescription:
+          title: Topic Description
           type: string
-          description: Searches for meetings with topics or agendas containing the specified keyword, allowing partial matches for flexibility.
+          description: Searches for meetings with topics or descriptions containing the specified keyword, allowing partial matches for flexibility.
         type:
           title: Type
           type: string
@@ -350,10 +350,10 @@ components:
           title: To
           type: string         
           description: Defines the end boundary for the meetings search. The search includes meetings occured before this specific date.
-        updatedAgenda:
+        updatedDescription:
           type: string
-          title: Updated Agenda
-          description: The new agenda of the meeting.
+          title: Updated Description
+          description: The new description of the meeting.
         updatedTopic:
           type: string
           title: Updated Topic
@@ -370,10 +370,10 @@ components:
       title: Parameters to remove Zoom meetings
       type: object
       properties:
-        topicAgenda:
-          title: Topic Agenda
+        topicDescription:
+          title: Topic Description
           type: string
-          description: Searches for meetings with topics or agendas containing the specified keyword, allowing partial matches for flexibility.
+          description: Searches for meetings with topics or descriptions containing the specified keyword, allowing partial matches for flexibility.
         type:
           title: Type
           type: string
@@ -390,10 +390,10 @@ components:
       title: Parameters to search for user's Zoom meeting recordings
       type: object
       properties:
-        topicAgenda:
-          title: Topic Agenda
+        topicDescription:
+          title: Topic Description
           type: string
-          description: Searches for meetings with topics or agendas containing the specified keyword, allowing partial matches for flexibility.
+          description: Searches for meetings with topics or descriptions containing the specified keyword, allowing partial matches for flexibility.
         type:
           title: Type
           type: string
@@ -489,10 +489,10 @@ components:
       title: Parameters to search for user's Zoom meeting chats
       type: object
       properties:
-        topicAgenda:
-          title: Topic Agenda
+        topicDescription:
+          title: Topic Description
           type: string
-          description: Searches for meetings with topics or agendas containing the specified keyword, allowing partial matches for flexibility.
+          description: Searches for meetings with topics or descriptions containing the specified keyword, allowing partial matches for flexibility.
         type:
           title: Type
           type: string

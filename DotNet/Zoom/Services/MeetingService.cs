@@ -32,13 +32,13 @@ namespace Zoom.Services
             }
             if (!string.IsNullOrEmpty(request.From))
             {
-                DateTime BeginDT = DateTime.Parse(request.From);
-                from = UtilityHelper.FormatDate(BeginDT);
+                    DateTime BeginDT = DateTime.Parse(request.From);
+                    from = UtilityHelper.FormatDate(BeginDT);
             }
             if (!string.IsNullOrEmpty(request.To))
             {
-                DateTime EndDT = DateTime.Parse(request.To).Date;
-                to = UtilityHelper.FormatDate(EndDT);
+                    DateTime EndDT = DateTime.Parse(request.To).Date;
+                    to = UtilityHelper.FormatDate(EndDT);
             }
             if (query != "?")
             {
@@ -51,8 +51,8 @@ namespace Zoom.Services
             if (result == null || result.Meetings == null)
                 return result;
 
-            result.Meetings = result.Meetings.Where(meeting => (string.IsNullOrEmpty(request.TopicAgenda) || (!string.IsNullOrEmpty(meeting.Agenda) && meeting.Agenda.Contains(request.TopicAgenda)) 
-                                                                                                        || (!string.IsNullOrEmpty(meeting.Topic) && meeting.Topic.Contains(request.TopicAgenda)))).ToList();
+            result.Meetings = result.Meetings.Where(meeting => (string.IsNullOrEmpty(request.TopicDescription) || (!string.IsNullOrEmpty(meeting.Agenda) && meeting.Agenda.Contains(request.TopicDescription)) 
+                                                                                                        || (!string.IsNullOrEmpty(meeting.Topic) && meeting.Topic.Contains(request.TopicDescription)))).ToList();
             return result;
         }
 
@@ -73,7 +73,7 @@ namespace Zoom.Services
 
                     return new MeetingResponse
                     {
-                        Agenda = meeting.Agenda,
+                        Description = meeting.Agenda,
                         CreatedAt = meeting.CreatedAt,
                         Duration = meeting.Duration,
                         HostEmail = host.Email,
@@ -106,7 +106,7 @@ namespace Zoom.Services
                 string url = "users/me/meetings";
                 object body = new
                 {
-                    agenda = request.Agenda,
+                    agenda = request.Description,
                     topic = request.Topic,
                     start_time = request.StartTime,
                     duration = request.Duration > 0 ? request.Duration : 30,
@@ -132,7 +132,7 @@ namespace Zoom.Services
 
                 MeetingResponse result = new MeetingResponse
                 {
-                    Agenda = meetingCreated.Agenda,
+                    Description = meetingCreated.Agenda,
                     CreatedAt = meetingCreated.CreatedAt,
                     Duration = meetingCreated.Duration,
                     HostEmail = host.Email,
@@ -157,12 +157,12 @@ namespace Zoom.Services
             {
                 System.Diagnostics.Debug.WriteLine("[vertex][MeetingService][UpdateMeetings]");
 
-                if (string.IsNullOrEmpty(request.UpdatedAgenda) && string.IsNullOrEmpty(request.UpdatedTopic) && string.IsNullOrEmpty(request.UpdatedStartTime) && string.IsNullOrEmpty(request.UpdatedDuration))
+                if (string.IsNullOrEmpty(request.UpdatedDescription) && string.IsNullOrEmpty(request.UpdatedTopic) && string.IsNullOrEmpty(request.UpdatedStartTime) && string.IsNullOrEmpty(request.UpdatedDuration))
                     throw new Exception("One or more updating parameters are not specified.");
-
+                
                 ZoomMeetings meetings = await QueryRawMeetings(new MeetingsQueryRequest
                 {
-                    TopicAgenda = request.TopicAgenda,
+                    TopicDescription = request.TopicDescription,
                     Type = request.Type,
                     From = request.From,
                     To = request.To
@@ -175,7 +175,7 @@ namespace Zoom.Services
                     string urlQuery = $"meetings/{meeting.Id}";
                     object body = new
                     {
-                        agenda = request.UpdatedAgenda,
+                        agenda = request.UpdatedDescription,
                         topic = request.UpdatedTopic,
                         start_time = request.UpdatedStartTime,
                         duration = request.UpdatedDuration
@@ -203,7 +203,7 @@ namespace Zoom.Services
 
                 ZoomMeetings meetings = await QueryRawMeetings(new MeetingsQueryRequest
                 {
-                    TopicAgenda = request.TopicAgenda,
+                    TopicDescription = request.TopicDescription,
                     Type = request.Type,
                     From = request.From,
                     To = request.To
@@ -237,7 +237,7 @@ namespace Zoom.Services
 
                 ZoomMeetings meetings = await QueryRawMeetings(new MeetingsQueryRequest
                 {
-                    TopicAgenda = request.TopicAgenda,
+                    TopicDescription = request.TopicDescription,
                     Type = request.Type,
                     From = request.From,
                     To = request.To
@@ -295,7 +295,7 @@ namespace Zoom.Services
 
                 ZoomMeetings meetings = await QueryRawMeetings(new MeetingsQueryRequest
                 {
-                    TopicAgenda = request.TopicAgenda,
+                    TopicDescription = request.TopicDescription,
                     Type = request.Type,
                     From = request.From,
                     To = request.To
