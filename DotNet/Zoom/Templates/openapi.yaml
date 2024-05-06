@@ -225,7 +225,7 @@ components:
         type:
           title: Type
           type: string
-          description: Searches for meetings with type matching the specified meeting type. The possible values are 'scheduled', 'live', 'upcoming', 'upcoming_meetings', or 'previous_meetings'.
+          description: Searches for meetings with type matching the specified meeting type. The possible values are 'current', or 'past'.
         from:
           title: From
           type: string         
