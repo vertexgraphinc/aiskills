@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Zoom.Contracts;
 using Zoom.Helpers;
 using Zoom.Interfaces;
+using Microsoft.AspNetCore.Http;
 
 namespace Zoom.Controllers
 {
@@ -72,9 +73,14 @@ namespace Zoom.Controllers
                 resp.Message = "Unauthorized.";
                 return resp;
             }
-
             try
             {
+                if (UtilityHelper.IsDateInThePast(request.StartTime))
+                {
+                    Response.StatusCode = 500;
+                    resp.Message = "The start time must be in the future.";
+                    return resp;
+                }
                 resp.Meeting = await _meetingService.CreateMeeting(request, token);
                 if (resp.Meeting != null)
                 {

@@ -8,6 +8,19 @@ namespace Zoom.Helpers
 {
     public static class UtilityHelper
     {
+        public static bool IsDateInThePast(string dateString)
+        {
+            // Parse the string into a DateTime object
+            DateTime parsedDateTime;
+            if (!DateTime.TryParse(dateString, out parsedDateTime))
+            {
+                // Parsing failed
+                throw new ArgumentException("Invalid date string format");
+            }
+
+            // Compare with the current date and time
+            return parsedDateTime < DateTime.Now;
+        }
         public static string FormatDateTimeUtc(DateTime dateTime, string format = "yyyy-MM-ddTHH:mm:ssZ")
         {
             return dateTime.ToUniversalTime().ToString(format);
