@@ -28,6 +28,14 @@ namespace Zoom.Services
             string to = UtilityHelper.FormatDate(DateTime.Now);
             if (!string.IsNullOrEmpty(request.Type))
             {
+                if (request.Type.ToLower().StartsWith("past") || request.Type.ToLower().StartsWith("previous"))
+                {
+                    request.Type = "previous_meetings";
+                }
+                else
+                {
+                    request.Type = "scheduled, upcoming, upcoming_meetings, live";
+                }
                 query += $"type={request.Type}";
             }
             if (!string.IsNullOrEmpty(request.From))
