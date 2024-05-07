@@ -103,6 +103,7 @@ namespace Zoom.Services
                 if (string.IsNullOrEmpty(request.MemberEmails))
                     throw new Exception("Member emails are not specified.");
 
+                request.StartTime = UtilityHelper.TryConvertToZoomDate(request.StartTime);
                 string url = "users/me/meetings";
                 object body = new
                 {
