@@ -63,6 +63,19 @@ namespace Zoom.Controllers
             {
                 Meeting = null
             };
+            if (request == null)
+            {
+                Response.StatusCode = 500;
+                resp.Message = "Missing parameters";
+                return resp;
+            }
+            if (request.Duration <= 0)
+            {
+                Response.StatusCode = 500;
+                resp.Message = "Duration must be greater than zero minutes";
+                return resp;
+            }
+
             Response.StatusCode = 200;
 
             string authorizationHeader = Request.Headers["Authorization"].FirstOrDefault();
