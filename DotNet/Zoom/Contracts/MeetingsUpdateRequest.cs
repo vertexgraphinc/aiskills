@@ -5,9 +5,9 @@ namespace Zoom.Contracts
 {
     public class MeetingsUpdateRequest
     {
-        [JsonProperty("topicAgenda")]
-        [JsonPropertyName("topicAgenda")]
-        public string TopicAgenda { get; set; }
+        [JsonProperty("topicDescription")]
+        [JsonPropertyName("topicDescription")]
+        public string TopicDescription { get; set; }
 
         [JsonProperty("type")]
         [JsonPropertyName("type")]
@@ -21,9 +21,9 @@ namespace Zoom.Contracts
         [JsonPropertyName("to")]
         public string To { get; set; }
 
-        [JsonProperty("updatedAgenda")]
-        [JsonPropertyName("updatedAgenda")]
-        public string UpdatedAgenda { get; set; }
+        [JsonProperty("updatedDescription")]
+        [JsonPropertyName("updatedDescription")]
+        public string UpdatedDescription { get; set; }
 
         [JsonProperty("updatedTopic")]
         [JsonPropertyName("updatedTopic")]

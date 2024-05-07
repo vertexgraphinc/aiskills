@@ -5,9 +5,9 @@ namespace Zoom.Contracts
 {
     public class MeetingRecordingsQueryRequest
     {
-        [JsonProperty("topicAgenda")]
-        [JsonPropertyName("topicAgenda")]
-        public string TopicAgenda { get; set; }
+        [JsonProperty("topicDescription")]
+        [JsonPropertyName("topicDescription")]
+        public string TopicDescription { get; set; }
 
         [JsonProperty("type")]
         [JsonPropertyName("type")]

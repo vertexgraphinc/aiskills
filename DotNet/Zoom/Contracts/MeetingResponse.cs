@@ -5,9 +5,9 @@ namespace Zoom.Contracts
 {
     public class MeetingResponse
     {
-        [JsonProperty("agenda")]
-        [JsonPropertyName("agenda")]
-        public string Agenda { get; set; }
+        [JsonProperty("description")]
+        [JsonPropertyName("description")]
+        public string Description { get; set; }
 
         [JsonProperty("createdAt")]
         [JsonPropertyName("createdAt")]
