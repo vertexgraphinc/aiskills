@@ -242,55 +242,55 @@ components:
           description: A detailed description of the issue.
         issuetype:
           type: string
-          description: The type of issue (e.g., Bug, Task, Story).
+          description: Type of issue (e.g., Bug, Task, Story).
         priority:
           type: string
-          description: The priority of the issue (e.g., High, Medium, Low).
+          description: Priority level of the issue (e.g., High, Medium, Low).
         assignee:
           type: string
-          description: The name or username of the user assigned to the issue.
+          description: Username or name of the user assigned to the issue.
     SearchIssuesRequest:
       type: object
       properties:
         textQuery:
           type: string
-          description: A text query used to search for specific keywords or phrases within issues.
+          description: Text to search issue title, description, and comments for specific keywords or phrases.
         projectName:
           type: string
-          description: The name of the project where the issues are located.
+          description: Project name where the issues are located.
         assignee:
           type: string
-          description: The name or username of the user assigned to the issues.
+          description: Username or name of the user assigned to the issues.
         status:
           type: string
-          description: The status of the issues (e.g., Open, In Progress, Done).
+          description: Current status of the issues (e.g., Open, In Progress, Done).
         priority:
           type: string
-          description: The priority of the issues (e.g., High, Medium, Low).
+          description: Priority level of the issues (e.g., High, Medium, Low).
         issueType:
           type: string
-          description: The type of issues to search for (e.g., Bug, Task, Story).
+          description: Type of issues to search for (e.g., Bug, Task, Story).
 
     GetIssueRequest:
       properties:
         textQuery:
           type: string
-          description: A text query used to search for specific keywords or phrases within the issue.
+          description: Text to search issue title, description, and comments for specific keywords or phrases.
         projectName:
           type: string
-          description: The name of the project where the issue is located.
+          description: Project name where the issue is located.
         assignee:
           type: string
-          description: The name or username of the user assigned to the issue.
+          description: Username or name of the user assigned to the issue.
         status:
           type: string
-          description: The status of the issue (e.g., Open, In Progress, Done).
+          description: Current status of the issue (e.g., Open, In Progress, Done).
         priority:
           type: string
-          description: The priority of the issue (e.g., High, Medium, Low).
+          description: Priority level of the issue (e.g., High, Medium, Low).
         issueType:
           type: string
-          description: The type of issue.
+          description: Type of issue (e.g., Bug, Task, Story).
         issueKey:
           type: string
           description: The key of the specific issue to retrieve.
@@ -299,22 +299,22 @@ components:
       properties:
         textQuery:
           type: string
-          description: A text query used to search for specific keywords or phrases within the issue.
+          description: Text to search issue title, description, and comments for specific keywords or phrases.
         projectName:
           type: string
-          description: The name of the project where the issue is located.
+          description: Project name where the issue is located.
         assignee:
           type: string
-          description: The name or username of the user assigned to the issue.
+          description: Username or name of the user assigned to the issue.
         status:
           type: string
-          description: The status of the issue (e.g., Open, In Progress, Done).
+          description: Current status of the issue (e.g., Open, In Progress, Done).
         priority:
           type: string
-          description: The priority of the issue (e.g., High, Medium, Low).
+          description: Priority level of the issue (e.g., High, Medium, Low).
         issueType:
           type: string
-          description: The type of issue.
+          description: Type of issue (e.g., Bug, Task, Story).
         issueKey:
           type: string
           description: The key of the specific issue to retrieve.
@@ -325,22 +325,22 @@ components:
       properties:
         textQuery:
           type: string
-          description: A text query used to search for specific keywords or phrases within the issue.
+          description: Text to search issue title, description, and comments for specific keywords or phrases.
         projectName:
           type: string
-          description: The name of the project where the issue is located.
+          description: Project name where the issue is located.
         assignee:
           type: string
-          description: The name or username of the user assigned to the issue.
+          description: Username or name of the user assigned to the issue.
         status:
           type: string
-          description: The status of the issue (e.g., Open, In Progress, Done).
+          description: Current status of the issue (e.g., Open, In Progress, Done).
         priority:
           type: string
-          description: The priority of the issue (e.g., High, Medium, Low).
+          description: Priority level of the issue (e.g., High, Medium, Low).
         issueType:
           type: string
-          description: The type of issue.
+          description: Type of issue (e.g., Bug, Task, Story).
         issueKey:
           type: string
           description: The key of the specific issue to retrieve.
@@ -350,27 +350,27 @@ components:
         newAssigneeEmail:
           type: string
           format: email
-          description: The email address of the new assignee for the issue.
+          description: Email address of the new assignee for the issue.
     TransitionIssueRequest:
       properties:
         textQuery:
           type: string
-          description: A text query used to search for specific keywords or phrases within the issue.
+          description: Text to search issue title, description, and comments for specific keywords or phrases.
         projectName:
           type: string
-          description: The name of the project where the issue is located.
+          description: Project name where the issue is located.
         assignee:
           type: string
-          description: The name or username of the user assigned to the issue.
+          description: Username or name of the user assigned to the issue.
         status:
           type: string
-          description: The status of the issue (e.g., Open, In Progress, Done).
+          description: Current status of the issue (e.g., Open, In Progress, Done).
         priority:
           type: string
-          description: The priority of the issue (e.g., High, Medium, Low).
+          description: Priority level of the issue (e.g., High, Medium, Low).
         issueType:
           type: string
-          description: The type of issue.
+          description: Type of issue (e.g., Bug, Task, Story).
         issueKey:
           type: string
           description: The key of the specific issue to retrieve.
@@ -381,22 +381,22 @@ components:
       properties:
         textQuery:
           type: string
-          description: A text query used to search for specific keywords or phrases within the issue.
+          description: Text to search issue title, description, and comments for specific keywords or phrases.
         projectName:
           type: string
-          description: The name of the project where the issue is located.
+          description: Project name where the issue is located.
         assignee:
           type: string
-          description: The name or username of the user assigned to the issue.
+          description: Username or name of the user assigned to the issue.
         status:
           type: string
-          description: The status of the issue (e.g., Open, In Progress, Done).
+          description: Current status of the issue (e.g., Open, In Progress, Done).
         priority:
           type: string
-          description: The priority of the issue (e.g., High, Medium, Low).
+          description: Priority level of the issue (e.g., High, Medium, Low).
         issueType:
           type: string
-          description: The type of issue.
+          description: Type of issue (e.g., Bug, Task, Story).
         issueKey:
           type: string
           description: The key of the specific issue to retrieve.
@@ -423,7 +423,7 @@ components:
           description: A brief summary or title of the issue.
         status:
           type: string
-          description: The status of the issue.
+          description: Current status of the issue.
         statusCategory:
           type: string
           description: The category of the issue status.
@@ -432,10 +432,10 @@ components:
           description: The type of the issue.
         projectName:
           type: string
-          description: The name of the project where the issue belongs.
+          description: Project name where the issue belongs.
         projectKey:
           type: string
-          description: The key of the project where the issue belongs.
+          description: Project key where the issue belongs.
         description:
           type: string
           description: A detailed description of the issue.
@@ -462,7 +462,7 @@ components:
           description: The date and time when the issue was resolved.
         priority:
           type: string
-          description: The priority of the issue.
+          description: Priority level of the issue.
     ServerResponse:
       type: object
       properties:
