@@ -132,6 +132,38 @@ namespace Zoom.Controllers
                 return resp;
             }
 
+            if (!string.IsNullOrEmpty(request.UpdatedDuration) && Convert.ToInt32(request.UpdatedDuration) <= 0)
+            {
+                Response.StatusCode = 500;
+                resp.Message = "Duration must be greater than zero minutes";
+                return resp;
+            }
+            //Fix date/time
+            if (!string.IsNullOrEmpty(request.UpdatedStartTime))
+            {
+                string newDateTime = "";
+                if (UtilityHelper.IsMilitaryHourMinutes(request.UpdatedStartTime)) 
+                {
+                    //only hour and minutes were passed, add current day in front, and zero seconds after
+                    newDateTime = DateTime.Now.ToString("yyyy-MM-ddT") + request.UpdatedStartTime + ":00";
+                }
+                else
+                {
+                    //full date was passed
+                    newDateTime = UtilityHelper.TryConvertToZoomDate(request.UpdatedStartTime);
+                }
+                if (UtilityHelper.IsDateInThePast(newDateTime))
+                {
+                    Response.StatusCode = 500;
+                    resp.Message = "The start time must be in the future.";
+                    return resp;
+                }
+                if (!string.IsNullOrEmpty(newDateTime))
+                {
+                    request.UpdatedStartTime = newDateTime;
+                }
+            }
+
             try
             {
                 bool isUpdated = await _meetingService.UpdateMeetings(request, token);

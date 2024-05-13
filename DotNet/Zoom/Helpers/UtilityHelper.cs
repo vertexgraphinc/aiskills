@@ -1,13 +1,27 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.FileSystemGlobbing.Internal;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 
 namespace Zoom.Helpers
 {
     public static class UtilityHelper
     {
+        public static bool IsMilitaryHourMinutes(string str)
+        {
+            if (string.IsNullOrEmpty(str))
+            {
+                return false;
+            }
+            //checks if the string is a military hour and minutes combo
+            //examples: "23:59", "00:00", "12:34", "1:59", "24:00", "19:60", "07:08", "6:30", "23:30"
+            string pat = @"^(2[0-3]|[01]?[0-9]):([0-5][0-9])$";
+            bool matches = Regex.IsMatch(str, pat);
+            return matches;
+        }
         public static bool IsDateInThePast(string dateString)
         {
             DateTime parsedDateTime;

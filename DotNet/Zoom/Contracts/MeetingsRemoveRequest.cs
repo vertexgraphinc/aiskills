@@ -5,9 +5,13 @@ namespace Zoom.Contracts
 {
     public class MeetingsRemoveRequest
     {
-        [JsonProperty("topicDescription")]
-        [JsonPropertyName("topicDescription")]
-        public string TopicDescription { get; set; }
+        [JsonProperty("topic")]
+        [JsonPropertyName("topic")]
+        public string Topic { get; set; }
+
+        [JsonProperty("description")]
+        [JsonPropertyName("description")]
+        public string Description { get; set; }
 
         [JsonProperty("type")]
         [JsonPropertyName("type")]

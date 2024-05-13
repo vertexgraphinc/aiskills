@@ -59,8 +59,12 @@ namespace Zoom.Services
             if (result == null || result.Meetings == null)
                 return result;
 
-            result.Meetings = result.Meetings.Where(meeting => (string.IsNullOrEmpty(request.TopicDescription) || (!string.IsNullOrEmpty(meeting.Agenda) && meeting.Agenda.Contains(request.TopicDescription)) 
-                                                                                                        || (!string.IsNullOrEmpty(meeting.Topic) && meeting.Topic.Contains(request.TopicDescription)))).ToList();
+            result.Meetings = result.Meetings.Where(meeting => (
+                string.IsNullOrEmpty(request.Topic) || 
+                string.IsNullOrEmpty(request.Description) ||
+                (!string.IsNullOrEmpty(request.Description) && !string.IsNullOrEmpty(meeting.Agenda) && meeting.Agenda.Contains(request.Description)) ||
+                (!string.IsNullOrEmpty(request.Topic) && !string.IsNullOrEmpty(meeting.Topic) && meeting.Topic.Contains(request.Topic)))
+            ).ToList();
             return result;
         }
 
@@ -171,7 +175,8 @@ namespace Zoom.Services
                 
                 ZoomMeetings meetings = await QueryRawMeetings(new MeetingsQueryRequest
                 {
-                    TopicDescription = request.TopicDescription,
+                    Topic = request.Topic,
+                    Description = request.Description,
                     Type = request.Type,
                     From = request.From,
                     To = request.To
@@ -212,7 +217,8 @@ namespace Zoom.Services
 
                 ZoomMeetings meetings = await QueryRawMeetings(new MeetingsQueryRequest
                 {
-                    TopicDescription = request.TopicDescription,
+                    Topic = request.Topic,
+                    Description = request.Description,
                     Type = request.Type,
                     From = request.From,
                     To = request.To
@@ -246,7 +252,8 @@ namespace Zoom.Services
 
                 ZoomMeetings meetings = await QueryRawMeetings(new MeetingsQueryRequest
                 {
-                    TopicDescription = request.TopicDescription,
+                    Topic = request.Topic,
+                    Description = request.Description,
                     Type = request.Type,
                     From = request.From,
                     To = request.To
@@ -304,7 +311,8 @@ namespace Zoom.Services
 
                 ZoomMeetings meetings = await QueryRawMeetings(new MeetingsQueryRequest
                 {
-                    TopicDescription = request.TopicDescription,
+                    Topic = request.Topic,
+                    Description = request.Description,
                     Type = request.Type,
                     From = request.From,
                     To = request.To
