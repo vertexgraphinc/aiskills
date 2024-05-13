@@ -226,10 +226,6 @@ components:
           title: Description
           type: string
           description: Searches for meetings with descriptions containing the specified keyword, allowing partial matches for flexibility.
-        type:
-          title: Type
-          type: string
-          description: Searches for meetings with type matching the specified meeting type. The possible values are 'current', or 'past'.
         from:
           title: From
           type: string         
@@ -315,10 +311,6 @@ components:
           type: string
           description: Members email addresses concatenated together with commas in between.
           example: "test@test.com,test1@test1.com,test2@test2.com"
-        type:
-          title: Type
-          type: integer
-          description: The type of the meeting. The possible values are 1 (instanct meeting) or 2 (scheduled meeting)
         autoRecording:
           title: Auto Recording
           type: string
@@ -346,10 +338,6 @@ components:
           title: Description
           type: string
           description: Searches for meetings with descriptions containing the specified keyword, allowing partial matches for flexibility.
-        type:
-          title: Type
-          type: string
-          description: Searches for meetings with type matching the specified meeting type. The possible values are 'scheduled', 'live', 'upcoming', 'upcoming_meetings', or 'previous_meetings'.
         from:
           title: From
           type: string         
@@ -386,10 +374,6 @@ components:
           title: Description
           type: string
           description: Searches for meetings with descriptions containing the specified keyword, allowing partial matches for flexibility.
-        type:
-          title: Type
-          type: string
-          description: Searches for meetings with type matching the specified meeting type. The possible values are 'scheduled', 'live', 'upcoming', 'upcoming_meetings', or 'previous_meetings'.
         from:
           title: From
           type: string         
@@ -410,10 +394,6 @@ components:
           title: Description
           type: string
           description: Searches for meetings with descriptions containing the specified keyword, allowing partial matches for flexibility.
-        type:
-          title: Type
-          type: string
-          description: Searches for meetings with type matching the specified meeting type. The possible values are 'scheduled', 'live', 'upcoming', 'upcoming_meetings', or 'previous_meetings'.
         from:
           title: From
           type: string         
@@ -513,10 +493,6 @@ components:
           title: Description
           type: string
           description: Searches for meetings with descriptions containing the specified keyword, allowing partial matches for flexibility.
-        type:
-          title: Type
-          type: string
-          description: Searches for meetings with type matching the specified meeting type. The possible values are 'scheduled', 'live', 'upcoming', 'upcoming_meetings', or 'previous_meetings'.
         from:
           title: From
           type: string         

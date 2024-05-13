@@ -21,23 +21,15 @@ namespace Zoom.Services
 
         private async Task<ZoomMeetings> QueryRawMeetings(MeetingsQueryRequest request, string token)
         {
+            //https://developers.zoom.us/docs/api/rest/reference/zoom-api/methods/#operation/meetings
             string url = "users/me/meetings";
             string query = "?";
 
             string from = UtilityHelper.FormatDate(DateTime.Now.AddDays(-7));
             string to = UtilityHelper.FormatDate(DateTime.Now);
-            if (!string.IsNullOrEmpty(request.Type))
-            {
-                if (request.Type.ToLower().StartsWith("past") || request.Type.ToLower().StartsWith("previous"))
-                {
-                    request.Type = "previous_meetings";
-                }
-                else
-                {
-                    request.Type = "scheduled, upcoming, upcoming_meetings, live";
-                }
-                query += $"type={request.Type}";
-            }
+            
+            query += "type=scheduled"; // All valid previous (unexpired) meetings, live meetings, and upcoming scheduled meetings. 
+
             if (!string.IsNullOrEmpty(request.From))
             {
                     DateTime BeginDT = DateTime.Parse(request.From);
@@ -70,6 +62,7 @@ namespace Zoom.Services
 
         public async Task<List<MeetingResponse>> QueryMeetings(MeetingsQueryRequest request, string token)
         {
+            //https://developers.zoom.us/docs/api/rest/reference/zoom-api/methods/#operation/meetings
             try
             {
                 System.Diagnostics.Debug.WriteLine("[vertex][MeetingService][QueryMeetings]");
@@ -108,6 +101,7 @@ namespace Zoom.Services
 
         public async Task<MeetingResponse> CreateMeeting(MeetingCreateRequest request, string token)
         {
+            //https://developers.zoom.us/docs/api/rest/reference/zoom-api/methods/#operation/meetingCreate
             try
             {
                 System.Diagnostics.Debug.WriteLine("[vertex][MeetingService][CreateMeeting]");
@@ -127,7 +121,7 @@ namespace Zoom.Services
                     {
                         email
                     }).ToList(),
-                    type = request.Type > 0 ? request.Type : 2,
+                    type = 2, //scheduled meeting
                     auto_recording = request.AutoRecording,
                     settings = new
                     {
@@ -177,7 +171,6 @@ namespace Zoom.Services
                 {
                     Topic = request.Topic,
                     Description = request.Description,
-                    Type = request.Type,
                     From = request.From,
                     To = request.To
                 }, token);
@@ -211,6 +204,7 @@ namespace Zoom.Services
 
         public async Task<bool> RemoveMeetings(MeetingsRemoveRequest request, string token)
         {
+            //https://developers.zoom.us/docs/api/rest/reference/zoom-api/methods/#operation/meetingDelete
             try
             {
                 System.Diagnostics.Debug.WriteLine("[vertex][MeetingService][RemoveMeetings]");
@@ -219,7 +213,6 @@ namespace Zoom.Services
                 {
                     Topic = request.Topic,
                     Description = request.Description,
-                    Type = request.Type,
                     From = request.From,
                     To = request.To
                 }, token);
@@ -254,7 +247,6 @@ namespace Zoom.Services
                 {
                     Topic = request.Topic,
                     Description = request.Description,
-                    Type = request.Type,
                     From = request.From,
                     To = request.To
                 }, token);
@@ -313,7 +305,6 @@ namespace Zoom.Services
                 {
                     Topic = request.Topic,
                     Description = request.Description,
-                    Type = request.Type,
                     From = request.From,
                     To = request.To
                 }, token);

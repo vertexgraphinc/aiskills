@@ -25,10 +25,6 @@ namespace Zoom.Contracts
         [JsonPropertyName("memberEmails")]
         public string MemberEmails { get; set; }
 
-        [JsonProperty("type")]
-        [JsonPropertyName("type")]
-        public int Type { get; set; }
-
         [JsonProperty("autoRecording")]
         [JsonPropertyName("autoRecording")]
         public string AutoRecording { get; set; }
