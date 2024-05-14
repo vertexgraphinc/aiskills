@@ -18,18 +18,17 @@ namespace Zoom.Services
         {
             _apiHelper = apiHelper;
         }
-
         private async Task<ZoomMeetings> QueryRawMeetings(MeetingsQueryRequest request, string token)
         {
+            //returns a host's scheduled meetings
             //https://developers.zoom.us/docs/api/rest/reference/zoom-api/methods/#operation/meetings
-            string url = "users/me/meetings";
-            string query = "?";
+            string hostsMeetings = "users/me/meetings";
+            string userMeetings = "users/me/upcoming_meetings";
+            string query = "?type=scheduled";// All valid previous (unexpired) meetings, live meetings, and upcoming scheduled meetings. 
 
             string from = UtilityHelper.FormatDate(DateTime.Now.AddDays(-7));
             string to = UtilityHelper.FormatDate(DateTime.Now);
             
-            query += "type=scheduled"; // All valid previous (unexpired) meetings, live meetings, and upcoming scheduled meetings. 
-
             if (!string.IsNullOrEmpty(request.From))
             {
                     DateTime BeginDT = DateTime.Parse(request.From);
@@ -40,23 +39,35 @@ namespace Zoom.Services
                     DateTime EndDT = DateTime.Parse(request.To).Date;
                     to = UtilityHelper.FormatDate(EndDT);
             }
-            if (query != "?")
+            query += $"&from={from}&to={to}";
+            ZoomMeetings result = new ZoomMeetings();
+            result.TotalRecords = 0;
+            result.PageNumber = 0;
+            result.PageSize = 0;
+            result.NextPageToken = "";
+            result.Meetings = new List<ZoomMeeting>();
+            ZoomMeetings tmp = await _apiHelper.Get<ZoomMeetings>(hostsMeetings + query, token);
+            if (tmp != null && tmp.Meetings != null && tmp.Meetings.Count > 0)
             {
-                query += "&";
+                result.Meetings.AddRange(tmp.Meetings);
             }
-            query += $"from={from}&to={to}";
-            url += query;
-
-            ZoomMeetings result = await _apiHelper.Get<ZoomMeetings>(url, token);
-            if (result == null || result.Meetings == null)
-                return result;
-
+            tmp = await _apiHelper.Get<ZoomMeetings>(userMeetings + query, token);
+            if (tmp != null && tmp.Meetings != null && tmp.Meetings.Count > 0)
+            {
+                result.Meetings.AddRange(tmp.Meetings);
+            }
             result.Meetings = result.Meetings.Where(meeting => (
                 string.IsNullOrEmpty(request.Topic) || 
                 string.IsNullOrEmpty(request.Description) ||
                 (!string.IsNullOrEmpty(request.Description) && !string.IsNullOrEmpty(meeting.Agenda) && meeting.Agenda.Contains(request.Description)) ||
                 (!string.IsNullOrEmpty(request.Topic) && !string.IsNullOrEmpty(meeting.Topic) && meeting.Topic.Contains(request.Topic)))
             ).ToList();
+            if(result.Meetings.Count > 0)
+            {
+                result.TotalRecords = result.Meetings.Count;
+                result.PageNumber = 1;
+                result.PageSize = 1;
+            }
             return result;
         }
 

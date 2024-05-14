@@ -5,6 +5,8 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Zoom.Contracts;
+using System;
 
 namespace Zoom.Helpers
 {
@@ -30,6 +32,20 @@ namespace Zoom.Helpers
             using (var httpResponse = await _httpClient.SendAsync(request))
             {
                 string responseContent = await httpResponse.Content.ReadAsStringAsync();
+                if(responseContent != null)
+                {
+                    if (responseContent.StartsWith("{\"code\":") && responseContent.Contains("\"message\":")) {
+                        try
+                        {
+                            var se = JsonConvert.DeserializeObject<ServerError>(responseContent);
+                            throw new Exception("Code " + se.Code + ": " + se.Message);
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new Exception("Unhandled Exception: " + ex.Message);
+                        }
+                    }
+                }
                 return JsonConvert.DeserializeObject<T>(responseContent);
             }
         }
