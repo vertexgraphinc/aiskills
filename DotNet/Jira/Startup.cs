@@ -1,3 +1,6 @@
+using Jira.Helpers;
+using Jira.Interfaces;
+using Jira.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -26,6 +29,10 @@ namespace Jira
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddHttpClient();
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IIssueService, IssueService>();
+            services.AddHttpClient<ApiHelper>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

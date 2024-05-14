@@ -74,7 +74,7 @@ paths:
   $skillapproot/issues/comment:
     post:
       summary: Add a comment to an issue
-      operationId: AddCommentToIssue
+      operationId: CommentJiraIssue
       requestBody:
         description: Request body for adding a comment to an issue
         required: true
@@ -166,7 +166,7 @@ paths:
   $skillapproot/issues/transition:
     post:
       summary: Transition an issue to a different status
-      operationId: TransitionIssue
+      operationId: TransitionJiraIssue
       requestBody:
         description: Request body for transitioning an issue
         required: true
@@ -193,6 +193,38 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServerResponse'
+
+  $skillapproot/issues/transitions:
+    post:
+      summary: Get all transitions of an issue to different states
+      operationId: GetJiraIssueTransitions
+      requestBody:
+        description: Request body for getting all transitions of an issue
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetIssueRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetTransitionsResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetTransitionsResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetTransitionsResponse'
+
   $skillapproot/issues/get:
     post:
       summary: Get details of a specific issue
@@ -223,6 +255,69 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GetIssueResponse'
+
+  $skillapproot/issues/issuetype:
+    post:
+      summary: Get all jira issue types
+      operationId: GetJiraIssueTypes
+      requestBody:
+        description: Request body for searching all issue types
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetIssueTypesRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetIssueTypesResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetIssueTypesResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetIssueTypesResponse'
+
+  $skillapproot/issues/project:
+      post:
+        summary: Get all jira projects
+        operationId: GetJiraProjects
+        requestBody:
+          description: Request body for searching all projects
+          required: false
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetProjectsRequest'
+        responses:
+          '200':
+            description: OK
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/GetProjectsResponse'
+          '500':
+            description: Server error
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/GetProjectsResponse'
+          '401':
+            description: Unauthorized
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/GetProjectsResponse'
+
 components:
   schemas:
     CreateIssueRequest:
@@ -270,7 +365,6 @@ components:
         issueType:
           type: string
           description: Type of issues to search for (e.g., Bug, Task, Story).
-
     GetIssueRequest:
       properties:
         textQuery:
@@ -293,8 +387,7 @@ components:
           description: Type of issue (e.g., Bug, Task, Story).
         issueKey:
           type: string
-          description: The key of the specific issue to retrieve.
-
+          description: The key or id of the specific issue.
     CommentIssueRequest:
       properties:
         textQuery:
@@ -463,6 +556,66 @@ components:
         priority:
           type: string
           description: Priority level of the issue.
+    JiraIssueType:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the issue type.
+        name:
+          type: string
+          description: The name of the issue type.
+    Transition:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier of the transition.
+        name:
+          type: string
+          description: Name of the transition, typically representing the action performed (e.g., "In Progress", "Done").
+        to:
+          $ref: '#/components/schemas/TransitionStatus'
+          type: string
+          description: Status the issue will transition to after this transition is applied (e.g., "In Progress", "Done").
+        isAvailable:
+          type: boolean
+          description: Indicates whether this transition is currently available for the issue.
+      description: Represents a transition that can be performed on a Jira issue, including details about the target status and availability.
+    TransitionStatus:
+      type: object
+      properties:
+         name:
+           type: string
+           description: The name of the status the issue will transition to (e.g., "In Progress", "Done").
+         id:
+           type: string
+           description: The unique identifier of the status.
+         statusCategory:
+           $ref: '#/components/schemas/TransitionStatusCategory'
+      description: Represents the status the issue will transition to after applying the transition.
+    TransitionStatusCategory:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the status category.
+        key:
+          type: string
+          description: The key of the status category (e.g., "done", "new").
+        colorName:
+          type: string
+          description: The color associated with the status category (e.g., "green", "blue-gray").
+      description: Represents the category of the status.
+    JiraProject:
+      type: object
+      properties:
+        key:
+          type: string
+          description: The unique identifier of the project.
+        name:
+          type: string
+          description: The name of the project.
     ServerResponse:
       type: object
       properties:
@@ -488,5 +641,40 @@ components:
           description: A message from the server.
         issue:
           $ref: '#/components/schemas/SimpleJiraIssue'
+    GetIssueTypesRequest:
+      type: object
+      properties:
+        type:
+          type: string
+          description: The type of issue. If empty, all types will be returned. Optional.
+    GetIssueTypesResponse:
+      type: object
+      properties:
+        types:
+          type: array
+          items:
+            $ref: '#/components/schemas/JiraIssueType'
+          description: All issue types available or filtered if an issueType was provided to search for.
+    GetProjectsRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Project name. If empty, all projects will be returned. Optional.
+    GetProjectsResponse:
+      type: object
+      properties:
+        projects:
+          type: array
+          items:
+            $ref: '#/components/schemas/JiraProject'
+          description: All existing projects or filtered if a project name was provided to search for.
+    GetTransitionsResponse:
+      properties:
+        transitions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Transition'
+          description: All existing transitions of an issue to different states.
 
 ### ++++++++++++++++++++++++++++++++++++++++++++++++++++ 
