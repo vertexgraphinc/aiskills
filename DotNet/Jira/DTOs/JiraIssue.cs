@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using Newtonsoft.Json;
 
-namespace Jira.Contracts {
+namespace Jira.DTOs
+{
 
     public class JiraIssue
     {

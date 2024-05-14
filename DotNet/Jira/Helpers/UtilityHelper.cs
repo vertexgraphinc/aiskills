@@ -1,25 +1,29 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Jira.DTOs;
 using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using HtmlAgilityPack;
 
 namespace Jira.Helpers
 {
-    public class ValidationHelpers : ControllerBase
+    public class UtilityHelper
     {
         int _defaultLookBackDays = -365;
-        public bool Has(object param)
+
+        public static bool Has(object param)
         {
-            if (param == null)
-                return false;
+            if (param == null) { 
+                return false; 
+            }
 
             if (param is string)
             {
                 return !string.IsNullOrEmpty(param.ToString());
             }
+
             return true;
         }
-        protected string Sanitize(string str)
+
+        public static string Sanitize(string str)
         {
             if (!Has(str))
             {
@@ -41,10 +45,11 @@ namespace Jira.Helpers
             {
                 return null;
             }
-            DateTimeOffset dateTimeOffset = DateTimeOffset.Parse(dateString);
 
+            DateTimeOffset dateTimeOffset = DateTimeOffset.Parse(dateString);
             return dateTimeOffset.ToUnixTimeSeconds().ToString();
         }
+
         protected string TrimIfTooLong(string str, int maxLength)
         {
             if (!Has(str))
@@ -55,16 +60,42 @@ namespace Jira.Helpers
             {
                 return str.Substring(0, (maxLength - 1)) + "...";
             }
+
             return str;
         }
+
         public bool IsAlphaNumeric(string text)
         {
-            if (string.IsNullOrEmpty(text))
+            if (string.IsNullOrEmpty(text)) {
                 return false;
+            }
+
             System.Diagnostics.Debug.WriteLine("[vertex][IsAlphaNumeric]text:" + text);
             bool result = Regex.IsMatch(text, "^[a-zA-Z0-9]+$");
+
             System.Diagnostics.Debug.WriteLine("[vertex][IsAlphaNumeric]result:" + result);
             return result;
-        } 
+        }
+
+        public static string ExtractText(List<ContentItem> content)
+        {
+            string text = "";
+            if (content == null) return text;
+            foreach (var item in content)
+            {
+                if (item.Type == "text")
+                {
+                    text += item.Text + " ";
+                }
+                else
+                {
+                    var newText = UtilityHelper.ExtractText(item.Content);
+                    if (newText != null) { text += newText + "\n"; }
+                }
+
+            }
+            return text;
+        }
+
     }
 }

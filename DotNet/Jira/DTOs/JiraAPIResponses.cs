@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace Jira.Contracts
+namespace Jira.DTOs
 {
     public class JiraSiteInfo
     {
@@ -129,7 +129,7 @@ namespace Jira.Contracts
         [JsonProperty("fields"), JsonPropertyName("fields")]
         public JiraIssueFields Fields { get; set; }
 
-       
+
     }
 
     public class JiraDescription
@@ -191,6 +191,9 @@ namespace Jira.Contracts
     {
         [JsonProperty("key"), JsonPropertyName("key")]
         public string Key { get; set; }
+
+        [JsonProperty("name"), JsonPropertyName("name")]
+        public string Name { get; set; }
     }
     public class JiraPriority
     {
