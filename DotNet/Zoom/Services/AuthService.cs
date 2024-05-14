@@ -44,7 +44,7 @@ namespace Zoom.Services
 
                     ClientId = Para.ClientId,
                     ClientSecret = Para.ClientSecret,
-                    RefreshToken = Para.RefreshToken
+                    RefreshToken = Para.Code
                 });
             }
 

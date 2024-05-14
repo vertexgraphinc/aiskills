@@ -23,6 +23,7 @@ namespace Zoom.Services
             //returns a host's scheduled meetings
             //https://developers.zoom.us/docs/api/rest/reference/zoom-api/methods/#operation/meetings
             string hostsMeetings = "users/me/meetings";
+            //https://developers.zoom.us/docs/api/rest/reference/zoom-api/methods/#operation/listUpcomingMeeting
             string userMeetings = "users/me/upcoming_meetings";
             string query = "?type=scheduled";// All valid previous (unexpired) meetings, live meetings, and upcoming scheduled meetings. 
 
@@ -51,6 +52,7 @@ namespace Zoom.Services
             {
                 result.Meetings.AddRange(tmp.Meetings);
             }
+            await Task.Delay(1000);
             tmp = await _apiHelper.Get<ZoomMeetings>(userMeetings + query, token);
             if (tmp != null && tmp.Meetings != null && tmp.Meetings.Count > 0)
             {
