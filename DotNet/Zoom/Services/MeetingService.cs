@@ -1,7 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.Routing;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Zoom.Contracts;
 using Zoom.DTOs;
@@ -249,63 +251,115 @@ namespace Zoom.Services
                 throw new Exception(e.Message);
             }
         }
-
         public async Task<List<MeetingRecordingResponse>> QueryMeetingRecordings(MeetingRecordingsQueryRequest request, string token)
         {
-            try
+            System.Diagnostics.Debug.WriteLine("[vertex][MeetingService][QueryMeetingRecordings]");
+            ZoomMeetings meetings = await QueryRawMeetings(new MeetingsQueryRequest
             {
-                System.Diagnostics.Debug.WriteLine("[vertex][MeetingService][QueryMeetingRecordings]");
+                Topic = request.Topic,
+                Description = request.Description,
+                From = request.From,
+                To = request.To
+            }, token);
+            if (meetings == null || meetings.Meetings == null)
+            {
+                System.Diagnostics.Debug.WriteLine("[vertex][MeetingService][QueryMeetingRecordings]No meetings were found.");
+                throw new Exception("No meetings were found.");
+            }
 
-                ZoomMeetings meetings = await QueryRawMeetings(new MeetingsQueryRequest
+            if (string.IsNullOrEmpty(request.FileType))
+            {
+                request.FileType = "ANY";
+            }
+
+            switch (request.FileType.ToUpper())
+            {
+                case "COMMA SEPARATED":
+                case "COMMA SEPARATED VALUES":
+                case "CSV":
+                    request.FileType = "CSV";
+                    break;
+                case "MESSAGE":
+                case "CHAT MESSAGE":
+                case "CHAT_MESSAGE":
+                    request.FileType = "CHAT_MESSAGE";
+                    break;
+            }
+
+            var semaphore = new SemaphoreSlim(1, 1); // only one request per second
+            var tasks = new List<Task<List<MeetingRecordingResponse>>>();
+            int callCount = 0;
+
+            System.Diagnostics.Debug.WriteLine("[vertex][MeetingService][QueryMeetingRecordings]meetings.Meetings.Count:" + meetings.Meetings.Count.ToString());
+            foreach (var meeting in meetings.Meetings)
+            {
+                if (callCount >= 5) // Limit to 5 meetings
+                    break;
+
+                tasks.Add(Task.Run(async () =>
                 {
-                    Topic = request.Topic,
-                    Description = request.Description,
-                    From = request.From,
-                    To = request.To
-                }, token);
-                if (meetings == null || meetings.Meetings == null)
-                    throw new Exception("Meetings not found.");
-
-                var tasks = meetings.Meetings.Select(async meeting =>
-                {
-                    string urlQuery = $"meetings/{meeting.Id}/recordings";
-                    ZoomRecordings recordings = await _apiHelper.Get<ZoomRecordings>(urlQuery, token);
-                    if (recordings.RecordingFiles == null || !recordings.RecordingFiles.Any())
-                        return new List<MeetingRecordingResponse>();
-
-                    recordings.RecordingFiles = recordings.RecordingFiles.Where(recording => string.IsNullOrEmpty(request.FileType) || recording.FileType == request.FileType).ToList();
-                    List<MeetingRecordingResponse> recordingResponses = new List<MeetingRecordingResponse>();
-                    foreach(ZoomRecording recording in recordings.RecordingFiles)
+                    await semaphore.WaitAsync();
+                    try
                     {
-                        recordingResponses.Append(new MeetingRecordingResponse
-                        {
-                            MeetingTopic = meeting.Topic,
-                            MeetingType = meeting.Type,
-                            MeetingStartTime = meeting.StartTime,
-                            MeetingDuration = meeting.Duration,
-                            DownloadUrl = recording.DownloadUrl,
-                            FilePath = recording.FilePath,
-                            FileSize = recording.FileSize,
-                            FileType = recording.FileType,
-                            FileExtension = recording.FileExtension,
-                            PlayUrl = recording.PlayUrl,
-                            RecordingEnd = recording.RecordingEnd,
-                            RecordingStart = recording.RecordingStart,
-                            RecordingType = recording.RecordingType,
-                            Status = recording.Status
-                        });
-                    }
-                    return recordingResponses;
-                });
-                List<MeetingRecordingResponse> results = (await Task.WhenAll(tasks)).SelectMany(recordingResponse => recordingResponse).ToList();
+                        string urlQuery = $"meetings/{meeting.Id}/recordings";
+                        System.Diagnostics.Debug.WriteLine("[vertex][MeetingService][QueryMeetingRecordings]urlQuery:" + urlQuery);
+                        ZoomRecordings recordings = await _apiHelper.Get<ZoomRecordings>(urlQuery, token);
 
-                System.Diagnostics.Debug.WriteLine("[vertex][MeetingService][QueryMeetingRecordings]return:" + JsonConvert.SerializeObject(results));
-                return results;
+                        if (recordings.RecordingFiles == null || !recordings.RecordingFiles.Any())
+                            return new List<MeetingRecordingResponse>();
+                        
+                        if (!"ANY".Equals(request.FileType))
+                        {
+                            recordings.RecordingFiles = recordings.RecordingFiles
+                                .Where(recording => recording.FileType.Equals(request.FileType, StringComparison.OrdinalIgnoreCase))
+                                .ToList();
+                        }
+
+                        List<MeetingRecordingResponse> recordingResponses = new List<MeetingRecordingResponse>();
+                        foreach (ZoomRecording recording in recordings.RecordingFiles)
+                        {
+                            recordingResponses.Add(new MeetingRecordingResponse
+                            {
+                                MeetingTopic = meeting.Topic,
+                                MeetingType = meeting.Type,
+                                MeetingStartTime = meeting.StartTime,
+                                MeetingDuration = meeting.Duration,
+                                DownloadUrl = recording.DownloadUrl,
+                                FilePath = recording.FilePath,
+                                FileSize = recording.FileSize,
+                                FileType = recording.FileType,
+                                FileExtension = recording.FileExtension,
+                                PlayUrl = recording.PlayUrl,
+                                RecordingEnd = recording.RecordingEnd,
+                                RecordingStart = recording.RecordingStart,
+                                RecordingType = recording.RecordingType,
+                                Status = recording.Status
+                            });
+                        }
+                        return recordingResponses;
+
+                    }
+                    catch (Exception e)
+                    {
+                        System.Diagnostics.Debug.WriteLine("[vertex][MeetingService][QueryMeetingRecordings]exception: " + e.Message);
+                        return new List<MeetingRecordingResponse>();
+                    }
+                    finally
+                    {
+                        await Task.Delay(1000); // zoom rate limit is 1 request per second
+                        semaphore.Release();
+                    }
+                }));
+
+                callCount++;
             }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message);
-            }
+            List<MeetingRecordingResponse> results = (await Task.WhenAll(tasks))
+            .Where(recordingResponse => recordingResponse != null)
+            .SelectMany(recordingResponse => recordingResponse)
+            .ToList();
+
+            //System.Diagnostics.Debug.WriteLine("[vertex][MeetingService][QueryMeetingRecordings]return:" + JsonConvert.SerializeObject(results));
+            return results;
         }
 
         public async Task<List<MeetingChatResponse>> QueryMeetingChats(MeetingChatsQueryRequest request, string token)

@@ -35,15 +35,8 @@ namespace Zoom.Helpers
                 if(responseContent != null)
                 {
                     if (responseContent.StartsWith("{\"code\":") && responseContent.Contains("\"message\":")) {
-                        try
-                        {
-                            var se = JsonConvert.DeserializeObject<ServerError>(responseContent);
-                            throw new Exception("Code " + se.Code + ": " + se.Message);
-                        }
-                        catch (Exception ex)
-                        {
-                            throw new Exception("Unhandled Exception: " + ex.Message);
-                        }
+                        var se = JsonConvert.DeserializeObject<ServerError>(responseContent);
+                        throw new Exception("Code " + se.Code + ": " + se.Message);
                     }
                 }
                 return JsonConvert.DeserializeObject<T>(responseContent);
