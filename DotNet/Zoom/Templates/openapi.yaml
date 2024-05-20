@@ -405,7 +405,7 @@ components:
         fileType:
           title: File Type
           type: string
-          description: Searches for meeting recordings with type matching the specified recording file type. The possible values are 'MP4', 'M4A', 'TIMELINE', 'TRANSCRIPT', 'CHAT', 'CC', 'CSV', 'SUMMARY', or 'CHAT_MESSAGE'.
+          description: Searches for meeting recordings with type matching the specified recording file type. The possible values are 'MP4', 'M4A', 'TIMELINE', 'TRANSCRIPT', 'CHAT', 'CC', 'CSV', 'SUMMARY', 'CHAT_MESSAGE' or 'ANY'.
     MeetingRecordingsQueryResponse:
       type: object
       properties:
