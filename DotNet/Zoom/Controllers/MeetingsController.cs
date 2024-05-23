@@ -134,9 +134,7 @@ namespace Zoom.Controllers
 
             if (!string.IsNullOrEmpty(request.UpdatedDuration) && Convert.ToInt32(request.UpdatedDuration) <= 0)
             {
-                Response.StatusCode = 500;
-                resp.Message = "Duration must be greater than zero minutes";
-                return resp;
+                request.UpdatedDuration = "60";
             }
             //Fix date/time
             if (!string.IsNullOrEmpty(request.UpdatedStartTime))
