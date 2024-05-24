@@ -71,17 +71,29 @@ namespace Jira.DTOs
 
     public class IssueType
     {
-        [JsonProperty("name"), JsonPropertyName("name")]
+        [JsonProperty("id")]
+        public int Id { get; set; }
+
+        [JsonProperty("name")]
         public string Name { get; set; }
+
+        [JsonProperty("fields")]
+        public Dictionary<string, Field> Fields { get; set; }
     }
 
     public class Project
     {
-        [JsonProperty("name"), JsonPropertyName("name")]
+        [JsonProperty("id")]
+        public string Id { get; set; }
+
+        [JsonProperty("key")]
+        public string Key { get; set; }
+
+        [JsonProperty("name")]
         public string Name { get; set; }
 
-        [JsonProperty("key"), JsonPropertyName("key")]
-        public string Key { get; set; }
+        [JsonProperty("issuetypes")]
+        public List<IssueType> IssueTypes { get; set; }
     }
 
     public class Description
