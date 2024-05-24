@@ -97,7 +97,7 @@ namespace Jira.Helpers
 
                 if (!httpResponse.IsSuccessStatusCode)
                 {
-                    throw new Exception(httpResponse.ReasonPhrase);
+                    throw new Exception(httpResponse.ReasonPhrase + " - msg:" + s);
                 }
 
                 System.Diagnostics.Debug.WriteLine("[vertex][JiraIssues][Post]:Url:" + url);

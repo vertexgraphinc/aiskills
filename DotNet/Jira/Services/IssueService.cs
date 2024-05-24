@@ -4,9 +4,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Jira.Interfaces;
 using Jira.Helpers;
-using Jira.Constants;
-using System.Net.Http;
-using Newtonsoft.Json.Linq;
 using Jira.DTOs;
 using System;
 
@@ -132,7 +129,11 @@ namespace Jira.Services
 
         public async Task<bool> CreateIssue(CreateIssueRequest request, string issueTypeId, string projectId, string token)
         {
-            var assigneeId = await FindAccountIdByName(request.Assignee, null, token);
+            string assigneeId = null;
+            if (!string.IsNullOrEmpty(request.Assignee))
+            {
+                assigneeId = await FindAccountIdByName(request.Assignee, null, token);
+            }
 
             var createIssueRequest = new JiraCreateIssueRequest
             {
@@ -140,10 +141,21 @@ namespace Jira.Services
                 {
                     Project = new JiraProject { Key = projectId },
                     Summary = request.Summary,
-                    IssueType = new JiraIssueType { Id = issueTypeId },
-                    Assignee = new JiraAssignee { Id = assigneeId }
+                    IssueType = new JiraIssueType { Id = issueTypeId }
                 }
             };
+
+            if (!string.IsNullOrEmpty(assigneeId))
+            {
+                createIssueRequest.Fields.Assignee = new JiraAssignee { Id = assigneeId };
+            }
+
+            var fields = await GetProjectIssueTypeFields(projectId, request.IssueType, token);
+
+            if (!string.IsNullOrEmpty(request.Priority) && fields.ContainsKey("priority"))
+            {
+                createIssueRequest.Fields.Priority = new JiraPriority { Name = request.Priority };
+            }
 
             createIssueRequest.Fields.Description = new JiraDescription { Type = "doc", Version = 1, Content = new List<ContentItem> { new ContentItem { Type = "paragraph", Content = new List<ContentItem> { new ContentItem { Type = "text", Text = request.Description } } } } };
 
@@ -279,6 +291,20 @@ namespace Jira.Services
             }
 
             return null;
+        }
+
+        public async Task<Dictionary<string, Field>> GetProjectIssueTypeFields(string projectKey, string issueType, string token)
+        {
+            Dictionary<string, Field> issueFields = new Dictionary<string, Field>();
+            string query = $"issue/createmeta?projectKeys={projectKey}&issuetypeNames={issueType}&expand=projects.issuetypes.fields";
+            var fields = await _apiHelper.Get<JiraCreateMetaResponse>($"{query}", token);
+
+            if (fields != null && fields.Projects.Count > 0 && fields.Projects[0].IssueTypes.Count > 0)
+            {
+                issueFields = fields.Projects[0].IssueTypes[0].Fields;
+            }
+
+            return issueFields;
         }
 
         public SimpleJiraIssue SimplifyJiraIssue(JiraIssue jiraIssue)

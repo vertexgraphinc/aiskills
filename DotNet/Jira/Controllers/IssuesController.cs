@@ -252,7 +252,7 @@ namespace Jira.Controllers
                     if (string.IsNullOrEmpty(issueTypeId))
                     {
                         Response.StatusCode = 500;
-                        response.Message = "Could not find Issue Type, please provide more accurate information";
+                        response.Message = $"Issue Type '{request.IssueType}' not found. Please verify the issue type and try again";
                         return response;
                     }
                 }
@@ -264,7 +264,7 @@ namespace Jira.Controllers
                     if (string.IsNullOrEmpty(assigneeId))
                     {
                         Response.StatusCode = 500;
-                        response.Message = "Could not find the Assignee, please provide more accurate information";
+                        response.Message = $"Assignee '{request.NewAssignee}' not found. Please verify the assignee information and try again";
                         return response;
                     }
                 }
@@ -373,7 +373,7 @@ namespace Jira.Controllers
             if(string.IsNullOrEmpty(transId))
             {
                 Response.StatusCode = 500;
-                response.Message = "Could not find the specified transition for this issue, please provide more accurate information.";
+                response.Message = "Could not find the specified transition for this issue, please provide more accurate information";
                 return response;
             }
 
@@ -489,7 +489,7 @@ namespace Jira.Controllers
                 if (string.IsNullOrEmpty(assignId))
                 {
                     Response.StatusCode = 500;
-                    response.Message = "Could not find assignee user, please provide more accurate information";
+                    response.Message = "Could not find assignee user, Please verify the assignee information and try again";
                     return response;
                 }
 
@@ -542,7 +542,7 @@ namespace Jira.Controllers
                 if(string.IsNullOrEmpty(issueTypeId))
                 {
                     Response.StatusCode = 500;
-                    response.Message = "Could not find Issue Type, please provide more accurate information";
+                    response.Message = $"Issue Type '{request.IssueType}' not found. Please verify the type and try again";
                     return response;
                 }
 
@@ -550,7 +550,7 @@ namespace Jira.Controllers
                 if (string.IsNullOrEmpty(projectId))
                 {
                     Response.StatusCode = 500;
-                    response.Message = "Could not find specified project to add issue to, please provide more accurate information";
+                    response.Message = $"Project with key '{request.ProjectKey}' not found. Please verify the Project and try again";
                     return response;
                 }
 
