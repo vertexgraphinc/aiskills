@@ -60,12 +60,28 @@ namespace Zoom.Services
             {
                 result.Meetings.AddRange(tmp.Meetings);
             }
-            result.Meetings = result.Meetings.Where(meeting => (
-                string.IsNullOrEmpty(request.Topic) || 
-                string.IsNullOrEmpty(request.Description) ||
-                (!string.IsNullOrEmpty(request.Description) && !string.IsNullOrEmpty(meeting.Agenda) && meeting.Agenda.Contains(request.Description)) ||
-                (!string.IsNullOrEmpty(request.Topic) && !string.IsNullOrEmpty(meeting.Topic) && meeting.Topic.Contains(request.Topic)))
-            ).ToList();
+            if (!string.IsNullOrEmpty(request.Topic) || !string.IsNullOrEmpty(request.Description))
+            {
+                List<ZoomMeeting> mtgs = new List<ZoomMeeting>();
+                foreach (var meeting in result.Meetings)
+                {
+                    bool include = false;
+                    if (!include && !string.IsNullOrEmpty(request.Topic) && !string.IsNullOrEmpty(meeting.Topic) && meeting.Topic.Contains(request.Topic))
+                    {
+                        include = true;
+                    }
+                    if (!include && !string.IsNullOrEmpty(request.Description) && !string.IsNullOrEmpty(meeting.Agenda) && meeting.Agenda.Contains(request.Description))
+                    {
+                        include = true;
+                    }
+                    if (include)
+                    {
+                        mtgs.Add(meeting);
+                    }
+                }
+                result.Meetings = mtgs;
+            }
+
             if(result.Meetings.Count > 0)
             {
                 result.TotalRecords = result.Meetings.Count;
@@ -181,7 +197,7 @@ namespace Zoom.Services
 
                 if (string.IsNullOrEmpty(request.UpdatedDescription) && string.IsNullOrEmpty(request.UpdatedTopic) && string.IsNullOrEmpty(request.UpdatedStartTime) && string.IsNullOrEmpty(request.UpdatedDuration))
                     throw new Exception("One or more updating parameters are not specified.");
-                
+
                 ZoomMeetings meetings = await QueryRawMeetings(new MeetingsQueryRequest
                 {
                     Topic = request.Topic,
@@ -189,10 +205,11 @@ namespace Zoom.Services
                     From = request.From,
                     To = request.To
                 }, token);
+                await Task.Delay(1000);
                 if (meetings == null || meetings.Meetings == null)
                     throw new Exception("Meetings not found.");
 
-                var tasks = meetings.Meetings.Select(async meeting =>
+                foreach (var meeting in meetings.Meetings)
                 {
                     string urlQuery = $"meetings/{meeting.Id}";
                     object body = new
@@ -202,12 +219,12 @@ namespace Zoom.Services
                         start_time = request.UpdatedStartTime,
                         duration = request.UpdatedDuration
                     };
-                    return await _apiHelper.Patch(urlQuery, body, token);
-                });
-                var results = await Task.WhenAll(tasks);
-                if (results == null || !results.Any() || !results.All(result => result == true))
-                    throw new Exception("One or more meetings failed to update.");
+                    bool result = await _apiHelper.Patch(urlQuery, body, token);
+                    if (!result)
+                        throw new Exception("One or more meetings failed to update.");
 
+                    await Task.Delay(1000);
+                }
                 System.Diagnostics.Debug.WriteLine("[vertex][MeetingService][UpdateMeetings]return:" + JsonConvert.SerializeObject(true));
                 return true;
             }
