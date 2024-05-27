@@ -20,8 +20,9 @@ namespace MSTeams.Controllers
         [HttpGet("auth")]
         public void Auth()
         {
-            string tenant = "common";
-            Response.Redirect(APIConstants.GraphApiAuthURL + $"{tenant}/oauth2/v2.0/authorize{Request.QueryString}");
+            string qs = Request.QueryString.ToString();
+            qs = qs.Replace("&prompt=consent", "");
+            Response.Redirect(APIConstants.GraphApiAuthURL + $"common/oauth2/v2.0/authorize{qs}");
         }
 
         [HttpPost("token")]
