@@ -19,8 +19,5 @@ namespace Jira.Contracts
 
         [JsonProperty("redirect_uri"), JsonPropertyName("redirect_uri")]
         public string RedirectUri { get; set; }
-
-        [JsonProperty("refresh_token"), JsonPropertyName("refresh_token")]
-        public string RefreshToken { get; set; }
     }
 }
