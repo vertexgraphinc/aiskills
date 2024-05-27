@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace Jira.Contracts
 {
-    public class OAuthToken: OAuthError
+    public class OAuthToken : OAuthError
     {
         [JsonPropertyName("access_token")]
         [JsonProperty("access_token")]

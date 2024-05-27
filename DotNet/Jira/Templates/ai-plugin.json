@@ -7,7 +7,7 @@
   "auth": {
     "type": "oauth",
     "client_url": "skill/oauth/auth",
-    "scope": "read:jira-work write:jira-work read:jira-user",
+    "scope": "read:jira-work write:jira-work read:jira-user offline_access",
     "authorization_url": "skill/oauth/token",
     "authorization_content_type": "application/json"
   },

@@ -18,7 +18,7 @@ namespace Jira.Services
 
         public async Task<OAuthToken> RedeemToken(OAuthTokenPara Para)
         {
-            System.Diagnostics.Debug.WriteLine("[vertex][OAuth]RedeemToken");
+            System.Diagnostics.Debug.WriteLine("[vertex][JiraIssues]Redeem Token");
             TokenResponse resp;
 
             if (Para.GrantType == "authorization_code")
@@ -48,19 +48,16 @@ namespace Jira.Services
 
                     ClientId = Para.ClientId,
                     ClientSecret = Para.ClientSecret,
-                    RefreshToken = Para.RefreshToken,
-                    Parameters =
-                    {
-                        { "scope", APIConstants.ApiScope }
-                    }
+                    RefreshToken = Para.Code,
                 });
-
             }
             return GetToken(resp);
         }
 
         OAuthToken GetToken(TokenResponse resp)
         {
+            System.Diagnostics.Debug.WriteLine("[vertex][JiraIssues]Get Token");
+
             if (resp == null) {  
                 return null; 
             }       
