@@ -18,7 +18,8 @@ namespace Jira.Services
 
         public async Task<OAuthToken> RedeemToken(OAuthTokenPara Para)
         {
-            System.Diagnostics.Debug.WriteLine("[vertex][JiraIssues]Redeem Token");
+            System.Diagnostics.Debug.WriteLine("[vertex][Jira][Auth]Redeem Token - Grant: " + Para.GrantType + " - Scope: " + APIConstants.ApiScope);
+
             TokenResponse resp;
 
             if (Para.GrantType == "authorization_code")
@@ -56,20 +57,24 @@ namespace Jira.Services
 
         OAuthToken GetToken(TokenResponse resp)
         {
-            System.Diagnostics.Debug.WriteLine("[vertex][JiraIssues]Get Token");
+            if (resp == null) {
+                System.Diagnostics.Debug.WriteLine("[vertex][Jira][Auth]Get Token - Null");
 
-            if (resp == null) {  
                 return null; 
             }       
 
             if (resp.IsError)
             {
+                System.Diagnostics.Debug.WriteLine("[vertex][Jira][Auth]Get Token - Error: " + resp.Error);
+
                 return new OAuthToken
                 {
                     Error = resp.Error,
                     ErrorDescription = resp.HttpErrorReason
                 };
             }
+
+            System.Diagnostics.Debug.WriteLine("[vertex][Jira][Auth]Get Token - Scope: " + resp.Scope);
 
             return new OAuthToken
             {
