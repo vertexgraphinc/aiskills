@@ -22,13 +22,16 @@ namespace Jira.Controllers
             //if the skill is installed as a web application called "Jira" in IIS, then both URLs will work:
             //https://example.com/Jira/oauth/test
             //https://example.com/Jira/skill/oauth/test
-            System.Diagnostics.Debug.WriteLine("[vertex][OAuth]Test");
+            System.Diagnostics.Debug.WriteLine("[vertex][Jira][OAuth]Test");
+
             return "hello world from oauth.";
         }
 
         [HttpGet("auth"), HttpGet("~/skill/{controller}/auth")]
         public void Auth()
         {
+            System.Diagnostics.Debug.WriteLine("[vertex][Jira][OAuth]Auth");
+
             var state = Guid.NewGuid().ToString();
             Response.Redirect($"{APIConstants.ApiAuthURL}{Request.QueryString}&state={state}&audience=api.atlassian.com");
         }
@@ -36,6 +39,8 @@ namespace Jira.Controllers
         [HttpPost("token"), HttpPost("~/skill/{controller}/token")]
         public async Task<OAuthToken> RedeemToken(OAuthTokenPara Para)
         {
+            System.Diagnostics.Debug.WriteLine("[vertex][Jira][OAuth]Redeem Token");
+
             return await _authService.RedeemToken(Para);
         }
 

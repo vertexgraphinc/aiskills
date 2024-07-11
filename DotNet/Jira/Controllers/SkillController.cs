@@ -10,14 +10,18 @@ namespace Jira.Controllers
     public class SkillController : ControllerBase
     {
         [HttpGet(""),HttpGet("~/")]
-        public string  GetSkillConfig()
+        public string GetSkillConfig()
         {
+            System.Diagnostics.Debug.WriteLine("[vertex][Jira][Skill]Get config skill");
+
             return GetEmbeddedResource("ai-plugin.json");
         }
 
         [HttpGet("apidefs"),HttpGet("~/apidefs")]
         public string GetSkillApiDefinitions()
         {
+            System.Diagnostics.Debug.WriteLine("[vertex][Jira][Skill]Get api definitions");
+
             return GetEmbeddedResource("openapi.yaml");
         }
 
