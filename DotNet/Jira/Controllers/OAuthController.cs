@@ -32,8 +32,15 @@ namespace Jira.Controllers
         {
             System.Diagnostics.Debug.WriteLine("[vertex][Jira][OAuth]Auth");
 
-            var state = Guid.NewGuid().ToString();
-            Response.Redirect($"{APIConstants.ApiAuthURL}{Request.QueryString}&state={state}&audience=api.atlassian.com");
+            string state = Guid.NewGuid().ToString();
+            string queryString = Request.QueryString.Value;
+
+            if (queryString.Contains("scope") && !queryString.Contains("offline_access"))
+            {
+                queryString = queryString.Replace("scope=", "scope=offline_access%20");
+            }
+
+            Response.Redirect($"{APIConstants.ApiAuthURL}{queryString}&state={state}&audience=api.atlassian.com");
         }
 
         [HttpPost("token"), HttpPost("~/skill/{controller}/token")]
