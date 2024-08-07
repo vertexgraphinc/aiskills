@@ -1,0 +1,588 @@
+﻿openapi: 3.1.0
+info:
+  title: Zoho Skill
+  description: A VertexGraph Skill to interact with Zoho API
+  version: 1.0.0
+servers:
+  - url: $skillhost
+paths:
+  $skillapproot/tickets:
+    post:
+      summary: Get Zoho Tickets
+      description: Retrieve tickets from Zoho Desk with optional query parameters
+      operationId: GetTickets
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TicketQueryRequest'
+      responses:
+        '200':
+          description: A list of tickets from Zoho Desk
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+
+  $skillapproot/tickets/create:
+    post:
+      summary: Create new Zoho Ticket
+      description: Create new Zoho Desk ticket
+      operationId: CreateTicket
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUpdateTicketRequest'
+      responses:
+        '200':
+          description: Details of the specified new created ticket from Zoho Desk
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+
+  $skillapproot/tickets/number/{ticket_number}:
+    get:
+      summary: Get Zoho Ticket by Number
+      description: Fetch the details of a ticket by its number from Zoho Desk.
+      operationId: GetTicketByNumber
+      parameters:
+        - in: path
+          name: ticket_number
+          required: true
+          schema:
+            type: string
+          description: The number of the ticket to retrieve
+      responses:
+        '200':
+          description: Details of the specified ticket from Zoho Desk
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+        '404':
+          description: Ticket not found
+        '500':
+          description: Internal Server Error
+
+  $skillapproot/tickets/{ticket_number_id}/update:
+    post:
+      summary: Updates existing Zoho Ticket
+      description: Updates existing Zoho Desk ticket given some optional parameters
+      operationId: UpdateTicket
+      parameters:
+        - in: path
+          name: ticket_number_id
+          required: true
+          schema:
+            type: string
+          description: The Number or ID of the ticket to edit
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUpdateTicketRequest'
+      responses:
+        '200':
+          description: Details of the edited ticket from Zoho Desk
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+
+  $skillapproot/tickets/{ticket_number_id}/History:
+    post:
+      summary: Get Zoho Ticket History
+      description: Retrieve the history of a specific ticket by its ID from Zoho Desk
+      operationId: GetTicketHistory
+      parameters:
+        - in: path
+          name: ticket_number_id
+          required: true
+          schema:
+            type: string
+          description: The Number or ID of the ticket to retrieve history for
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TicketHistoryRequest'
+      responses:
+        '200':
+          description: Details of the ticket history from Zoho Desk
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        '401':
+          description: Unauthorized
+        '404':
+          description: Ticket not found
+        '500':
+          description: Internal Server Error
+
+  $skillapproot/tickets/{ticket_number_id}/resolution:
+    get:
+      summary: Get Zoho Ticket Resolution
+      description: Retrieve the resolution details of a specific ticket by its ID from Zoho Desk
+      operationId: GetTicketResolution
+      parameters:
+        - in: path
+          name: ticket_number_id
+          required: true
+          schema:
+            type: string
+          description: The Number or ID of the ticket to retrieve resolution for
+      responses:
+        '200':
+          description: Resolution details of the specified ticket from Zoho Desk
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+        '404':
+          description: Ticket not found
+        '500':
+          description: Internal Server Error
+
+  $skillapproot/tickets/{ticket_number_id}/resolution/update:
+    post:
+      summary: Update Zoho Ticket Resolution
+      description: Update the resolution details of a specific ticket by its ID from Zoho Desk
+      operationId: UpdateTicketResolution
+      parameters:
+        - in: path
+          name: ticket_number_id
+          required: true
+          schema:
+            type: string
+          description: The Number or ID of the ticket to update resolution for
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTicketResolutionRequest'
+      responses:
+        '200':
+          description: Details of the updated ticket resolution from Zoho Desk
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+        '404':
+          description: Ticket not found
+        '500':
+          description: Internal Server Error
+
+  $skillapproot/tickets/{ticket_number_id}/comments:
+    post:
+      summary: Get Zoho Ticket Comments
+      description: Retrieve comments for a specific ticket in Zoho Desk
+      operationId: GetTicketComments
+      parameters:
+        - in: path
+          name: ticket_number_id
+          required: true
+          schema:
+            type: string
+          description: The Number ir ID of the ticket for which to retrieve comments
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TicketCommentsRequest'
+      responses:
+        '200':
+          description: A list of comments for the specified ticket from Zoho Desk
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        '401':
+          description: Unauthorized
+        '404':
+          description: Ticket not found
+        '500':
+          description: Internal Server Error
+
+  $skillapproot/tickets/{ticket_number_id}/comments/create:
+    post:
+      summary: Create Ticket Comment
+      description: Add a new comment to a specific ticket in Zoho Desk.
+      operationId: CreateTicketComment
+      parameters:
+        - in: path
+          name: ticket_number_id
+          required: true
+          schema:
+            type: string
+          description: The Number or ID of the ticket to which the comment is to be added.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCommentRequest'
+      responses:
+        '200':
+          description: Details of the created comment from Zoho Desk
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized
+        '404':
+          description: Ticket not found
+        '500':
+          description: Internal Server Error
+
+  $skillapproot/tickets/{ticket_number_id}/conversations:
+    post:
+      summary: Get Zoho Ticket Conversations
+      description: Retrieve the list of conversations for a specific ticket in Zoho Desk
+      operationId: GetTicketConversations
+      parameters:
+        - in: path
+          name: ticket_number_id
+          required: true
+          schema:
+            type: string
+          description: The Number or ID of the ticket for which to retrieve conversations
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TicketRequest'
+      responses:
+        '200':
+          description: A list of conversations for the specified ticket from Zoho Desk
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        '401':
+          description: Unauthorized
+        '404':
+          description: Ticket not found
+        '500':
+          description: Internal Server Error
+
+  $skillapproot/departments:
+    get:
+      summary: Get list of departments in Zoho
+      description: Retrieve a list of departments from Zoho Desk
+      operationId: GetDepartments
+      responses:
+        '200':
+          description: A list of departments from Zoho Desk
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+
+  $skillapproot/teams:
+    get:
+      summary: List Zoho teams from all associated departments
+      description: Fetch details of all teams in Zoho created in all departments to which the current user belongs
+      operationId: GetTeams
+      responses:
+        '200':
+          description: A list of teams
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+
+  $skillapproot/channels:
+    get:
+      summary: Get Zoho Channels
+      description: Retrieve a list of channels from Zoho Desk
+      operationId: GetChannels
+      responses:
+        '200':
+          description: A list of channels from Zoho Desk
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+
+  $skillapproot/agents/search:
+    get:
+      summary: Search for Zoho Agents that tickets can be assigned to
+      description: Query Zoho Desk agents by a search string
+      operationId: QueryAgents
+      parameters:
+        - in: query
+          name: searchStr
+          schema:
+            type: string
+          description: The search string to query agents
+      responses:
+        '200':
+          description: A list of matching agents from Zoho Desk that can be assigned to tickets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+
+  $skillapproot/contacts/search:
+    get:
+      summary: Search for contacts
+      description: Query Zoho Desk contacts by a search string
+      operationId: QueryContacts
+      parameters:
+        - in: query
+          name: searchStr
+          schema:
+            type: string
+          description: The search string to query contacts
+      responses:
+        '200':
+          description: A list of matching contacts from Zoho Desk
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Contact'
+        '401':
+          description: Unauthorized
+        '500':
+          description: Internal Server Error
+
+components:
+  schemas:
+    CreateUpdateTicketRequest:
+      type: object
+      properties:
+        subject:
+          type: string
+          maxLength: 255
+          description: The subject of the ticket
+        departmentId:
+          type: string
+          description: The department to which the ticket belongs
+        contactId:
+          type: string
+          description: The contact name and/or email who raised the ticket
+        productId:
+          type: string
+          description: The product associated with the ticket
+        description:
+          type: string
+          maxLength: 65535
+          description: Detailed description of the issue
+        status:
+          type: string
+          maxLength: 120
+          description: The current status of the ticket
+        assigneeId:
+          type: string
+          description: The user assigned to the ticket
+        category:
+          type: string
+          maxLength: 300
+          description: The category of the ticket
+        resolution:
+          type: string
+          maxLength: 65535
+          description: The resolution for the ticket
+        dueDate:
+          type: string
+          description: The due date for the ticket
+        priority:
+          type: string
+          maxLength: 120
+          description: The priority of the ticket
+        language:
+          type: string
+          maxLength: 255
+          description: The language of the ticket
+        responseDueDate:
+          type: string
+          description: The due date for the initial response
+        channel:
+          type: string
+          maxLength: 120
+          description: The channel through which the ticket was raised
+        classification:
+          type: string
+          maxLength: 100
+          description: The classification of the ticket
+        teamId:
+          type: string
+          description: The team assigned to the ticket
+  
+    TicketRequest:
+      type: object
+      properties:
+        from:
+          type: integer
+          description: Index number, starting from which the tickets must be fetched
+          example: 0
+        limit:
+          type: integer
+          description: Number of tickets to fetch. Default is 50
+          example: 50
+
+    TicketQueryRequest:
+      allOf:
+        - $ref: '#/components/schemas/TicketRequest'
+      type: object
+      properties:
+        departmentIds:
+          type: string
+          description: Departments from which the tickets need to be queried
+        teamIds:
+          type: string
+          maxLength: 100
+          description: Key that filters tickets by Teams. Unassigned is an allowed value. Multiple values can be passed as comma-separated
+        assignee:
+          type: string
+          maxLength: 100
+          description: assignee - Key that filters tickets by assignee. Values allowed are Unassigned or a valid assigneeId. Multiple assigneeIds can be passed as comma-separated values
+        channel:
+          type: string
+          maxLength: 100
+          description: Filter by channel through which the tickets originated. You can include multiple values by separating them with a comma
+        status:
+          type: string
+          maxLength: 100
+          description: Filter by resolution status of the ticket. You can include multiple values by separating them with a comma
+        sortBy:
+          type: string
+          maxLength: 100
+          description: Sort by a specific attribute, responseDueDate or customerResponseTime or createdTime. The default sorting order is ascending. A - prefix denotes descending order of sorting
+        receivedInDays:
+          type: integer
+          description: Fetches recent tickets, based on customer response time. Values allowed are 15, 30, 90
+        include:
+          type: string
+          maxLength: 100
+          description: Additional information related to the tickets. Values allowed are contacts, products, departments, team, isRead and assignee. You can pass multiple values by separating them with commas in the API request
+        fields:
+          type: string
+          maxLength: 100
+          description: Key that returns the values of mentioned fields (both pre-defined and custom). All field types except multi-text are supported. These fields include statusType, webUrl, layoutId. Maximum of 30 fields is supported as comma separated values
+        priority:
+          type: string
+          maxLength: 100
+          description: Key that filters tickets by priority. Multiple priority levels can be passed as comma-separated values
+    
+    TicketHistoryRequest:
+      allOf:
+        - $ref: '#/components/schemas/TicketRequest'
+      type: object
+      properties:
+        eventFilter:
+          type: string
+          maxLength: 100
+          description: >
+            Key that filters events, based on their type. Values allowed are CommentHistory, TimeEntryHistory, TaskHistory, CallHistory, EventHistory, 
+            AttachmentHistory, ApprovalHistory, SuperviseHistory, WorkflowHistory, MacroHistory, AssignmentRuleHistory, NotificationRuleHistory, 
+            SLAHistory, BlueprintHistory and SkillRelatedHistory
+        agentId:
+          type: string
+          description: Key that filters by a particular agent to return only details of his actions
+        fieldName:
+          type: string
+          maxLength: 100
+          description: Key that filters the history of a particular field. The value for this key must be the apiName of the field
+
+    UpdateTicketResolutionRequest:
+      type: object
+      properties:
+        content:
+          type: string
+          maxLength: 32000
+          description: Content to add in the field
+        isNotifyContact:
+          type: string
+          description: Value that specifies if the contact associated must be notified about the resolution. Accepts "true" or "false"
+
+    TicketCommentsRequest:
+      allOf:
+       - $ref: '#/components/schemas/TicketRequest'
+      type: object
+      properties:
+        sortBy:
+          type: string
+          description: The field by which to sort the comments, allowed values are "responseDueDate" "customerResponseTime" "createdTime"
+        include:
+          type: string
+          description: Secondary information related to the comments, allowed values are "mentions" "plainText"
+
+    CreateCommentRequest:
+      type: object
+      properties:
+        content:
+          type: string
+          maxLength: 32000
+          description: Content of the comment. To include user mentions, use the format zsu[@user:{zuid}zsu.            
+        isPublic:
+          type: string
+          description: Indicates if the comment is public. Accepts "true" or "false". This can only be set at the time of making a comment.        
+        contentType:
+          type: string
+          maxLength: 100
+          description: Denotes the content-type, either "html" or "plainText". Default is "html".
+          
